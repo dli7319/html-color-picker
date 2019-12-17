@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>HTML Color Picker</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+  <style media="screen">
+    .column-container {
+      border-radius: 1rem;
+      margin: 1rem;
+      background: #EEE;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    #image-preview-canvas {
+      max-width: 100%;
+      max-height: 100%;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+
+<body id="doc-body">
+  <main id="main-container">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm column-container">
+          <label>Input Image:</label><br>
+          <input type="file" name="" id="image-input" value="" accept="image/*">
+          <canvas id="image-preview-canvas" width="0" height="0"></canvas>
+        </div>
+
+        <div class="col-sm column-container">
+
+          <table class="table" id="colors-table">
+            <tbody>
+              <tr>
+                <th scope="row">Coordinates</th>
+                <td>
+                  <p id="coordinates-container"></p>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Hex</th>
+                <td>
+                  <input type="text" name="" id="hex-input" value="">
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">RGB (0-255)</th>
+                <td>
+                  <input type="text" name="" id="rgb255-input" value="">
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">RGB (0-1)</th>
+                <td>
+                  <input type="text" name="" id="rgb01-input" value="">
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">HSV (0-255)</th>
+                <td>
+                  <input type="text" name="" id="hsv-input" value="">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="col-sm column-container">
+          <ul>
+            <h6>Other tools</h6>
+            <li>
+              <a href="https://coolors.co/app">Coolors.co</a>
+            </li>
+            <li>
+              <a href="http://colorbrewer2.org/">Colorbrewer2.org</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+  </main>
+
+  <script src="main.js"></script>
+</body>
+
+</html>

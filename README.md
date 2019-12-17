@@ -15,4 +15,6 @@ Relies on color-convert
 
 
 ## TODO
+* Add locking on click to image sampling
+ * With multiple sampling points
 * Add an actual color picker

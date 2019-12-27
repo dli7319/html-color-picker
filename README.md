@@ -18,3 +18,8 @@ Relies on color-convert
 * Add locking on click to image sampling
  * With multiple sampling points
 * Add an actual color picker
+* Ability to save colors (to local storage on browser)
+ * Export colors to csv
+* Ability to generate color palettes (similar to coolors)
+ * Save and export as csv
+* Ability to create and edit colormaps

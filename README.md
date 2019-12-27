@@ -8,6 +8,10 @@ A small website to convert between color coordinates
 
 Relies on color-convert
 
+## Screenshots
+![](README_Resources/screenshot1.png)
+
+
 ## Setup
 * `git clone`
 * `npm ci`
@@ -23,3 +27,4 @@ Relies on color-convert
 * Ability to generate color palettes (similar to coolors)
  * Save and export as csv
 * Ability to create and edit colormaps
+* General UI and CSS improvements

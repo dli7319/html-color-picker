@@ -13,6 +13,17 @@
       background: #EEE;
       padding: 1rem;
       text-align: center;
+      flex: 1 1 30%;
+    }
+
+    .color-grad {
+      position:absolute;
+      width: 100%;
+      height: 100%;
+      margin-left: auto;
+      margin-right: auto;
+      left: 0;
+      right: 0;
     }
 
     #image-preview-canvas {
@@ -20,69 +31,102 @@
       max-height: 100%;
       margin-top: 1rem;
     }
+
+    #color-grad-container {
+      width: 100%;
+      height: 80%;
+      position: relative;
+    }
+
+    #color-grad-1 {
+      z-index: 0;
+      background: linear-gradient(to right, #FFFFFF 0%, #F00 100%);
+    }
+
+    #color-grad-2 {
+      z-index: 1;
+      background: linear-gradient(to bottom, #FFFFFF00 0%, #000 100%);
+    }
+
+    #color-bar {
+      width: 100%;
+      height: 0.6rem;
+      margin-top: 1rem;
+      border-radius: 100rem;
+      background: linear-gradient(to right, #F00 0%, #FF0 17%, #0F0 33%, #0FF 50%, #00F 66%, #F0F 83%, #F00 100%)
+    }
   </style>
 </head>
 
 <body id="doc-body">
   <main id="main-container">
-    <div class="container">
-      <div class="row">
-        <div class="col-sm column-container">
-          <label>Input Image:</label><br>
-          <input type="file" name="" id="image-input" value="" accept="image/*">
-          <canvas id="image-preview-canvas" width="0" height="0"></canvas>
+    <div class="d-flex flex-row flex-wrap">
+      <div class="column-container">
+        <label>Color Selection:</label><br>
+        <div id="color-grad-container">
+          <div id="color-grad-1" class="color-grad"></div>
+          <div id="color-grad-2" class="color-grad"></div>
         </div>
+        <div id="color-bar">
 
-        <div class="col-sm column-container">
-
-          <table class="table" id="colors-table">
-            <tbody>
-              <tr>
-                <th scope="row">Coordinates</th>
-                <td>
-                  <p id="coordinates-container"></p>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">Hex</th>
-                <td>
-                  <input type="text" name="" id="hex-input" value="">
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">RGB (0-255)</th>
-                <td>
-                  <input type="text" name="" id="rgb255-input" value="">
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">RGB (0-1)</th>
-                <td>
-                  <input type="text" name="" id="rgb01-input" value="">
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">HSV (0-255)</th>
-                <td>
-                  <input type="text" name="" id="hsv-input" value="">
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="col-sm column-container">
-          <ul>
-            <h6>Other tools</h6>
-            <li>
-              <a href="https://coolors.co/app">Coolors.co</a>
-            </li>
-            <li>
-              <a href="http://colorbrewer2.org/">Colorbrewer2.org</a>
-            </li>
-          </ul>
         </div>
       </div>
+
+      <div class="column-container">
+        <table class="table" id="colors-table">
+          <tbody>
+            <tr>
+              <th scope="row">Coordinates</th>
+              <td>
+                <p id="coordinates-container"></p>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Hex</th>
+              <td>
+                <input type="text" name="" id="hex-input" value="#FFFFFF">
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">RGB (0-255)</th>
+              <td>
+                <input type="text" name="" id="rgb255-input" value="255,255,255">
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">RGB (0-1)</th>
+              <td>
+                <input type="text" name="" id="rgb01-input" value="1.0,1.0,1.0">
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">HSV (&#176;, %, %)</th>
+              <td>
+                <input type="text" name="" id="hsv-input" value="0,0,100">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="column-container">
+        <label>Input Image:</label><br>
+        <input type="file" name="" id="image-input" value="" accept="image/*">
+        <canvas id="image-preview-canvas" width="0" height="0"></canvas>
+      </div>
+
+      <div class="column-container">
+        <ul>
+          <h6>Other tools</h6>
+          <li>
+            <a href="https://coolors.co/app">Coolors.co</a>
+          </li>
+          <li>
+            <a href="http://colorbrewer2.org/">Colorbrewer2.org</a>
+          </li>
+        </ul>
+      </div>
+    </div>
   </main>
 
   <script src="main.js"></script>

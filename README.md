@@ -8,6 +8,8 @@ A small website to convert between color coordinates
 
 Relies on color-convert
 
+Try it at https://davidl.me/apps/colors
+
 ## Screenshots
 ![](README_Resources/screenshot1.png)
 
@@ -17,11 +19,13 @@ Relies on color-convert
 * `npm ci`
 * `npx webpack`
 
+## Features
+* Sample colors from images
+* Color picker
 
 ## TODO
 * Add locking on click to image sampling
  * With multiple sampling points
-* Add an actual color picker
 * Ability to save colors (to local storage on browser)
  * Export colors to csv
 * Ability to generate color palettes (similar to coolors)

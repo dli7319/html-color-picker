@@ -4,11 +4,11 @@
   "description": "HTML Color Picker",
   "main": "main.js",
   "dependencies": {
-    "bootstrap": "^4.4.1",
+    "bootstrap": "^4.5.2",
     "clamp": "^1.0.1",
     "color-convert": "^2.0.1",
-    "webpack": "^4.42.1",
-    "webpack-cli": "^3.3.11"
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
   },
   "devDependencies": {},
   "scripts": {

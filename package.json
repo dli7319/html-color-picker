@@ -4,14 +4,16 @@
   "description": "HTML Color Picker",
   "main": "main.js",
   "dependencies": {
-    "bootstrap": "^4.5.2",
+    "bootstrap": "^4.5.3",
     "clamp": "^1.0.1",
     "color-convert": "^2.0.1",
-    "webpack": "^4.44.1",
+    "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12"
   },
   "devDependencies": {},
   "scripts": {
+    "setup": "npm ci",
+    "build": "npx webpack",
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "npx webpack -w"
   },

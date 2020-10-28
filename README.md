@@ -5,6 +5,7 @@ A small website to convert between color coordinates
 * HEX
 * RGB (0-255)
 * RGB (0-1)
+* LAB
 
 Relies on color-convert
 
@@ -17,7 +18,7 @@ Try it at https://davidl.me/apps/colors
 ## Setup
 * `git clone`
 * `npm ci`
-* `npx webpack`
+* `npm run build`
 
 ## Features
 * Sample colors from images

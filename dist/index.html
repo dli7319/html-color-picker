@@ -55,6 +55,30 @@
       border-radius: 100rem;
       background: linear-gradient(to right, #F00 0%, #FF0 17%, #0F0 33%, #0FF 50%, #00F 66%, #F0F 83%, #F00 100%)
     }
+
+    #color-grad-circle {
+      z-index: 2;
+      position: absolute;
+      width: 1rem;
+      height: 1rem;
+      border-radius: 99rem;
+      border-style: solid;
+      border-color: black;
+      border-width: 0.1rem;
+      pointer-events: none;
+    }
+
+    #color-bar-circle {
+      z-index: 2;
+      position: absolute;
+      width: 1rem;
+      height: 1rem;
+      border-radius: 99rem;
+      border-style: solid;
+      border-color: black;
+      border-width: 0.1rem;
+      pointer-events: none;
+    }
   </style>
 </head>
 
@@ -66,9 +90,9 @@
         <div id="color-grad-container">
           <div id="color-grad-1" class="color-grad"></div>
           <div id="color-grad-2" class="color-grad"></div>
+          <div id="color-grad-circle"></div>
         </div>
         <div id="color-bar">
-
         </div>
       </div>
 

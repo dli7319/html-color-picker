@@ -9,14 +9,18 @@ export default class ColorPicker {
     this.rgb01Input = document.getElementById("rgb01-input");
     this.hsvInput = document.getElementById("hsv-input");
     this.documentBody = document.getElementById("doc-body");
-    this.coordinatesContainer = document.getElementById("coordinates-container");
+    this.coordinatesContainer = document.getElementById(
+      "coordinates-container"
+    );
     this.imagePreviewCanvas = document.getElementById("image-preview-canvas");
     this.colorBar = document.getElementById("color-bar");
     this.colorGrad = document.getElementById("color-grad-1");
     this.colorGrad2 = document.getElementById("color-grad-2");
+    this.colorGradCircle = document.getElementById("color-grad-circle");
     this.colorGradHue = 0;
     this.colorGradSaturation = 0;
     this.colorGradValue = 100;
+    this.updateColorGrad();
   }
 
   setColor(newColor, options = {}) {
@@ -24,10 +28,17 @@ export default class ColorPicker {
       console.log("Changing color to", newColor);
     }
     if (this.rgb255Input && !options.ignoreRGB255) {
-      this.rgb255Input.value = newColor.getRGB255().splice(0, 3).toString();
+      this.rgb255Input.value = newColor
+        .getRGB255()
+        .splice(0, 3)
+        .toString();
     }
     if (this.rgb01Input && !options.ignoreRGB01) {
-      this.rgb01Input.value = newColor.getRGB01().splice(0, 3).map(x => x.toFixed(3)).toString();
+      this.rgb01Input.value = newColor
+        .getRGB01()
+        .splice(0, 3)
+        .map(x => x.toFixed(3))
+        .toString();
     }
     if (this.hexInput && !options.ignoreHex) {
       this.hexInput.value = "#" + newColor.getHex();
@@ -80,7 +91,7 @@ export default class ColorPicker {
     }
 
     if (imagePreviewCanvas) {
-      imagePreviewCanvas.addEventListener("mousemove", (e) => {
+      imagePreviewCanvas.addEventListener("mousemove", e => {
         let mousePos = {
           x: e.offsetX / imagePreviewCanvas.clientWidth,
           y: e.offsetY / imagePreviewCanvas.clientHeight
@@ -104,7 +115,9 @@ export default class ColorPicker {
         if (coordinatesContainer) {
           coordinatesContainer.innerHTML = "";
           coordinatesContainer.appendChild(
-            document.createTextNode(`(${mousePos.x.toFixed(3)},${mousePos.y.toFixed(3)})`)
+            document.createTextNode(
+              `(${mousePos.x.toFixed(3)},${mousePos.y.toFixed(3)})`
+            )
           );
           coordinatesContainer.appendChild(document.createElement("br"));
           coordinatesContainer.appendChild(
@@ -212,20 +225,24 @@ export default class ColorPicker {
 
     if (colorBar) {
       let mousedown = false;
-      colorBar.addEventListener("mousedown", (e) => {
+      colorBar.addEventListener("mousedown", e => {
         mousedown = true;
         const bbox = colorBar.getBoundingClientRect();
-        this.colorGradHue = 360 * Math.clamp((e.clientX - bbox.left) / colorBar.clientWidth, 0, 1);
+        this.colorGradHue =
+          360 *
+          Math.clamp((e.clientX - bbox.left) / colorBar.clientWidth, 0, 1);
         this.updateColorGrad();
       });
-      colorBar.addEventListener("mousemove", (e) => {
+      colorBar.addEventListener("mousemove", e => {
         if (mousedown) {
           const bbox = colorBar.getBoundingClientRect();
-          this.colorGradHue = 360 * Math.clamp((e.clientX - bbox.left) / colorBar.clientWidth, 0, 1);
+          this.colorGradHue =
+            360 *
+            Math.clamp((e.clientX - bbox.left) / colorBar.clientWidth, 0, 1);
           this.updateColorGrad();
         }
       });
-      document.addEventListener("mouseup", (e) => {
+      document.addEventListener("mouseup", e => {
         if (mousedown) {
           mousedown = false;
         }
@@ -234,22 +251,38 @@ export default class ColorPicker {
 
     if (colorGrad2) {
       let mousedown = false;
-      colorGrad2.addEventListener("mousedown", (e) => {
+      colorGrad2.addEventListener("mousedown", e => {
         mousedown = true;
         const bbox = colorGrad2.getBoundingClientRect();
-        this.colorGradSaturation = 100 * Math.clamp((e.clientX - bbox.left) / colorGrad2.clientWidth, 0, 1);
-        this.colorGradValue = 100 * Math.clamp(1 - (e.clientY - bbox.top) / colorGrad2.clientHeight, 0, 1);
+        this.colorGradSaturation =
+          100 *
+          Math.clamp((e.clientX - bbox.left) / colorGrad2.clientWidth, 0, 1);
+        this.colorGradValue =
+          100 *
+          Math.clamp(
+            1 - (e.clientY - bbox.top) / colorGrad2.clientHeight,
+            0,
+            1
+          );
         this.updateColorGrad();
       });
-      colorGrad2.addEventListener("mousemove", (e) => {
+      colorGrad2.addEventListener("mousemove", e => {
         if (mousedown) {
           const bbox = colorGrad2.getBoundingClientRect();
-          this.colorGradSaturation = 100 * Math.clamp((e.clientX - bbox.left) / colorGrad2.clientWidth, 0, 1);
-          this.colorGradValue = 100 * Math.clamp(1 - (e.clientY - bbox.top) / colorGrad2.clientHeight, 0, 1);
+          this.colorGradSaturation =
+            100 *
+            Math.clamp((e.clientX - bbox.left) / colorGrad2.clientWidth, 0, 1);
+          this.colorGradValue =
+            100 *
+            Math.clamp(
+              1 - (e.clientY - bbox.top) / colorGrad2.clientHeight,
+              0,
+              1
+            );
           this.updateColorGrad();
         }
       });
-      document.addEventListener("mouseup", (e) => {
+      document.addEventListener("mouseup", e => {
         if (mousedown) {
           mousedown = false;
         }
@@ -262,6 +295,7 @@ export default class ColorPicker {
     const hue = this.colorGradHue;
     const saturation = this.colorGradSaturation;
     const value = this.colorGradValue;
+    const colorGradCircle = this.colorGradCircle;
     if (colorGrad) {
       const color = new Color({
         type: "hsv",
@@ -282,6 +316,21 @@ export default class ColorPicker {
     this.setColor(newColor, {
       silent: true
     });
-  }
 
+    if (colorGradCircle) {
+      const totalHeight = colorGrad.clientHeight;
+      const totalWidth = colorGrad.clientWidth;
+      const offset = colorGradCircle.clientWidth / 2;
+      colorGradCircle.style.top =
+        String((1.0 - value / 100) * totalHeight - offset) + "px";
+      colorGradCircle.style.left =
+        String((saturation / 100) * totalWidth - offset) + "px";
+      colorGradCircle.style.backgroundColor = `#${newColor.getHex()}`;
+      if (value < 50) {
+        colorGradCircle.style.borderColor = "white";
+      } else {
+        colorGradCircle.style.borderColor = "black";
+      }
+    }
+  }
 }

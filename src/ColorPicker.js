@@ -53,7 +53,7 @@ export default class ColorPicker {
       this.coordinatesContainer.innerHTML = "(0, 0)<br>(0, 0)";
     }
     if (options.updateColorGrad || options.updateColorGrad == null) {
-      this.updateColorGrad(newColor);
+      this.updateColorGrad(newColor, {setColor: false});
     }
   }
 
@@ -295,7 +295,7 @@ export default class ColorPicker {
     }
   }
 
-  updateColorGrad(newColor) {
+  updateColorGrad(newColor, options = {}) {
     const colorGrad = this.colorGrad;
     if (newColor == null) {
       newColor = new Color({
@@ -320,10 +320,12 @@ export default class ColorPicker {
       colorGrad.style.background = `linear-gradient(to right, #FFF 0%, #${hex} 100%)`;
     }
 
-    this.setColor(newColor, {
-      silent: true,
-      updateColorGrad: false
-    });
+    if (options.setColor == null || options.setColor) {
+      this.setColor(newColor, {
+        silent: true,
+        updateColorGrad: false
+      });
+    }
 
     if (colorGradCircle) {
       const totalHeight = colorGrad.clientHeight;

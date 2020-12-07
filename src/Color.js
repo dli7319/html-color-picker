@@ -71,4 +71,13 @@ export default class Color {
   getHSV() {
     return colorConvert.rgb.hsv(...this.getRGB255());
   }
+
+  static fromRGB255Array(arr) {
+    return new Color({
+      type: "rgb255",
+      r: arr[0],
+      g: arr[1],
+      b: arr[2]
+    });
+  }
 }

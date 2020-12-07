@@ -50,7 +50,10 @@ export default class ColorPicker {
       this.documentBody.style.background = "#" + newColor.getHex();
     }
     if (this.coordinatesContainer && !options.keepCoordinates) {
-      this.coordinatesContainer.innerHTML = "";
+      this.coordinatesContainer.innerHTML = "(0, 0)<br>(0, 0)";
+    }
+    if (options.updateColorGrad || options.updateColorGrad == null) {
+      this.updateColorGrad(newColor);
     }
   }
 
@@ -92,6 +95,8 @@ export default class ColorPicker {
 
     if (imagePreviewCanvas) {
       imagePreviewCanvas.addEventListener("mousemove", e => {
+        const mousedown = (e.buttons && e.buttons | 1) || (e.which === 1);
+        if (!mousedown) return;
         let mousePos = {
           x: e.offsetX / imagePreviewCanvas.clientWidth,
           y: e.offsetY / imagePreviewCanvas.clientHeight
@@ -116,17 +121,17 @@ export default class ColorPicker {
           coordinatesContainer.innerHTML = "";
           coordinatesContainer.appendChild(
             document.createTextNode(
-              `(${mousePos.x.toFixed(3)},${mousePos.y.toFixed(3)})`
+              `(${mousePos.x.toFixed(3)}, ${mousePos.y.toFixed(3)})`
             )
           );
           coordinatesContainer.appendChild(document.createElement("br"));
           coordinatesContainer.appendChild(
-            document.createTextNode(`(${intCoordinates.x},${intCoordinates.y})`)
+            document.createTextNode(`(${intCoordinates.x}, ${intCoordinates.y})`)
           );
         }
-        let ctx = imagePreviewCanvas.getContext("2d");
-        let colors = ctx.getImageData(intCoordinates.x, intCoordinates.y, 1, 1);
-        this.setColor(Array.from(colors.data.slice(0, 3)), {
+        const ctx = imagePreviewCanvas.getContext("2d");
+        const colors = ctx.getImageData(intCoordinates.x, intCoordinates.y, 1, 1);
+        this.setColor(Color.fromRGB255Array(colors.data), {
           keepCoordinates: true
         });
       });
@@ -134,9 +139,9 @@ export default class ColorPicker {
 
     if (hexInput) {
       hexInput.addEventListener("input", () => {
-        let value = hexInput.value;
-        let hexRegex = /^#?([0-9a-zA-Z]{3}(?:[0-9a-zA-Z]{3})?)$/;
-        let match = hexRegex.exec(value);
+        const value = hexInput.value;
+        const hexRegex = /^#?([0-9a-zA-Z]{3}(?:[0-9a-zA-Z]{3})?)$/;
+        const match = hexRegex.exec(value);
         if (match && match.length == 2) {
           console.log(`Found Hex: ${match[1]}`);
           let color = new Color({
@@ -152,9 +157,9 @@ export default class ColorPicker {
 
     if (rgb255Input) {
       rgb255Input.addEventListener("input", () => {
-        let value = rgb255Input.value.trim().replace(/\s/g, ",");
-        let rgb255Regex = /^(\d{1,3}),+(\d{1,3}),+(\d{1,3})$/;
-        let match = rgb255Regex.exec(value);
+        const value = rgb255Input.value.trim().replace(/\s/g, ",");
+        const rgb255Regex = /^(\d{1,3}),+(\d{1,3}),+(\d{1,3})$/;
+        const match = rgb255Regex.exec(value);
         if (match && match.length == 4) {
           let newColor = match.slice(1, 4).map(x => parseInt(x));
           let inRange = newColor
@@ -178,9 +183,9 @@ export default class ColorPicker {
 
     if (rgb01Input) {
       rgb01Input.addEventListener("input", () => {
-        let value = rgb01Input.value.trim().replace(/\s/g, ",");
-        let rgb01Regex = /^([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)$/;
-        let match = rgb01Regex.exec(value);
+        const value = rgb01Input.value.trim().replace(/\s/g, ",");
+        const rgb01Regex = /^([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)$/;
+        const match = rgb01Regex.exec(value);
         if (match && match.length == 4) {
           let newColor = match.slice(1, 4).map(x => parseFloat(x));
           let inRange = newColor
@@ -204,9 +209,9 @@ export default class ColorPicker {
 
     if (hsvInput) {
       hsvInput.addEventListener("input", () => {
-        let value = hsvInput.value.trim().replace(/\s/g, ",");
-        let rgb01Regex = /^([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)$/;
-        let match = rgb01Regex.exec(value);
+        const value = hsvInput.value.trim().replace(/\s/g, ",");
+        const rgb01Regex = /^([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)$/;
+        const match = rgb01Regex.exec(value);
         if (match && match.length == 4) {
           let newColor = match.slice(1, 4).map(x => parseInt(x));
           console.log(`Found HSV: ${newColor.toString()}`);
@@ -290,11 +295,19 @@ export default class ColorPicker {
     }
   }
 
-  updateColorGrad() {
+  updateColorGrad(newColor) {
     const colorGrad = this.colorGrad;
-    const hue = this.colorGradHue;
-    const saturation = this.colorGradSaturation;
-    const value = this.colorGradValue;
+    if (newColor == null) {
+      newColor = new Color({
+        type: "hsv",
+        h: this.colorGradHue,
+        s: this.colorGradSaturation,
+        v: this.colorGradValue
+      });
+    }
+
+    const [hue, saturation, value] = newColor.getHSV();
+
     const colorGradCircle = this.colorGradCircle;
     if (colorGrad) {
       const color = new Color({
@@ -307,14 +320,9 @@ export default class ColorPicker {
       colorGrad.style.background = `linear-gradient(to right, #FFF 0%, #${hex} 100%)`;
     }
 
-    const newColor = new Color({
-      type: "hsv",
-      h: hue,
-      s: saturation,
-      v: value
-    });
     this.setColor(newColor, {
-      silent: true
+      silent: true,
+      updateColorGrad: false
     });
 
     if (colorGradCircle) {

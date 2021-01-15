@@ -24,12 +24,11 @@ Try it at https://davidl.me/apps/colors
 * Sample colors from images
 * Color picker
 
-## TODO
+<!-- ## TODO
 * Add locking on click to image sampling
  * With multiple sampling points
 * Ability to save colors (to local storage on browser)
  * Export colors to csv
 * Ability to generate color palettes (similar to coolors)
  * Save and export as csv
-* Ability to create and edit colormaps
-* General UI and CSS improvements
+* Ability to create and edit colormaps -->

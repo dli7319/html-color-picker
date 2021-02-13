@@ -95,7 +95,7 @@ export default class ColorPicker {
 
     if (imagePreviewCanvas) {
       imagePreviewCanvas.addEventListener("mousemove", e => {
-        const mousedown = (e.buttons && e.buttons | 1) || (e.which === 1);
+        const mousedown = (e.buttons && e.buttons | 1) || e.which === 1;
         if (!mousedown) return;
         let mousePos = {
           x: e.offsetX / imagePreviewCanvas.clientWidth,
@@ -126,11 +126,18 @@ export default class ColorPicker {
           );
           coordinatesContainer.appendChild(document.createElement("br"));
           coordinatesContainer.appendChild(
-            document.createTextNode(`(${intCoordinates.x}, ${intCoordinates.y})`)
+            document.createTextNode(
+              `(${intCoordinates.x}, ${intCoordinates.y})`
+            )
           );
         }
         const ctx = imagePreviewCanvas.getContext("2d");
-        const colors = ctx.getImageData(intCoordinates.x, intCoordinates.y, 1, 1);
+        const colors = ctx.getImageData(
+          intCoordinates.x,
+          intCoordinates.y,
+          1,
+          1
+        );
         this.setColor(Color.fromRGB255Array(colors.data), {
           keepCoordinates: true
         });
@@ -269,7 +276,14 @@ export default class ColorPicker {
             0,
             1
           );
-        this.updateColorGrad();
+        this.updateColorGrad(null, {
+          updateColorGradCircle: false
+        });
+        this.updateColorGradCircle(
+          null,
+          this.colorGradValue,
+          this.colorGradSaturation
+        );
       });
       colorGrad2.addEventListener("mousemove", e => {
         if (mousedown) {
@@ -284,7 +298,14 @@ export default class ColorPicker {
               0,
               1
             );
-          this.updateColorGrad();
+          this.updateColorGrad(null, {
+            updateColorGradCircle: false
+          });
+          this.updateColorGradCircle(
+            null,
+            this.colorGradValue,
+            this.colorGradSaturation
+          );
         }
       });
       document.addEventListener("mouseup", e => {
@@ -308,7 +329,6 @@ export default class ColorPicker {
 
     const [hue, saturation, value] = newColor.getHSV();
 
-    const colorGradCircle = this.colorGradCircle;
     if (colorGrad) {
       const color = new Color({
         type: "hsv",
@@ -327,6 +347,25 @@ export default class ColorPicker {
       });
     }
 
+    if (
+      options.updateColorGradCircle ||
+      options.updateColorGradCircle == null
+    ) {
+      this.updateColorGradCircle(newColor, value, saturation);
+    }
+  }
+
+  updateColorGradCircle(newColor, value, saturation) {
+    if (newColor == null) {
+      newColor = new Color({
+        type: "hsv",
+        h: this.colorGradHue,
+        s: this.colorGradSaturation,
+        v: this.colorGradValue
+      });
+    }
+    const colorGrad = this.colorGrad;
+    const colorGradCircle = this.colorGradCircle;
     if (colorGradCircle) {
       const totalHeight = colorGrad.clientHeight;
       const totalWidth = colorGrad.clientWidth;

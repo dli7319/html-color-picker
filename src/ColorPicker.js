@@ -17,6 +17,9 @@ export default class ColorPicker {
     this.colorGrad = document.getElementById("color-grad-1");
     this.colorGrad2 = document.getElementById("color-grad-2");
     this.colorGradCircle = document.getElementById("color-grad-circle");
+    this.colorBarPointer = document.getElementById("color-bar-pointer");
+    this.colorBarPointer3 = document.getElementById("color-bar-pointer3");
+    this.colorBarPointer4 = document.getElementById("color-bar-pointer4");
     this.colorGradHue = 0;
     this.colorGradSaturation = 0;
     this.colorGradValue = 100;
@@ -276,14 +279,7 @@ export default class ColorPicker {
             0,
             1
           );
-        this.updateColorGrad(null, {
-          updateColorGradCircle: false
-        });
-        this.updateColorGradCircle(
-          null,
-          this.colorGradValue,
-          this.colorGradSaturation
-        );
+        this.updateColorGrad();
       });
       colorGrad2.addEventListener("mousemove", e => {
         if (mousedown) {
@@ -298,14 +294,7 @@ export default class ColorPicker {
               0,
               1
             );
-          this.updateColorGrad(null, {
-            updateColorGradCircle: false
-          });
-          this.updateColorGradCircle(
-            null,
-            this.colorGradValue,
-            this.colorGradSaturation
-          );
+          this.updateColorGrad();
         }
       });
       document.addEventListener("mouseup", e => {
@@ -318,6 +307,7 @@ export default class ColorPicker {
 
   updateColorGrad(newColor, options = {}) {
     const colorGrad = this.colorGrad;
+    let hue, saturation, value;
     if (newColor == null) {
       newColor = new Color({
         type: "hsv",
@@ -325,9 +315,14 @@ export default class ColorPicker {
         s: this.colorGradSaturation,
         v: this.colorGradValue
       });
+      [hue, saturation, value] = [
+        this.colorGradHue,
+        this.colorGradSaturation,
+        this.colorGradValue
+      ];
+    } else {
+      [hue, saturation, value] = newColor.getHSV();
     }
-
-    const [hue, saturation, value] = newColor.getHSV();
 
     if (colorGrad) {
       const color = new Color({
@@ -352,6 +347,13 @@ export default class ColorPicker {
       options.updateColorGradCircle == null
     ) {
       this.updateColorGradCircle(newColor, value, saturation);
+    }
+
+    if (
+      options.updateColorBarPointer ||
+      options.updateColorBarPointer == null
+    ) {
+      this.updateHuePointer(hue);
     }
   }
 
@@ -380,6 +382,25 @@ export default class ColorPicker {
       } else {
         colorGradCircle.style.borderColor = "black";
       }
+    }
+  }
+
+  updateHuePointer(hue) {
+    const colorBarPointer = this.colorBarPointer;
+    const colorBarPointer3 = this.colorBarPointer3;
+    const colorBarPointer4 = this.colorBarPointer4;
+    if (colorBarPointer) {
+      const color = new Color({
+        type: "hsv",
+        h: hue,
+        s: 100,
+        v: 100
+      });
+      const newColorHex = `#${color.getHex()}`;
+      console.log("New color hex", newColorHex);
+      colorBarPointer.style.left = (100 * hue) / 360 + "%";
+      colorBarPointer3.style.borderBottomColor = newColorHex;
+      colorBarPointer4.style.borderColor = newColorHex;
     }
   }
 }

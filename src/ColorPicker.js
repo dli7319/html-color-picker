@@ -14,6 +14,7 @@ export default class ColorPicker {
     );
     this.imagePreviewCanvas = document.getElementById("image-preview-canvas");
     this.imagePreviewOverlayCanvas = document.getElementById("image-preview-overlay-canvas");
+    this.imagePreviewOverlayColorInputs = document.querySelectorAll('input[name="image-preview-overlay-color"]');
     this.colorBar = document.getElementById("color-bar");
     this.colorGrad = document.getElementById("color-grad-1");
     this.colorGrad2 = document.getElementById("color-grad-2");
@@ -147,6 +148,7 @@ export default class ColorPicker {
           keepCoordinates: true
         });
 
+        const overlayColor = Array.from(this.imagePreviewOverlayColorInputs).filter(x => x.checked)[0].value;
         const minWidthHeight = Math.min(imagePreviewOverlayCanvas.width, imagePreviewOverlayCanvas.height);
         const radius = 0.05 * minWidthHeight;
         const overlayCtx = imagePreviewOverlayCanvas.getContext("2d");
@@ -156,7 +158,7 @@ export default class ColorPicker {
           intCoordinates.x,
           intCoordinates.y,
           radius, 0, 2 * Math.PI);
-        overlayCtx.strokeStyle = 'white';
+        overlayCtx.strokeStyle = overlayColor;
         overlayCtx.lineWidth = 0.01 * minWidthHeight;
         overlayCtx.stroke();
       });

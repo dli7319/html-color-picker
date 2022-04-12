@@ -13,6 +13,7 @@ export default class ColorPicker {
       "coordinates-container"
     );
     this.imagePreviewCanvas = document.getElementById("image-preview-canvas");
+    this.imagePreviewOverlayCanvas = document.getElementById("image-preview-overlay-canvas");
     this.colorBar = document.getElementById("color-bar");
     this.colorGrad = document.getElementById("color-grad-1");
     this.colorGrad2 = document.getElementById("color-grad-2");
@@ -56,7 +57,7 @@ export default class ColorPicker {
       this.coordinatesContainer.innerHTML = "(0, 0)<br>(0, 0)";
     }
     if (options.updateColorGrad || options.updateColorGrad == null) {
-      this.updateColorGrad(newColor, {setColor: false});
+      this.updateColorGrad(newColor, { setColor: false });
     }
   }
 
@@ -66,11 +67,10 @@ export default class ColorPicker {
     const rgb255Input = this.rgb255Input;
     const rgb01Input = this.rgb01Input;
     const hsvInput = this.hsvInput;
-    const documentBody = this.documentBody;
     const coordinatesContainer = this.coordinatesContainer;
     const imagePreviewCanvas = this.imagePreviewCanvas;
+    const imagePreviewOverlayCanvas = this.imagePreviewOverlayCanvas;
     const colorBar = this.colorBar;
-    const colorGrad = this.colorGrad;
     const colorGrad2 = this.colorGrad2;
 
     if (imageInput) {
@@ -81,42 +81,46 @@ export default class ColorPicker {
         let image = imageInput.files[0];
         let reader = new FileReader();
         let img = new Image();
-        img.onload = function() {
+        img.onload = function () {
           if (imagePreviewCanvas) {
             imagePreviewCanvas.width = img.width;
             imagePreviewCanvas.height = img.height;
             let ctx = imagePreviewCanvas.getContext("2d");
             ctx.drawImage(img, 0, 0);
+            if (imagePreviewOverlayCanvas) {
+              imagePreviewOverlayCanvas.width = img.width;
+              imagePreviewOverlayCanvas.height = img.height;
+            }
           }
         };
-        reader.onload = function(e) {
+        reader.onload = function (e) {
           img.src = e.target.result;
         };
         reader.readAsDataURL(image);
       });
     }
 
-    if (imagePreviewCanvas) {
-      imagePreviewCanvas.addEventListener("mousemove", e => {
+    if (imagePreviewOverlayCanvas) {
+      imagePreviewOverlayCanvas.addEventListener("mousemove", e => {
         const mousedown = (e.buttons && e.buttons | 1) || e.which === 1;
         if (!mousedown) return;
         let mousePos = {
-          x: e.offsetX / imagePreviewCanvas.clientWidth,
-          y: e.offsetY / imagePreviewCanvas.clientHeight
+          x: e.offsetX / imagePreviewOverlayCanvas.clientWidth,
+          y: e.offsetY / imagePreviewOverlayCanvas.clientHeight
         };
         let intCoordinates = {
           x: Math.clamp(
             Math.floor(
-              mousePos.x * imagePreviewCanvas.width,
+              mousePos.x * imagePreviewOverlayCanvas.width,
               0,
-              imagePreviewCanvas.width - 1
+              imagePreviewOverlayCanvas.width - 1
             )
           ),
           y: Math.clamp(
             Math.floor(
-              mousePos.y * imagePreviewCanvas.height,
+              mousePos.y * imagePreviewOverlayCanvas.height,
               0,
-              imagePreviewCanvas.height - 1
+              imagePreviewOverlayCanvas.height - 1
             )
           )
         };
@@ -138,12 +142,23 @@ export default class ColorPicker {
         const colors = ctx.getImageData(
           intCoordinates.x,
           intCoordinates.y,
-          1,
-          1
-        );
+          1, 1);
         this.setColor(Color.fromRGB255Array(colors.data), {
           keepCoordinates: true
         });
+
+        const minWidthHeight = Math.min(imagePreviewOverlayCanvas.width, imagePreviewOverlayCanvas.height);
+        const radius = 0.05 * minWidthHeight;
+        const overlayCtx = imagePreviewOverlayCanvas.getContext("2d");
+        overlayCtx.clearRect(0, 0, imagePreviewOverlayCanvas.width, imagePreviewOverlayCanvas.height);
+        overlayCtx.beginPath();
+        overlayCtx.arc(
+          intCoordinates.x,
+          intCoordinates.y,
+          radius, 0, 2 * Math.PI);
+        overlayCtx.strokeStyle = 'white';
+        overlayCtx.lineWidth = 0.01 * minWidthHeight;
+        overlayCtx.stroke();
       });
     }
 

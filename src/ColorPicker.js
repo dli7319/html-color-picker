@@ -125,42 +125,32 @@ export default class ColorPicker {
             )
           )
         };
-        if (coordinatesContainer) {
-          coordinatesContainer.innerHTML = "";
-          coordinatesContainer.appendChild(
-            document.createTextNode(
-              `(${mousePos.x.toFixed(3)}, ${mousePos.y.toFixed(3)})`
+        this.updateFromImageOverlay(intCoordinates);
+      });
+      imagePreviewOverlayCanvas.addEventListener("click", e => {
+        const mousedown = (e.buttons && e.buttons | 1) || e.which === 1;
+        if (!mousedown) return;
+        let mousePos = {
+          x: e.offsetX / imagePreviewOverlayCanvas.clientWidth,
+          y: e.offsetY / imagePreviewOverlayCanvas.clientHeight
+        };
+        let intCoordinates = {
+          x: Math.clamp(
+            Math.floor(
+              mousePos.x * imagePreviewOverlayCanvas.width,
+              0,
+              imagePreviewOverlayCanvas.width - 1
             )
-          );
-          coordinatesContainer.appendChild(document.createElement("br"));
-          coordinatesContainer.appendChild(
-            document.createTextNode(
-              `(${intCoordinates.x}, ${intCoordinates.y})`
+          ),
+          y: Math.clamp(
+            Math.floor(
+              mousePos.y * imagePreviewOverlayCanvas.height,
+              0,
+              imagePreviewOverlayCanvas.height - 1
             )
-          );
-        }
-        const ctx = imagePreviewCanvas.getContext("2d");
-        const colors = ctx.getImageData(
-          intCoordinates.x,
-          intCoordinates.y,
-          1, 1);
-        this.setColor(Color.fromRGB255Array(colors.data), {
-          keepCoordinates: true
-        });
-
-        const overlayColor = Array.from(this.imagePreviewOverlayColorInputs).filter(x => x.checked)[0].value;
-        const minWidthHeight = Math.min(imagePreviewOverlayCanvas.width, imagePreviewOverlayCanvas.height);
-        const radius = 0.05 * minWidthHeight;
-        const overlayCtx = imagePreviewOverlayCanvas.getContext("2d");
-        overlayCtx.clearRect(0, 0, imagePreviewOverlayCanvas.width, imagePreviewOverlayCanvas.height);
-        overlayCtx.beginPath();
-        overlayCtx.arc(
-          intCoordinates.x,
-          intCoordinates.y,
-          radius, 0, 2 * Math.PI);
-        overlayCtx.strokeStyle = overlayColor;
-        overlayCtx.lineWidth = 0.01 * minWidthHeight;
-        overlayCtx.stroke();
+          )
+        };
+        this.updateFromImageOverlay(intCoordinates);
       });
     }
 
@@ -320,6 +310,52 @@ export default class ColorPicker {
         }
       });
     }
+  }
+
+  updateFromImageOverlay(intCoordinates) {
+    const coordinatesContainer = this.coordinatesContainer;
+    const imagePreviewCanvas = this.imagePreviewCanvas;
+    const imagePreviewOverlayCanvas = this.imagePreviewOverlayCanvas;
+    if (coordinatesContainer) {
+      const floatCoordinates = {
+        x: intCoordinates.x / imagePreviewOverlayCanvas.width,
+        y: intCoordinates.y / imagePreviewOverlayCanvas.height
+      }
+      coordinatesContainer.innerHTML = "";
+      coordinatesContainer.appendChild(
+        document.createTextNode(
+          `(${floatCoordinates.x.toFixed(3)}, ${floatCoordinates.y.toFixed(3)})`
+        )
+      );
+      coordinatesContainer.appendChild(document.createElement("br"));
+      coordinatesContainer.appendChild(
+        document.createTextNode(
+          `(${intCoordinates.x}, ${intCoordinates.y})`
+        )
+      );
+    }
+    const ctx = imagePreviewCanvas.getContext("2d");
+    const colors = ctx.getImageData(
+      intCoordinates.x,
+      intCoordinates.y,
+      1, 1);
+    this.setColor(Color.fromRGB255Array(colors.data), {
+      keepCoordinates: true
+    });
+
+    const overlayColor = Array.from(this.imagePreviewOverlayColorInputs).filter(x => x.checked)[0].value;
+    const minWidthHeight = Math.min(imagePreviewOverlayCanvas.width, imagePreviewOverlayCanvas.height);
+    const radius = 0.05 * minWidthHeight;
+    const overlayCtx = imagePreviewOverlayCanvas.getContext("2d");
+    overlayCtx.clearRect(0, 0, imagePreviewOverlayCanvas.width, imagePreviewOverlayCanvas.height);
+    overlayCtx.beginPath();
+    overlayCtx.arc(
+      intCoordinates.x,
+      intCoordinates.y,
+      radius, 0, 2 * Math.PI);
+    overlayCtx.strokeStyle = overlayColor;
+    overlayCtx.lineWidth = 0.01 * minWidthHeight;
+    overlayCtx.stroke();
   }
 
   updateColorGrad(newColor, options = {}) {

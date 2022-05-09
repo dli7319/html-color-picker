@@ -6,8 +6,12 @@
   <title>HTML Color Picker</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
     integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF" crossorigin="anonymous" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"
+    defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF" crossorigin="anonymous"
+    defer></script>
   <script src="main.js" defer></script>
 
   <style media="screen">
@@ -48,6 +52,15 @@
       z-index: 1;
       max-width: 100%;
       max-height: 100%;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      outline: none;
+      -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+      /* mobile webkit */
     }
 
     #color-grad-container {
@@ -211,7 +224,8 @@
         <input type="file" name="" id="image-input" value="" accept="image/*">
         <div class="form-group">
           <label>Overlay</label>
-          <div class="btn-group btn-group-toggle mt-1" data-toggle="buttons" id="image-preview-canvas-overlay-selector-div">
+          <div class="btn-group btn-group-toggle mt-1" data-toggle="buttons"
+            id="image-preview-canvas-overlay-selector-div">
             <label class="btn btn-secondary active">
               <input type="radio" name="image-preview-overlay-color" value="transparent"> None
             </label>
@@ -227,7 +241,7 @@
             <canvas id="image-preview-overlay-canvas" width="0" height="0"></canvas>
           </div>
         </div>
-        </div>
+      </div>
 
       <div class="column-container">
         <ul>

@@ -20,7 +20,7 @@
   <main id="main-container">
     <div class="d-flex flex-row flex-wrap">
       <div class="column-container">
-        <label>Color Selection:</label><br>
+        <h5>Color Selection</h5>
         <div id="color-grad-container">
           <div id="color-grad-1" class="color-grad"></div>
           <div id="color-grad-2" class="color-grad"></div>
@@ -36,7 +36,8 @@
       </div>
 
       <div class="column-container">
-        <table class="table" id="colors-table">
+        <h5>Color Converter</h5>
+        <table class="table mb-0" id="colors-table">
           <tbody>
             <tr>
               <th scope="row">Coordinates</th>
@@ -73,7 +74,7 @@
       </div>
 
       <div class="column-container">
-        <label>Input Image:</label><br>
+        <h5>Image Sampling</h5>
         <input type="file" name="" id="image-input" value="" accept="image/*">
         <div class="form-group">
           <label>Overlay</label>
@@ -94,6 +95,48 @@
             <canvas id="image-preview-overlay-canvas" width="0" height="0"></canvas>
           </div>
         </div>
+      </div>
+
+      <div class="column-container color-interp-div">
+          <h5>Color Interpolation</h5>
+          <table class="table mb-0">
+            <tr>
+              <td>
+                <div class="color-interp-color-selection color-interp-left-color">
+                </div>
+              </td>
+              <td>
+                <div class="color-interp-color-selection color-interp-right-color">
+                </div>
+              </td>
+            </tr>
+          </table>
+          <table class="table color-interp-table mb-0">
+            <tr>
+              <th>
+                RGB
+              </th>
+              <td>
+                <div class="color-interp-gradient color-interp-gradient-rgb"></div>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                HSL
+              </th>
+              <td>
+                <div class="color-interp-gradient color-interp-gradient-hsl"></div>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                LCH
+              </th>
+              <td>
+                <div class="color-interp-gradient color-interp-gradient-lch"></div>
+              </td>
+            </tr>
+          </table>
       </div>
 
       <div class="column-container">

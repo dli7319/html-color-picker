@@ -1,4 +1,5 @@
 import Color from "./Color.js";
+import { ColorGradient } from "./ColorGradient.js";
 Math.clamp = require("clamp");
 
 export default class ColorPicker {
@@ -26,6 +27,31 @@ export default class ColorPicker {
     this.colorGradSaturation = 0;
     this.colorGradValue = 100;
     this.updateColorGrad();
+
+    this.colorInterpDiv = document.querySelector(".color-interp-div");
+    this.colorInterpGradients = [];
+    if (this.colorInterpDiv) {
+      this.colorInterpLeft = document.querySelector(".color-interp-left-color");
+      this.colorInterpRight = document.querySelector(".color-interp-right-color");
+      this.colorInterpGradientRGB = new ColorGradient(
+        this.colorInterpDiv.querySelector(".color-interp-gradient-rgb"),
+        "rgb"
+      );
+      this.colorInterpGradientHSL = new ColorGradient(
+        this.colorInterpDiv.querySelector(".color-interp-gradient-hsl"),
+        "hsl"
+      );
+      this.colorInterpGradientLCH = new ColorGradient(
+        this.colorInterpDiv.querySelector(".color-interp-gradient-lch"),
+        "lch"
+      );
+
+      this.colorInterpGradients = [
+        this.colorInterpGradientRGB,
+        this.colorInterpGradientHSL,
+        this.colorInterpGradientLCH
+      ];
+    }
   }
 
   setColor(newColor, options = {}) {
@@ -59,6 +85,9 @@ export default class ColorPicker {
     }
     if (options.updateColorGrad || options.updateColorGrad == null) {
       this.updateColorGrad(newColor, { setColor: false });
+    }
+    if (this.colorInterpDiv && !options.ignoreInterp) {
+      this.updateColorInterp(newColor);
     }
   }
 
@@ -152,6 +181,19 @@ export default class ColorPicker {
         };
         this.updateFromImageOverlay(intCoordinates);
       });
+
+      if (this.colorInterpDiv) {
+        this.colorInterpLeft.addEventListener("click", () => {
+          this.colorInterpLeft.classList.toggle("active");
+          this.colorInterpRight.classList.remove("active");
+          this.setColor(this.colorInterpGradientRGB.getColorAt(0), { ignoreInterp: true });
+        });
+        this.colorInterpRight.addEventListener("click", () => {
+          this.colorInterpRight.classList.toggle("active");
+          this.colorInterpLeft.classList.remove("active");
+          this.setColor(this.colorInterpGradientRGB.getColorAt(1), { ignoreInterp: true });
+        });
+      }
     }
 
     if (hexInput) {
@@ -310,6 +352,27 @@ export default class ColorPicker {
         }
       });
     }
+
+    if (this.colorInterpDiv) {
+      this.colorInterpGradients.forEach(x => {
+        x.divElement.addEventListener("click", event => {
+          const positionX = event.offsetX / x.divElement.clientWidth;
+          const newColor = x.getColorAt(positionX);
+          this.setColor(newColor, { ignoreInterp: true });
+          this.colorInterpRight.classList.remove("active");
+          this.colorInterpLeft.classList.remove("active");
+        });
+        x.divElement.addEventListener("mousemove", event => {
+          if (event.buttons == 1) {
+            const positionX = event.offsetX / x.divElement.clientWidth;
+            const newColor = x.getColorAt(positionX);
+            this.setColor(newColor, { ignoreInterp: true });
+            this.colorInterpRight.classList.remove("active");
+            this.colorInterpLeft.classList.remove("active");
+          }
+        });
+      });
+    }
   }
 
   updateFromImageOverlay(intCoordinates) {
@@ -450,10 +513,22 @@ export default class ColorPicker {
         v: 100
       });
       const newColorHex = `#${color.getHex()}`;
-      console.log("New color hex", newColorHex);
       colorBarPointer.style.left = (100 * hue) / 360 + "%";
       colorBarPointer3.style.borderBottomColor = newColorHex;
       colorBarPointer4.style.borderColor = newColorHex;
+    }
+  }
+
+  updateColorInterp(newColor) {
+    if (this.colorInterpDiv) {
+      if (this.colorInterpLeft && this.colorInterpLeft.classList.contains("active")) {
+        this.colorInterpLeft.style.backgroundColor = `#${newColor.getHex()}`;
+        this.colorInterpGradients.forEach(x => x.setColorStop(0, newColor));
+      }
+      if (this.colorInterpRight && this.colorInterpRight.classList.contains("active")) {
+        this.colorInterpRight.style.backgroundColor = `#${newColor.getHex()}`;
+        this.colorInterpGradients.forEach(x => x.setColorStop(1, newColor));
+      }
     }
   }
 }

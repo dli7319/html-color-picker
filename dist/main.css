@@ -143,3 +143,28 @@
     transform: translateX(-50%);
     top: 0.5em;
 }
+
+.color-interp-color-selection {
+    width: 2rem;
+    height: 2rem;
+    background-color: red;
+    border-radius: 10%;
+    margin: 0 auto;
+}
+.color-interp-color-selection.color-interp-right-color {
+    background-color: white;
+}
+
+.color-interp-color-selection.active {
+    border: black dashed 0.2rem;
+}
+
+.color-interp-gradient {
+    width: 100%;
+    height: 2rem;
+    background-image: linear-gradient(to right, red, white);;
+}
+
+.color-interp-table th {
+    width: 1rem;
+}

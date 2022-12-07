@@ -41,6 +41,10 @@ export default class ColorPicker {
         this.colorInterpDiv.querySelector(".color-interp-gradient-hsl"),
         "hsl"
       );
+      this.colorInterpGradientHSLFlip = new ColorGradient(
+        this.colorInterpDiv.querySelector(".color-interp-gradient-hslflip"),
+        "hsl_flip"
+      );
       this.colorInterpGradientLCH = new ColorGradient(
         this.colorInterpDiv.querySelector(".color-interp-gradient-lch"),
         "lch"
@@ -49,6 +53,7 @@ export default class ColorPicker {
       this.colorInterpGradients = [
         this.colorInterpGradientRGB,
         this.colorInterpGradientHSL,
+        this.colorInterpGradientHSLFlip,
         this.colorInterpGradientLCH
       ];
     }

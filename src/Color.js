@@ -123,11 +123,28 @@ export default class Color {
         v: Math.lerp(hsv0[2], hsv1[2], t)
       });
     } else if (mode === "hsl") {
-      let hsl0 = color0.getHSL();
-      let hsl1 = color1.getHSL();
+      const hsl0 = color0.getHSL();
+      const hsl1 = color1.getHSL();
+      const flipHueDirection = (Math.abs(hsl0[0] - hsl1[0]) > 180);
+      const intermediateHue = Math.lerp(
+        hsl0[0] + 360 * (flipHueDirection && hsl0[0] < hsl1[0]),
+        hsl1[0 + 360 * (flipHueDirection && hsl1[0] < hsl0[0])], t);
       return new Color({
         type: "hsl",
-        h: Math.lerp(hsl0[0], hsl1[0], t),
+        h: intermediateHue,
+        s: Math.lerp(hsl0[1], hsl1[1], t),
+        l: Math.lerp(hsl0[2], hsl1[2], t)
+      });
+    } else if (mode === "hsl_flip") {
+      const hsl0 = color0.getHSL();
+      const hsl1 = color1.getHSL();
+      const flipHueDirection = (Math.abs(hsl0[0] - hsl1[0]) > 180);
+      const intermediateHue = Math.lerp(
+        hsl0[0] + 360 * (!flipHueDirection && hsl0[0] < hsl1[0]),
+        hsl1[0 + 360 * (!flipHueDirection && hsl1[0] < hsl0[0])], t);
+      return new Color({
+        type: "hsl",
+        h: intermediateHue,
         s: Math.lerp(hsl0[1], hsl1[1], t),
         l: Math.lerp(hsl0[2], hsl1[2], t)
       });

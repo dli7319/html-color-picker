@@ -126,9 +126,10 @@ export default class Color {
       const hsl0 = color0.getHSL();
       const hsl1 = color1.getHSL();
       const flipHueDirection = (Math.abs(hsl0[0] - hsl1[0]) > 180);
+      const hsl0Updated = hsl0[0] + 360 * (flipHueDirection && hsl0[0] < hsl1[0]);
+      const hsl1Updated = hsl1[0] + 360 * (flipHueDirection && hsl1[0] < hsl0[0]);
       const intermediateHue = Math.lerp(
-        hsl0[0] + 360 * (flipHueDirection && hsl0[0] < hsl1[0]),
-        hsl1[0 + 360 * (flipHueDirection && hsl1[0] < hsl0[0])], t);
+        hsl0Updated, hsl1Updated, t);
       return new Color({
         type: "hsl",
         h: intermediateHue,
@@ -139,9 +140,10 @@ export default class Color {
       const hsl0 = color0.getHSL();
       const hsl1 = color1.getHSL();
       const flipHueDirection = (Math.abs(hsl0[0] - hsl1[0]) > 180);
+      const hsl0Updated = hsl0[0] + 360 * (!flipHueDirection && hsl0[0] < hsl1[0]);
+      const hsl1Updated = hsl1[0] + 360 * (!flipHueDirection && hsl1[0] < hsl0[0]);
       const intermediateHue = Math.lerp(
-        hsl0[0] + 360 * (!flipHueDirection && hsl0[0] < hsl1[0]),
-        hsl1[0 + 360 * (!flipHueDirection && hsl1[0] < hsl0[0])], t);
+        hsl0Updated, hsl1Updated, t);
       return new Color({
         type: "hsl",
         h: intermediateHue,

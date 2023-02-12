@@ -31,16 +31,22 @@ export default function ColorPicker() {
 
   function updateColor(newColor: Color) {
     setColor(newColor);
+    if (interpolationActive == "left") {
+      setInterpolationLeft(newColor);
+    } else if (interpolationActive == "right") {
+      setInterpolationRight(newColor);
+    }
   }
 
   document.body.style.background = "#" + color.getHex();
 
   return <div className="d-flex flex-row flex-wrap">
-    <ColorSelection className={styles.columnContainer} color={color} setColor={updateColor}/>
+    <ColorSelection className={styles.columnContainer} color={color} setColor={updateColor} />
     <ColorConverter className={styles.columnContainer} color={color} setColor={updateColor} coordinates={coordinates} />
     <ImageSampling className={styles.columnContainer} />
     <ColorInterpolation className={styles.columnContainer} leftColor={interpolationLeft}
-      rightColor={interpolationRight} activeColor={interpolationActive} setActiveColor={setInterpolationActive} />
+      rightColor={interpolationRight} activeColor={interpolationActive} setActiveColor={setInterpolationActive}
+      setColor={setColor} />
     <OtherTools className={styles.columnContainer} />
   </div>;
 }

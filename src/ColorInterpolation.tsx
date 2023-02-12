@@ -10,13 +10,15 @@ export default function ColorInterpolation({
   leftColor,
   rightColor,
   activeColor = "none",
-  setActiveColor
+  setActiveColor,
+  setColor
 }: {
   className?: string;
   leftColor: Color;
   rightColor: Color;
   activeColor?: string;
   setActiveColor: (activeColor: string) => void;
+  setColor: (color: Color) => void;
 }) {
   const colorGradient = new ColorGradient(leftColor, rightColor);
   const leftActive = activeColor == "left" ? styles.active : "";
@@ -29,6 +31,17 @@ export default function ColorInterpolation({
     setActiveColor(rightActive ? "none" : "right");
   }
 
+  function onMouseMoveGradient(e: React.MouseEvent) {
+    if (e.buttons == 1) {
+      const mode = e.currentTarget.getAttribute("data-mode") || "";
+      const rect = e.currentTarget.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width;
+      const newColor = colorGradient.getColorAt(x, mode);
+      setActiveColor("none");
+      setColor(newColor);
+    }
+  }
+
   return (
     <div className={className}>
       <h5>Color Interpolation</h5>
@@ -36,11 +49,15 @@ export default function ColorInterpolation({
         <tbody>
           <tr>
             <td>
-              <div className={`${styles.colorSelection} ${styles} ${leftActive}`} onClick={setActiveColorLeft}>
+              <div className={`${styles.colorSelection} ${styles} ${leftActive}`} onClick={setActiveColorLeft} style={{
+                background: "#" + leftColor.getHex()
+              }}>
               </div>
             </td>
             <td>
-              <div className={`${styles.colorSelection} ${styles.rightColor} ${rightActive}`} onClick={setActiveColorRight}>
+              <div className={`${styles.colorSelection} ${styles.rightColor} ${rightActive}`} onClick={setActiveColorRight} style={{
+                background: "#" + rightColor.getHex()
+              }}>
               </div>
             </td>
           </tr>
@@ -55,7 +72,7 @@ export default function ColorInterpolation({
             <td>
               <div className={`${styles.gradient}`} style={{
                 background: colorGradient.getBackgroundImageStyle("rgb")
-              }}></div>
+              }} data-mode="rgb" onMouseDown={onMouseMoveGradient} onMouseMove={onMouseMoveGradient}></div>
             </td>
           </tr>
           <tr>
@@ -65,7 +82,7 @@ export default function ColorInterpolation({
             <td>
               <div className={`${styles.gradient}`} style={{
                 background: colorGradient.getBackgroundImageStyle("hsl")
-              }}></div>
+              }} data-mode="hsl" onMouseDown={onMouseMoveGradient} onMouseMove={onMouseMoveGradient}></div>
             </td>
           </tr>
           <tr>
@@ -75,7 +92,7 @@ export default function ColorInterpolation({
             <td>
               <div className={`${styles.gradient}`} style={{
                 background: colorGradient.getBackgroundImageStyle("hsl_flip")
-              }}></div>
+              }} data-mode="hsl_flip" onMouseDown={onMouseMoveGradient} onMouseMove={onMouseMoveGradient}></div>
             </td>
           </tr>
           <tr>
@@ -85,7 +102,7 @@ export default function ColorInterpolation({
             <td>
               <div className={`${styles.gradient}`} style={{
                 background: colorGradient.getBackgroundImageStyle("lch")
-              }}></div>
+              }} data-mode="lch" onMouseDown={onMouseMoveGradient} onMouseMove={onMouseMoveGradient}></div>
             </td>
           </tr>
         </tbody>

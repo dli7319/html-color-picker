@@ -1,166 +1,23 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-
-<head>
-  <meta charset="utf-8">
-  <title>Color Picker</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"
-    defer></script>
-  <script src="main.js" defer></script>
-  <link rel="stylesheet" type="text/css" href="main.css">
-</head>
-
-<body id="doc-body">
-  <main id="main-container">
-    <div class="d-flex flex-row flex-wrap">
-      <div class="column-container">
-        <h5>Color Selection</h5>
-        <div id="color-grad-container">
-          <div id="color-grad-1" class="color-grad"></div>
-          <div id="color-grad-2" class="color-grad"></div>
-          <div id="color-grad-circle"></div>
-        </div>
-        <div id="color-bar">
-          <div id="color-bar-pointer">
-            <div id="color-bar-pointer2"></div>
-            <div id="color-bar-pointer3"></div>
-            <div id="color-bar-pointer4"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="column-container">
-        <h5>Color Converter</h5>
-        <table class="table mb-0" id="colors-table">
-          <tbody>
-            <tr>
-              <th scope="row">Coordinates</th>
-              <td>
-                <p id="coordinates-container">(0, 0)<br />(0, 0)</p>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">Hex</th>
-              <td>
-                <input type="text" name="" id="hex-input" value="#FFFFFF">
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">RGB (0-255)</th>
-              <td>
-                <input type="text" name="" id="rgb255-input" value="255,255,255">
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">RGB (0-1)</th>
-              <td>
-                <input type="text" name="" id="rgb01-input" value="1.0,1.0,1.0">
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">HSV (&#176;, %, %)</th>
-              <td>
-                <input type="text" name="" id="hsv-input" value="0,0,100">
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="column-container">
-        <h5>Image Sampling</h5>
-        <input type="file" name="" id="image-input" value="" accept="image/*">
-        <div class="form-group">
-          <label>Overlay</label>
-          <div class="btn-group btn-group-toggle mt-1" data-toggle="buttons"
-            id="image-preview-canvas-overlay-selector-div">
-            <input type="radio" class="btn-check" name="image-preview-overlay-color" value="transparent" id="image-sampling-overlay-none">
-            <label class="btn btn-secondary" for="image-sampling-overlay-none">None</label>
-            <input type="radio" class="btn-check" name="image-preview-overlay-color" value="black" id="image-sampling-overlay-black" checked> 
-            <label class="btn btn-secondary" for="image-sampling-overlay-black">Black</label>
-            <input type="radio" class="btn-check" name="image-preview-overlay-color" value="white" id="image-sampling-overlay-white">
-            <label class="btn btn-secondary" for="image-sampling-overlay-white">White</label>
-          </div>
-          <div id="image-preview-canvas-wrapper" class="mt-1">
-            <canvas id="image-preview-canvas" width="0" height="0"></canvas>
-            <canvas id="image-preview-overlay-canvas" width="0" height="0"></canvas>
-          </div>
-        </div>
-      </div>
-
-      <div class="column-container color-interp-div">
-          <h5>Color Interpolation</h5>
-          <table class="table mb-0">
-            <tr>
-              <td>
-                <div class="color-interp-color-selection color-interp-left-color">
-                </div>
-              </td>
-              <td>
-                <div class="color-interp-color-selection color-interp-right-color">
-                </div>
-              </td>
-            </tr>
-          </table>
-          <table class="table color-interp-table mb-0">
-            <tr>
-              <th>
-                RGB
-              </th>
-              <td>
-                <div class="color-interp-gradient color-interp-gradient-rgb"></div>
-              </td>
-            </tr>
-            <tr>
-              <th>
-                HSL
-              </th>
-              <td>
-                <div class="color-interp-gradient color-interp-gradient-hsl"></div>
-              </td>
-            </tr>
-            <tr>
-              <th>
-                HSL*
-              </th>
-              <td>
-                <div class="color-interp-gradient color-interp-gradient-hslflip"></div>
-              </td>
-            </tr>
-            <tr>
-              <th>
-                LCH
-              </th>
-              <td>
-                <div class="color-interp-gradient color-interp-gradient-lch"></div>
-              </td>
-            </tr>
-          </table>
-      </div>
-
-      <div class="column-container">
-        <ul>
-          <h6>Other tools</h6>
-          <li>
-            <a href="https://coolors.co/app">Coolors.co</a>
-          </li>
-          <li>
-            <a href="http://colorbrewer2.org/">Colorbrewer2.org</a>
-          </li>
-          <li>
-            <a href="https://material.io/resources/color/">Material Color Tool</a>
-          </li>
-          <li>
-            <a href="https://refactoringui.com/previews/building-your-color-palette/">Refractoring GUI: Building Your
-              Color Palette</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </main>
-</body>
-
+  <head>
+    <meta charset="utf-8" />
+    <title>Color Picker</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+      crossorigin="anonymous"
+      defer
+    ></script>
+    <script src="main.js" defer></script>
+  </head>
+  <body>
+    <main id="root"></main>
+  </body>
 </html>

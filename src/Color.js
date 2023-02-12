@@ -56,7 +56,7 @@ export default class Color {
       this.g = newColor[1] / 255;
       this.b = newColor[2] / 255;
     }
-
+    this.input = color;
     Object.freeze(this);
   }
 

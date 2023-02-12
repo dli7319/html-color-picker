@@ -10,7 +10,7 @@ export default function ImageSampling({
 }) {
   return (
     <div className={className}>
-      <h5>ImageSampling</h5>
+      <h5>Image Sampling</h5>
       <input type="file" name="" id="image-input" value="" accept="image/*"
         onChange={console.log} />
       <div className="form-group">

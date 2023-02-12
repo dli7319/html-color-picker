@@ -5,11 +5,13 @@ import Color from "./Color";
 export default function ColorConverter({
     className,
     color,
-    setColor
+    setColor,
+    coordinates,
 }: {
     className?: string;
     color: Color;
-    setColor: React.Dispatch<React.SetStateAction<Color>>;
+    setColor: (color: Color) => void;
+    coordinates: { x: number; y: number; width: number; height: number };
 }) {
     // The keys here are a hack to force the input to update when the color changes.
 
@@ -91,6 +93,13 @@ export default function ColorConverter({
         .toString();
     const hsvKey = color.input.hsvKey || hsv;
 
+    const floatCoordinates = {
+        x: coordinates.x / coordinates.width,
+        y: coordinates.y / coordinates.height
+    }
+    const floatCoordinatesString = `(${floatCoordinates.x.toFixed(3)}, ${floatCoordinates.y.toFixed(3)})`
+    const intCoordinatesString = `(${coordinates.x}, ${coordinates.y})`
+
     return (
         <div className={className}>
             <h5>Color Converter</h5>
@@ -99,7 +108,7 @@ export default function ColorConverter({
                     <tr>
                         <th scope="row">Coordinates</th>
                         <td>
-                            <p id="coordinates-container" className="mb-0">(0, 0)<br />(0, 0)</p>
+                            <p id="coordinates-container" className="mb-0">{floatCoordinatesString}<br />{intCoordinatesString}</p>
                         </td>
                     </tr>
                     <tr>

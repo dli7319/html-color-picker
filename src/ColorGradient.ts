@@ -1,6 +1,9 @@
-import Color from "./Color.js";
+import Color from "./Color";
 
 export class ColorGradient {
+    colors: Color[] = [];
+    positions: number[] = [];
+
     constructor(leftColor = new Color({
         type: "rgb01",
         r: 1,
@@ -12,13 +15,11 @@ export class ColorGradient {
         g: 1,
         b: 1
     })) {
-        this.colors = [];
-        this.positions = [];
         this.addColorStop(0, leftColor);
         this.addColorStop(1, rightColor);
     }
 
-    setColorStop(position, color) {
+    setColorStop(position: number, color: Color) {
         let index = this.positions.indexOf(position);
         if (index == -1) {
             this.addColorStop(position, color);
@@ -27,14 +28,14 @@ export class ColorGradient {
         }
     }
 
-    addColorStop(position, color) {
+    addColorStop(position: number, color: Color) {
         this.colors.push(color);
         this.positions.push(position);
     }
 
-    getColorAt(position, mode) {
+    getColorAt(position: number, mode: string): Color {
         if (this.colors.length === 0) {
-            return new Color(0, 0, 0, 0);
+            return new Color({});
         }
         if (this.colors.length === 1) {
             return this.colors[0];

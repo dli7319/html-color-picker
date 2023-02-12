@@ -98,7 +98,7 @@ export default function ColorConverter({
         y: coordinates.y / coordinates.height
     }
     const floatCoordinatesString = `(${floatCoordinates.x.toFixed(3)}, ${floatCoordinates.y.toFixed(3)})`
-    const intCoordinatesString = `(${coordinates.x}, ${coordinates.y})`
+    const intCoordinatesString = `(${Math.round(coordinates.x)}, ${Math.round(coordinates.y)})`
 
     return (
         <div className={className}>

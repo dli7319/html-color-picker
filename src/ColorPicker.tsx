@@ -43,7 +43,8 @@ export default function ColorPicker() {
   return <div className="d-flex flex-row flex-wrap">
     <ColorSelection className={styles.columnContainer} color={color} setColor={updateColor} />
     <ColorConverter className={styles.columnContainer} color={color} setColor={updateColor} coordinates={coordinates} />
-    <ImageSampling className={styles.columnContainer} />
+    <ImageSampling className={styles.columnContainer} setColor={updateColor}
+      coordinates={coordinates} setCoordinates={setCoordinates} />
     <ColorInterpolation className={styles.columnContainer} leftColor={interpolationLeft}
       rightColor={interpolationRight} activeColor={interpolationActive} setActiveColor={setInterpolationActive}
       setColor={setColor} />

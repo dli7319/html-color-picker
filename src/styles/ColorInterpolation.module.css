@@ -1,0 +1,26 @@
+.colorSelection {
+    width: 2rem;
+    height: 2rem;
+    background-color: red;
+    border-radius: 10%;
+    margin: 0 auto;
+}
+
+.colorSelection.rightColor {
+    background-color: white;
+}
+
+.colorSelection.active {
+    border: black dashed 0.2rem;
+}
+
+.gradient {
+    width: 100%;
+    height: 2rem;
+    background-image: linear-gradient(to right, red, white);
+    ;
+}
+
+.table th {
+    width: 1rem;
+}

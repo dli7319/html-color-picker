@@ -1,47 +1,41 @@
-import Color from "./Color.js";
+import Color from "./Color";
 
 export class ColorGradient {
-    constructor(divElement, divInterpMode = "rgb") {
-        this.colors = [];
-        this.positions = [];
+    colors: Color[] = [];
+    positions: number[] = [];
 
-        this.divElement = divElement;
-        this.divInterpMode = divInterpMode;
-
-        this.addColorStop(0, new Color({
-            type: "rgb01",
-            r: 1,
-            g: 0,
-            b: 0
-        }));
-        this.addColorStop(1, new Color({
-            type: "rgb01",
-            r: 1,
-            g: 1,
-            b: 1
-        }));
-
-        this.update();
+    constructor(leftColor = new Color({
+        type: "rgb01",
+        r: 1,
+        g: 0,
+        b: 0
+    }), rightColor = new Color({
+        type: "rgb01",
+        r: 1,
+        g: 1,
+        b: 1
+    })) {
+        this.addColorStop(0, leftColor);
+        this.addColorStop(1, rightColor);
     }
 
-    setColorStop(position, color) {
+    setColorStop(position: number, color: Color) {
         let index = this.positions.indexOf(position);
         if (index == -1) {
             this.addColorStop(position, color);
         } else {
             this.colors[index] = color;
         }
-        this.update();
     }
 
-    addColorStop(position, color) {
+    addColorStop(position: number, color: Color) {
         this.colors.push(color);
         this.positions.push(position);
     }
 
-    getColorAt(position, mode = this.divInterpMode) {
+    getColorAt(position: number, mode: string): Color {
         if (this.colors.length === 0) {
-            return new Color(0, 0, 0, 0);
+            return new Color({});
         }
         if (this.colors.length === 1) {
             return this.colors[0];
@@ -69,14 +63,12 @@ export class ColorGradient {
         return Color.lerp(c0, c1, t, mode = mode);
     }
 
-    update() {
+    getBackgroundImageStyle(mode = "rgb") {
         let gradient = "linear-gradient(to right";
         for (let i = 0; i < 100; i++) {
-            gradient += ", " + this.getColorAt(i / 100).toCSS() + " " + i + "%";
+            gradient += ", " + this.getColorAt(i / 100, mode).toCSS() + " " + i + "%";
         }
         gradient += ")";
-
-        // console.log(gradient);
-        this.divElement.style.backgroundImage = gradient;
+        return gradient;
     }
 }

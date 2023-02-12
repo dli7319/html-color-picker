@@ -15,10 +15,10 @@ Try it at https://davidl.me/apps/colors
 ![](README_Resources/screenshot1.png)
 
 
-## Setup
+## Setup for development
 * `git clone`
-* `npm ci`
-* `npm run build`
+* `npm run setup` will install dependencies.
+* `npm run dev` will start a server at `localhost:8080` with hot reloading.
 
 ## Features
 * Sample colors from images

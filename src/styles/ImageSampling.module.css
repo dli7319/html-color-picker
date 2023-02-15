@@ -12,10 +12,11 @@
 }
 
 .imagePreviewOverlay {
+    --circle-diameter: 1.5rem;
     z-index: 2;
     position: absolute;
-    width: 1rem;
-    height: 1rem;
+    width: var(--circle-diameter);
+    height: var(--circle-diameter);
     border-radius: 99rem;
     border-style: solid;
     border-color: black;

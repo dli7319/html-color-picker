@@ -72,8 +72,8 @@ export default function ImageSampling({
   const yPercent = (coordinates.y / coordinates.height * 100);
   const overlayStyle = {
     borderColor: overlayColor,
-    top: `calc(${yPercent}% - 0.5rem)`,
-    left: `calc(${xPercent}% - 0.5rem)`,
+    top: `calc(${yPercent}% - var(--circle-diameter) / 2)`,
+    left: `calc(${xPercent}% - var(--circle-diameter) / 2)`,
   };
 
   return (

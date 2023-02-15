@@ -1,7 +1,25 @@
-import React from "react";
-
+import React, { useState, useReducer } from "react";
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Color from "./Color";
 import styles from "./styles/ColorConverter.module.css"
+
+interface InputValues {
+    hexValue?: string;
+    rgb255Value?: string;
+    rgb01Value?: string;
+    hsvValue?: string;
+}
+
+interface CopiedState {
+    hex?: boolean;
+    rgb255?: boolean;
+    rgb01?: boolean;
+    hsv?: boolean;
+}
+
+function copiedStateReducer(state: CopiedState, newState: CopiedState) {
+    return { ...state, ...newState };
+}
 
 export default function ColorConverter({
     className,
@@ -9,20 +27,26 @@ export default function ColorConverter({
     setColor,
     coordinates,
     verbose = true,
+    copiedTimeout = 1000
 }: {
     className?: string;
     color: Color;
     setColor: (color: Color) => void;
     coordinates: { x: number; y: number; width: number; height: number };
     verbose?: boolean;
+    copiedTimeout?: number;
 }) {
     // The keys here are a hack to force the input to update when the color changes.
-    const [inputValues, setInputValues] = React.useState<{
-        hexValue?: string;
-        rgb255Value?: string;
-        rgb01Value?: string;
-        hsvValue?: string;
-    }>({});
+    const [inputValues, setInputValues] = useState<InputValues>({});
+    const [copied, setCopied] = useReducer(
+        copiedStateReducer,
+        {
+            hex: false,
+            rgb255: false,
+            rgb01: false,
+            hsv: false,
+        }
+    );
 
     function updateFromHex(e: React.ChangeEvent<HTMLInputElement>) {
         const value = e.target.value;
@@ -110,6 +134,11 @@ export default function ColorConverter({
         }
     }
 
+    function onCopy(key = "hex") {
+        setCopied({ [key]: true });
+        setTimeout(() => setCopied({ [key]: false }), copiedTimeout);
+    }
+
     const hex = inputValues.hexValue != null ?
         inputValues.hexValue :
         ("#" + color.getHex());
@@ -141,7 +170,7 @@ export default function ColorConverter({
     return (
         <div className={className}>
             <h5>Color Converter</h5>
-            <table className="table mb-0" id="colors-table">
+            <table className="table mb-0">
                 <tbody>
                     <tr>
                         <th scope="row">Coordinates</th>
@@ -151,30 +180,46 @@ export default function ColorConverter({
                     </tr>
                     <tr>
                         <th scope="row">Hex</th>
-                        <td>
+                        <td className="d-flex">
                             <input type="text" name="" value={hex} onChange={updateFromHex}
                                 size={1} className={styles.inputField} />
+                            <CopyToClipboard text={hex} onCopy={() => onCopy("hex")}>
+                                <i className={`bi bi-clipboard2 ${styles.copyIcon}`} hidden={copied.hex}></i>
+                            </CopyToClipboard>
+                            <i className={`bi bi-check ${styles.copyIcon}`} hidden={!copied.hex}></i>
                         </td>
                     </tr>
                     <tr>
                         <th scope="row">RGB (0-255)</th>
-                        <td>
+                        <td className="d-flex">
                             <input type="text" name="" value={rgb255} onChange={updateFromRGB255}
                                 size={1} className={styles.inputField} />
+                            <CopyToClipboard text={rgb255} onCopy={() => onCopy("rgb255")}>
+                                <i className={`bi bi-clipboard2 ${styles.copyIcon}`} hidden={copied.rgb255}></i>
+                            </CopyToClipboard>
+                            <i className={`bi bi-check ${styles.copyIcon}`} hidden={!copied.rgb255}></i>
                         </td>
                     </tr>
                     <tr>
                         <th scope="row">RGB (0-1)</th>
-                        <td>
+                        <td className="d-flex">
                             <input type="text" name="" value={rgb01} onChange={updateFromRGB01}
                                 size={1} className={styles.inputField} />
+                            <CopyToClipboard text={rgb01} onCopy={() => onCopy("rgb01")}>
+                                <i className={`bi bi-clipboard2 ${styles.copyIcon}`} hidden={copied.rgb01}></i>
+                            </CopyToClipboard>
+                            <i className={`bi bi-check ${styles.copyIcon}`} hidden={!copied.rgb01}></i>
                         </td>
                     </tr>
                     <tr>
                         <th scope="row">HSV (&#176;, %, %)</th>
-                        <td>
+                        <td className="d-flex">
                             <input type="text" name="" value={hsv} onChange={updateFromHSV}
                                 size={1} className={styles.inputField} />
+                            <CopyToClipboard text={hsv} onCopy={() => onCopy("hsv")}>
+                                <i className={`bi bi-clipboard2 ${styles.copyIcon}`} hidden={copied.hsv}></i>
+                            </CopyToClipboard>
+                            <i className={`bi bi-check ${styles.copyIcon}`} hidden={!copied.hsv}></i>
                         </td>
                     </tr>
                 </tbody>

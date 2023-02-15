@@ -2,3 +2,8 @@
     width: 100%;
     min-width: 6rem;
 }
+
+.copyIcon {
+    font-size: 1.2rem;
+    margin: 0.1rem;
+}

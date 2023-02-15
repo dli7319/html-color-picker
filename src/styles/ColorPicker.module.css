@@ -1,6 +1,11 @@
-.columnContainer {
+.mainContainer {
+    --gap: 1rem;
+    gap: var(--gap);
+    padding: var(--gap);
+}
+
+.component {
     border-radius: 1rem;
-    margin: 1rem;
     background: #eee;
     padding: 1rem;
     text-align: center;

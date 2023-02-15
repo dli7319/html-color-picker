@@ -40,14 +40,14 @@ export default function ColorPicker() {
 
   document.body.style.background = "#" + color.getHex();
 
-  return <div className="d-flex flex-row flex-wrap">
-    <ColorSelection className={styles.columnContainer} color={color} setColor={updateColor} />
-    <ColorConverter className={styles.columnContainer} color={color} setColor={updateColor} coordinates={coordinates} />
-    <ImageSampling className={styles.columnContainer} setColor={updateColor}
+  return <div className={`d-flex flex-row flex-wrap ${styles.mainContainer}`}>
+    <ColorSelection className={styles.component} color={color} setColor={updateColor} />
+    <ColorConverter className={styles.component} color={color} setColor={updateColor} coordinates={coordinates} />
+    <ImageSampling className={styles.component} setColor={updateColor}
       coordinates={coordinates} setCoordinates={setCoordinates} />
-    <ColorInterpolation className={styles.columnContainer} leftColor={interpolationLeft}
+    <ColorInterpolation className={styles.component} leftColor={interpolationLeft}
       rightColor={interpolationRight} activeColor={interpolationActive} setActiveColor={setInterpolationActive}
       setColor={setColor} />
-    <OtherTools className={styles.columnContainer} />
+    <OtherTools className={styles.component} />
   </div>;
 }

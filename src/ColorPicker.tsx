@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Color from "./Color";
 import ColorSelection from "./ColorSelection";
 import ColorConverter from "./ColorConverter";
@@ -8,26 +8,26 @@ import OtherTools from "./OtherTools";
 import styles from "./styles/ColorPicker.module.css";
 
 export default function ColorPicker() {
-  const [color, setColor] = React.useState(new Color({
+  const [color, setColor] = useState(new Color({
     type: "rgb255",
     r: 255,
     g: 255,
     b: 255
   }));
-  const [coordinates, setCoordinates] = React.useState({ x: 0, y: 0, width: 1, height: 1 });
-  const [interpolationLeft, setInterpolationLeft] = React.useState(new Color({
+  const [coordinates, setCoordinates] = useState({ x: 0, y: 0, width: 1, height: 1 });
+  const [interpolationLeft, setInterpolationLeft] = useState(new Color({
     type: "rgb255",
     r: 255,
     g: 0,
     b: 0
   }));
-  const [interpolationRight, setInterpolationRight] = React.useState(new Color({
+  const [interpolationRight, setInterpolationRight] = useState(new Color({
     type: "rgb255",
     r: 255,
     g: 255,
     b: 255
   }));
-  const [interpolationActive, setInterpolationActive] = React.useState("none");
+  const [interpolationActive, setInterpolationActive] = useState("none");
 
   function updateColor(newColor: Color) {
     setColor(newColor);

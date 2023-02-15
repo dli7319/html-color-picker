@@ -1,6 +1,7 @@
 import React from "react";
 
 import Color from "./Color";
+import styles from "./styles/ColorConverter.module.css"
 
 export default function ColorConverter({
     className,
@@ -115,25 +116,29 @@ export default function ColorConverter({
                     <tr>
                         <th scope="row">Hex</th>
                         <td>
-                            <input type="text" name="" key={hexKey} defaultValue={hex} onChange={updateFromHex} data-key={hexKey} />
+                            <input type="text" name="" key={hexKey} defaultValue={hex} onChange={updateFromHex}
+                                data-key={hexKey} size={1} className={styles.inputField}/>
                         </td>
                     </tr>
                     <tr>
                         <th scope="row">RGB (0-255)</th>
                         <td>
-                            <input type="text" name="" key={rgb255Key} defaultValue={rgb255} onChange={updateFromRGB255} data-key={rgb255Key} />
+                            <input type="text" name="" key={rgb255Key} defaultValue={rgb255} onChange={updateFromRGB255}
+                                data-key={rgb255Key} size={1} className={styles.inputField}/>
                         </td>
                     </tr>
                     <tr>
                         <th scope="row">RGB (0-1)</th>
                         <td>
-                            <input type="text" name="" key={rgb01Key} defaultValue={rgb01} onChange={updateFromRGB01} data-key={rgb01Key} />
+                            <input type="text" name="" key={rgb01Key} defaultValue={rgb01} onChange={updateFromRGB01}
+                                data-key={rgb01Key} size={1} className={styles.inputField}/>
                         </td>
                     </tr>
                     <tr>
                         <th scope="row">HSV (&#176;, %, %)</th>
                         <td>
-                            <input type="text" name="" key={hsvKey} defaultValue={hsv} onChange={updateFromHSV} data-key={hsvKey} />
+                            <input type="text" name="" key={hsvKey} defaultValue={hsv} onChange={updateFromHSV}
+                                data-key={hsvKey} size={1} className={styles.inputField}/>
                         </td>
                     </tr>
                 </tbody>

@@ -1,8 +1,11 @@
 .colorGradContainer {
     width: 100%;
-    height: 80%;
     position: relative;
+    min-height: 10rem;
+    min-width: 10rem;
+    flex-grow: 1;
 }
+
 
 .colorGrad {
     position: absolute;

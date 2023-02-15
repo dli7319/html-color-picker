@@ -11,13 +11,27 @@ interface InputValues {
 }
 
 interface CopiedState {
+    hex: boolean;
+    rgb255: boolean;
+    rgb01: boolean;
+    hsv: boolean;
+}
+
+const defaultCopiedState: CopiedState = Object.freeze({
+    hex: false,
+    rgb255: false,
+    rgb01: false,
+    hsv: false
+});
+
+interface CopiedStateUpdate {
     hex?: boolean;
     rgb255?: boolean;
     rgb01?: boolean;
     hsv?: boolean;
 }
 
-function copiedStateReducer(state: CopiedState, newState: CopiedState) {
+function copiedStateReducer(state: CopiedState, newState: CopiedStateUpdate) {
     return { ...state, ...newState };
 }
 
@@ -40,12 +54,7 @@ export default function ColorConverter({
     const [inputValues, setInputValues] = useState<InputValues>({});
     const [copied, setCopied] = useReducer(
         copiedStateReducer,
-        {
-            hex: false,
-            rgb255: false,
-            rgb01: false,
-            hsv: false,
-        }
+        defaultCopiedState
     );
 
     function updateFromHex(e: React.ChangeEvent<HTMLInputElement>) {
@@ -134,7 +143,7 @@ export default function ColorConverter({
         }
     }
 
-    function onCopy(key = "hex") {
+    function onCopy(key: keyof CopiedStateUpdate = "hex") {
         setCopied({ [key]: true });
         setTimeout(() => setCopied({ [key]: false }), copiedTimeout);
     }

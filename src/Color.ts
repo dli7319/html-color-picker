@@ -2,53 +2,79 @@ import clamp from "clamp";
 import lerp from "lerp";
 import colorConvert from "color-convert";
 
+export interface ColorInput {
+  type?: "rgb255" | "rgb01" | "hex" | "hsv" | "hsl" | "lch";
+  r?: number;
+  g?: number;
+  b?: number;
+  a?: number;
+  hex?: string;
+  h?: number;
+  s?: number;
+  v?: number;
+  l?: number;
+  c?: number;
+}
+
+
 export default class Color {
   r: number = 0;
   g: number = 0;
   b: number = 0;
   a: number = 1;
-  input: any;
+  input: ColorInput;
 
-  constructor(color: any) {
+  constructor(color: ColorInput) {
     if (color == null) {
       color = {};
     }
     if (color.type == "rgb255") {
-      this.r = clamp(color.r / 255, 0, 1);
-      this.g = clamp(color.g / 255, 0, 1);
-      this.b = clamp(color.b / 255, 0, 1);
+      this.r = clamp((color.r || 0) / 255, 0, 1);
+      this.g = clamp((color.g || 0) / 255, 0, 1);
+      this.b = clamp((color.b || 0) / 255, 0, 1);
       if (color.a != null) {
         this.a = clamp(color.a / 255, 0, 1);
       } else {
         this.a = 1;
       }
     } else if (color.type == "rgb01") {
-      this.r = clamp(color.r, 0, 1);
-      this.g = clamp(color.g, 0, 1);
-      this.b = clamp(color.b, 0, 1);
+      this.r = clamp((color.r || 0), 0, 1);
+      this.g = clamp((color.g || 0), 0, 1);
+      this.b = clamp((color.b || 0), 0, 1);
       if (color.a != null) {
         this.a = clamp(color.a, 0, 1);
       } else {
         this.a = 1;
       }
     } else if (color.type == "hex") {
-      // TODO: Write my own implementation to handle alpha
-      let rgb255Color = colorConvert.hex.rgb(color.hex);
+      let rgb255Color = colorConvert.hex.rgb(color.hex || "#000000");
       this.r = rgb255Color[0] / 255;
       this.g = rgb255Color[1] / 255;
       this.b = rgb255Color[2] / 255;
     } else if (color.type == "hsv") {
-      let newColor = colorConvert.hsv.rgb([color.h, color.s, color.v]);
+      let newColor = colorConvert.hsv.rgb([
+        color.h || 0,
+        color.s || 0,
+        color.v || 0
+      ]);
       this.r = newColor[0] / 255;
       this.g = newColor[1] / 255;
       this.b = newColor[2] / 255;
     } else if (color.type == "hsl") {
-      let newColor = colorConvert.hsl.rgb([color.h, color.s, color.l]);
+      let newColor = colorConvert.hsl.rgb([
+        color.h || 0,
+        color.s || 0,
+        color.l || 0
+      ]);
       this.r = newColor[0] / 255;
       this.g = newColor[1] / 255;
       this.b = newColor[2] / 255;
     } else if (color.type == "lch") {
-      let newColor = colorConvert.lch.rgb([color.l, color.c, color.h]);
+      let newColor = colorConvert.lch.rgb([
+        color.l || 0,
+        color.c || 0,
+        color.h || 0
+      ]);
       this.r = newColor[0] / 255;
       this.g = newColor[1] / 255;
       this.b = newColor[2] / 255;
@@ -78,7 +104,9 @@ export default class Color {
   getHSV() {
     if (this.input.type === "hsv") {
       // Use the original input values to avoid rounding errors.
-      return [this.input.h, this.input.s, this.input.v];
+      return [this.input.h || 0,
+      this.input.s || 0,
+      this.input.v || 0];
     }
     return colorConvert.rgb.hsv(this.getRGB255());
   }

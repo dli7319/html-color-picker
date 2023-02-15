@@ -90,6 +90,7 @@ export default function ColorConverter({
     const rgb01Key = color.input.rgb01Key || rgb01;
     const hsv = color.getHSV()
         .splice(0, 3)
+        .map(x => Math.round(x))
         .toString();
     const hsvKey = color.input.hsvKey || hsv;
 

@@ -12,9 +12,7 @@ export default function ColorSelection({
     color: Color;
     setColor: (color: Color) => void;
 }) {
-    const hue = color.input.h || color.getHSV()[0];
-    const saturation = color.input.s || color.getHSV()[1];
-    const value = color.input.v || color.getHSV()[2];
+    const [hue, saturation, value] = color.getHSV();
 
     function onMouseMoveColorGrad(e: React.MouseEvent<HTMLDivElement>) {
         const mouseDown = e.buttons == 1;

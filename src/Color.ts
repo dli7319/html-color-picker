@@ -59,9 +59,9 @@ export default class Color {
 
   getRGB255(): [number, number, number] {
     return [
-      clamp(Math.floor(this.r * 256), 0, 255),
-      clamp(Math.floor(this.g * 256), 0, 255),
-      clamp(Math.floor(this.b * 256), 0, 255),
+      clamp(Math.round(this.r * 255), 0, 255),
+      clamp(Math.round(this.g * 255), 0, 255),
+      clamp(Math.round(this.b * 255), 0, 255),
     ];
   }
 
@@ -76,6 +76,10 @@ export default class Color {
   }
 
   getHSV() {
+    if (this.input.type === "hsv") {
+      // Use the original input values to avoid rounding errors.
+      return [this.input.h, this.input.s, this.input.v];
+    }
     return colorConvert.rgb.hsv(this.getRGB255());
   }
 

@@ -13,7 +13,7 @@ export default function OtherTools({
       <ul>
         {Object.entries(other_tools).map(([key, value]) => (
           <li key={key}>
-            <a href="{value}">{key}</a>
+            <a href={value} target="_blank">{key}</a>
           </li>
         ))}
       </ul>

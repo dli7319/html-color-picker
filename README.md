@@ -11,10 +11,6 @@ Relies on color-convert
 
 Try it at https://davidl.me/apps/colors
 
-## Screenshots
-![](README_Resources/screenshot1.png)
-
-
 ## Setup for development
 * `git clone`
 * `npm run setup` will install dependencies.

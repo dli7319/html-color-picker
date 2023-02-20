@@ -22,6 +22,10 @@ Try it at https://davidl.me/apps/colors
 * Image sampling
 * Color interpolation
 
+## Deployment
+* This project is automatically deployed to github pages on push to master.
+* For local deployment, run `npm run build` and then serve the `dist` folder.
+
 <!-- ## TODO
 * Add locking on click to image sampling
  * With multiple sampling points

@@ -17,8 +17,10 @@ Try it at https://davidl.me/apps/colors
 * `npm run dev` will start a server at `localhost:8080` with hot reloading.
 
 ## Features
-* Sample colors from images
 * Color picker
+* Color conversion
+* Image sampling
+* Color interpolation
 
 <!-- ## TODO
 * Add locking on click to image sampling

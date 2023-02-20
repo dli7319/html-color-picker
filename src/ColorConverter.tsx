@@ -81,7 +81,7 @@ export default function ColorConverter({
 
     function updateFromRGB255(e: React.ChangeEvent<HTMLInputElement>) {
         const value = e.target.value;
-        const rgb255Regex = /^(\d{1,3}),(\d{1,3}),(\d{1,3})$/;
+        const rgb255Regex = /^(\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})$/;
         const match = rgb255Regex.exec(value);
         if (match && match.length == 4) {
             if (verbose)
@@ -103,7 +103,7 @@ export default function ColorConverter({
 
     function updateFromRGB01(e: React.ChangeEvent<HTMLInputElement>) {
         const value = e.target.value;
-        const rgb01Regex = /^([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)$/;
+        const rgb01Regex = /^([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+\s*([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+\s*([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)$/;
         const match = rgb01Regex.exec(value);
         if (match && match.length == 4) {
             if (verbose)
@@ -125,7 +125,7 @@ export default function ColorConverter({
 
     function updateFromHSV(e: React.ChangeEvent<HTMLInputElement>) {
         const value = e.target.value;
-        const hsvRegex = /^([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)$/;
+        const hsvRegex = /^([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+\s*([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+\s*([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)$/;
         const match = hsvRegex.exec(value);
         if (match && match.length == 4) {
             if (verbose)

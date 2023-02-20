@@ -37,6 +37,7 @@
     "css-loader": "^6.7.3",
     "lerp": "^1.0.3",
     "preact": "^10.12.1",
+    "react-bootstrap": "^2.7.2",
     "react-copy-to-clipboard": "^5.1.0",
     "react-refresh": "^0.14.0",
     "style-loader": "^3.3.1",

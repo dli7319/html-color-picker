@@ -1,26 +1,44 @@
 import React, { useState, useRef } from "react";
+import FloatingLabel from 'react-bootstrap/FloatingLabel';
+import Form from 'react-bootstrap/Form';
 import Color from "./Color";
 import styles from "./styles/ImageSampling.module.css";
+
+export enum OverlayColor {
+  Transparent = "transparent",
+  Black = "black",
+  White = "white"
+}
+
+export enum OverlaySize {
+  Small = "small",
+  Medium = "medium",
+  Large = "large"
+}
+
+const overlaySizeToRem = {
+  [OverlaySize.Small]: "1rem",
+  [OverlaySize.Medium]: "1.5rem",
+  [OverlaySize.Large]: "3rem"
+}
 
 export default function ImageSampling({
   className,
   setColor,
   coordinates,
   setCoordinates,
-  initialOverlayColor = "black"
+  initialOverlayColor = OverlayColor.Black
 }: {
   className?: string;
   setColor: (color: Color) => void;
   coordinates: { x: number, y: number, width: number, height: number };
   setCoordinates: (coordinates: { x: number, y: number, width: number, height: number }) => void;
-  initialOverlayColor?: "transparent" | "black" | "white";
+  initialOverlayColor?: OverlayColor;
 }) {
   const [overlayColor, setOverlayColor] = useState(initialOverlayColor);
+  const [overlaySize, setOverlaySize] = useState(OverlaySize.Medium);
   const [loadedImage, setLoadedImage] = useState(false);
   const imagePreviewCanvasRef = useRef(null);
-  function updateOverlayColor(e: React.ChangeEvent<HTMLInputElement>) {
-    setOverlayColor(e.currentTarget.value as "transparent" | "black" | "white");
-  }
   function loadImage(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.currentTarget.files?.item(0);
     if (file) {
@@ -44,7 +62,6 @@ export default function ImageSampling({
   }
   function sampleImage(e: React.MouseEvent) {
     if (e.buttons == 1) {
-
       const canvas = imagePreviewCanvasRef.current as unknown as HTMLCanvasElement;
       const ctx = canvas.getContext("2d");
       if (ctx) {
@@ -74,34 +91,42 @@ export default function ImageSampling({
     borderColor: overlayColor,
     top: `calc(${yPercent}% - var(--circle-diameter) / 2)`,
     left: `calc(${xPercent}% - var(--circle-diameter) / 2)`,
+    "--circle-diameter": overlaySizeToRem[overlaySize]
   };
 
   return (
-    <div className={className}>
+    <div className={`${className} ${styles.mainDiv}`}>
       <h5>Image Sampling</h5>
-      <input type="file" name="" defaultValue="" accept="image/*"
-        onChange={loadImage} />
-      <div className="form-group">
-        <label className="m-1">Overlay</label>
-        <div className="btn-group btn-group-toggle mt-1" data-toggle="buttons">
-          <input type="radio" className="btn-check" name="image-preview-overlay-color" id="image-sampling-overlay-none"
-            value="transparent" checked={overlayColor == "transparent"}
-            onChange={updateOverlayColor} />
-          <label className="btn btn-secondary" htmlFor="image-sampling-overlay-none">None</label>
-          <input type="radio" className="btn-check" name="image-preview-overlay-color" id="image-sampling-overlay-black"
-            value="black" checked={overlayColor == "black"}
-            onChange={updateOverlayColor} />
-          <label className="btn btn-secondary" htmlFor="image-sampling-overlay-black">Black</label>
-          <input type="radio" className="btn-check" name="image-preview-overlay-color" id="image-sampling-overlay-white"
-            value="white" checked={overlayColor == "white"}
-            onChange={updateOverlayColor} />
-          <label className="btn btn-secondary" htmlFor="image-sampling-overlay-white">White</label>
-        </div>
-        <div className={`mt-1 ${styles.imagePreviewCanvasWrapper}`}>
-          <canvas className={styles.imagePreviewCanvas} width="0" height="0" ref={imagePreviewCanvasRef}
-            onMouseDown={sampleImage} onMouseMove={sampleImage}></canvas>
-          <div className={styles.imagePreviewOverlay} hidden={!Boolean(loadedImage)} style={overlayStyle}></div>
-        </div>
+      <Form.Group controlId="formFile">
+        {/* <Form.Label>Default file input example</Form.Label> */}
+        <Form.Control type="file" onChange={loadImage} />
+      </Form.Group>
+      <div className="d-flex flex-row">
+        <FloatingLabel
+          label="Overlay Color"
+          className="flex-grow-1"
+        >
+          <Form.Select aria-label="Select Overlay Color" onChange={e => setOverlayColor(e.currentTarget.value as OverlayColor)}>
+            <option value={OverlayColor.Transparent}>None</option>
+            <option value={OverlayColor.Black} selected>Black</option>
+            <option value={OverlayColor.White}>White</option>
+          </Form.Select>
+        </FloatingLabel>
+        <FloatingLabel
+          label="Overlay Size"
+          className="flex-grow-1"
+        >
+          <Form.Select aria-label="Select Overlay Size" onChange={e => setOverlaySize(e.target.value as OverlaySize)}>
+            <option value={OverlaySize.Small}>Small</option>
+            <option value={OverlaySize.Medium} selected>Medium</option>
+            <option value={OverlaySize.Large}>Large</option>
+          </Form.Select>
+        </FloatingLabel>
+      </div>
+      <div className={`mt-1 ${styles.imagePreviewCanvasWrapper}`}>
+        <canvas className={styles.imagePreviewCanvas} width="0" height="0" ref={imagePreviewCanvasRef}
+          onMouseDown={sampleImage} onMouseMove={sampleImage}></canvas>
+        <div className={styles.imagePreviewOverlay} hidden={!Boolean(loadedImage)} style={overlayStyle}></div>
       </div>
     </div>
   );

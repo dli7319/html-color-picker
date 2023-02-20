@@ -1,4 +1,6 @@
-
+.mainDiv {
+    gap: 0.25rem;
+}
 
 .imagePreviewCanvasWrapper {
     position: relative;

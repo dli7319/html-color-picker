@@ -1,5 +1,7 @@
 import React, { useState, useReducer } from "react";
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import Form from 'react-bootstrap/Form';
+import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Color from "./Color";
 import styles from "./styles/ColorConverter.module.css"
 
@@ -179,7 +181,7 @@ export default function ColorConverter({
     return (
         <div className={className}>
             <h5>Color Converter</h5>
-            <table className="table mb-0">
+            <table className="table mb-0 table-borderless ">
                 <tbody>
                     <tr>
                         <th scope="row">Coordinates</th>
@@ -187,52 +189,66 @@ export default function ColorConverter({
                             <p id="coordinates-container" className="mb-0">{floatCoordinatesString}<br />{intCoordinatesString}</p>
                         </td>
                     </tr>
-                    <tr>
-                        <th scope="row">Hex</th>
-                        <td className="d-flex">
-                            <input type="text" name="" value={hex} onChange={updateFromHex}
-                                size={1} className={styles.inputField} />
-                            <CopyToClipboard text={hex} onCopy={() => onCopy("hex")}>
-                                <i className={`bi bi-clipboard2 ${styles.copyIcon}`} hidden={copied.hex}></i>
-                            </CopyToClipboard>
-                            <i className={`bi bi-check ${styles.copyIcon}`} hidden={!copied.hex}></i>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">RGB (0-255)</th>
-                        <td className="d-flex">
-                            <input type="text" name="" value={rgb255} onChange={updateFromRGB255}
-                                size={1} className={styles.inputField} />
-                            <CopyToClipboard text={rgb255} onCopy={() => onCopy("rgb255")}>
-                                <i className={`bi bi-clipboard2 ${styles.copyIcon}`} hidden={copied.rgb255}></i>
-                            </CopyToClipboard>
-                            <i className={`bi bi-check ${styles.copyIcon}`} hidden={!copied.rgb255}></i>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">RGB (0-1)</th>
-                        <td className="d-flex">
-                            <input type="text" name="" value={rgb01} onChange={updateFromRGB01}
-                                size={1} className={styles.inputField} />
-                            <CopyToClipboard text={rgb01} onCopy={() => onCopy("rgb01")}>
-                                <i className={`bi bi-clipboard2 ${styles.copyIcon}`} hidden={copied.rgb01}></i>
-                            </CopyToClipboard>
-                            <i className={`bi bi-check ${styles.copyIcon}`} hidden={!copied.rgb01}></i>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">HSV (&#176;, %, %)</th>
-                        <td className="d-flex">
-                            <input type="text" name="" value={hsv} onChange={updateFromHSV}
-                                size={1} className={styles.inputField} />
-                            <CopyToClipboard text={hsv} onCopy={() => onCopy("hsv")}>
-                                <i className={`bi bi-clipboard2 ${styles.copyIcon}`} hidden={copied.hsv}></i>
-                            </CopyToClipboard>
-                            <i className={`bi bi-check ${styles.copyIcon}`} hidden={!copied.hsv}></i>
-                        </td>
-                    </tr>
                 </tbody>
             </table>
+            <div className="d-flex">
+                {/* <input type="text" name="" value={hex} onChange={updateFromHex}
+                                size={1} className={styles.inputField} /> */}
+
+                <FloatingLabel
+                    label="Hex"
+                    className="flex-grow-1"
+                >
+                    <Form.Control type="text" value={hex} onChange={updateFromHex} />
+                </FloatingLabel>
+                <CopyToClipboard text={hex} onCopy={() => onCopy("hex")}>
+                    <i className={`bi bi-clipboard2 ${styles.copyIcon}`} hidden={copied.hex}></i>
+                </CopyToClipboard>
+                <i className={`bi bi-check ${styles.copyIcon}`} hidden={!copied.hex}></i>
+            </div>
+            <div className="d-flex">
+                {/* <input type="text" name="" value={rgb255} onChange={updateFromRGB255}
+                                size={1} className={styles.inputField} /> */}
+                <FloatingLabel
+                    label="RGB (0-255)"
+                    className="flex-grow-1"
+                >
+                    <Form.Control type="text" value={rgb255} onChange={updateFromRGB255} />
+                </FloatingLabel>
+                <CopyToClipboard text={rgb255} onCopy={() => onCopy("rgb255")}>
+                    <i className={`bi bi-clipboard2 ${styles.copyIcon}`} hidden={copied.rgb255}></i>
+                </CopyToClipboard>
+                <i className={`bi bi-check ${styles.copyIcon}`} hidden={!copied.rgb255}></i>
+            </div>
+            <div className="d-flex">
+                {/* <input type="text" name="" value={rgb01} onChange={updateFromRGB01}
+                                size={1} className={styles.inputField} /> */}
+                <FloatingLabel
+                    label="RGB (0-1)"
+                    className="flex-grow-1"
+                >
+                    <Form.Control type="text" value={rgb01} onChange={updateFromRGB01} />
+                </FloatingLabel>
+                <CopyToClipboard text={rgb01} onCopy={() => onCopy("rgb01")}>
+                    <i className={`bi bi-clipboard2 ${styles.copyIcon}`} hidden={copied.rgb01}></i>
+                </CopyToClipboard>
+                <i className={`bi bi-check ${styles.copyIcon}`} hidden={!copied.rgb01}></i>
+            </div>
+            <div className="d-flex">
+                {/* <input type="text" name="" value={hsv} onChange={updateFromHSV}
+                                size={1} className={styles.inputField} /> */}
+                <FloatingLabel
+                    label="HSV (&#176;, %, %)"
+                    className="flex-grow-1"
+                >
+                    <Form.Control type="text" value={hsv} onChange={updateFromHSV} />
+                </FloatingLabel>
+                <CopyToClipboard text={hsv} onCopy={() => onCopy("hsv")}>
+                    <i className={`bi bi-clipboard2 ${styles.copyIcon}`} hidden={copied.hsv}></i>
+                </CopyToClipboard>
+                <i className={`bi bi-check ${styles.copyIcon}`} hidden={!copied.hsv}></i>
+            </div>
+
         </div>
     );
 }

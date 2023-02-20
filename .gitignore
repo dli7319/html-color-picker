@@ -102,3 +102,6 @@ typings/
 
 # TernJS port file
 .tern-port
+
+dist/main.js
+dist/main.js.LICENSE.txt

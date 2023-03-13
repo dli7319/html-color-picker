@@ -16,7 +16,6 @@ export interface ColorInput {
   c?: number;
 }
 
-
 export default class Color {
   r: number = 0;
   g: number = 0;
@@ -38,9 +37,9 @@ export default class Color {
         this.a = 1;
       }
     } else if (color.type == "rgb01") {
-      this.r = clamp((color.r || 0), 0, 1);
-      this.g = clamp((color.g || 0), 0, 1);
-      this.b = clamp((color.b || 0), 0, 1);
+      this.r = clamp(color.r || 0, 0, 1);
+      this.g = clamp(color.g || 0, 0, 1);
+      this.b = clamp(color.b || 0, 0, 1);
       if (color.a != null) {
         this.a = clamp(color.a, 0, 1);
       } else {
@@ -55,7 +54,7 @@ export default class Color {
       let newColor = colorConvert.hsv.rgb([
         color.h || 0,
         color.s || 0,
-        color.v || 0
+        color.v || 0,
       ]);
       this.r = newColor[0] / 255;
       this.g = newColor[1] / 255;
@@ -64,7 +63,7 @@ export default class Color {
       let newColor = colorConvert.hsl.rgb([
         color.h || 0,
         color.s || 0,
-        color.l || 0
+        color.l || 0,
       ]);
       this.r = newColor[0] / 255;
       this.g = newColor[1] / 255;
@@ -73,7 +72,7 @@ export default class Color {
       let newColor = colorConvert.lch.rgb([
         color.l || 0,
         color.c || 0,
-        color.h || 0
+        color.h || 0,
       ]);
       this.r = newColor[0] / 255;
       this.g = newColor[1] / 255;
@@ -92,9 +91,7 @@ export default class Color {
   }
 
   getRGB01() {
-    return [
-      this.r, this.g, this.b, this.a
-    ];
+    return [this.r, this.g, this.b, this.a];
   }
 
   getHex() {
@@ -104,9 +101,7 @@ export default class Color {
   getHSV() {
     if (this.input.type === "hsv") {
       // Use the original input values to avoid rounding errors.
-      return [this.input.h || 0,
-      this.input.s || 0,
-      this.input.v || 0];
+      return [this.input.h || 0, this.input.s || 0, this.input.v || 0];
     }
     return colorConvert.rgb.hsv(this.getRGB255());
   }
@@ -128,7 +123,7 @@ export default class Color {
       type: "rgb255",
       r: arr[0],
       g: arr[1],
-      b: arr[2]
+      b: arr[2],
     });
   }
 
@@ -140,35 +135,37 @@ export default class Color {
         type: "hsv",
         h: lerp(hsv0[0], hsv1[0], t),
         s: lerp(hsv0[1], hsv1[1], t),
-        v: lerp(hsv0[2], hsv1[2], t)
+        v: lerp(hsv0[2], hsv1[2], t),
       });
     } else if (mode === "hsl") {
       const hsl0 = color0.getHSL();
       const hsl1 = color1.getHSL();
-      const flipHueDirection = (Math.abs(hsl0[0] - hsl1[0]) > 180);
-      const hsl0Updated = hsl0[0] + 360 * Number(flipHueDirection && hsl0[0] < hsl1[0]);
-      const hsl1Updated = hsl1[0] + 360 * Number(flipHueDirection && hsl1[0] < hsl0[0]);
-      const intermediateHue = lerp(
-        hsl0Updated, hsl1Updated, t);
+      const flipHueDirection = Math.abs(hsl0[0] - hsl1[0]) > 180;
+      const hsl0Updated =
+        hsl0[0] + 360 * Number(flipHueDirection && hsl0[0] < hsl1[0]);
+      const hsl1Updated =
+        hsl1[0] + 360 * Number(flipHueDirection && hsl1[0] < hsl0[0]);
+      const intermediateHue = lerp(hsl0Updated, hsl1Updated, t);
       return new Color({
         type: "hsl",
         h: intermediateHue,
         s: lerp(hsl0[1], hsl1[1], t),
-        l: lerp(hsl0[2], hsl1[2], t)
+        l: lerp(hsl0[2], hsl1[2], t),
       });
     } else if (mode === "hsl_flip") {
       const hsl0 = color0.getHSL();
       const hsl1 = color1.getHSL();
-      const flipHueDirection = (Math.abs(hsl0[0] - hsl1[0]) > 180);
-      const hsl0Updated = hsl0[0] + 360 * Number(!flipHueDirection && hsl0[0] < hsl1[0]);
-      const hsl1Updated = hsl1[0] + 360 * Number(!flipHueDirection && hsl1[0] < hsl0[0]);
-      const intermediateHue = lerp(
-        hsl0Updated, hsl1Updated, t);
+      const flipHueDirection = Math.abs(hsl0[0] - hsl1[0]) > 180;
+      const hsl0Updated =
+        hsl0[0] + 360 * Number(!flipHueDirection && hsl0[0] < hsl1[0]);
+      const hsl1Updated =
+        hsl1[0] + 360 * Number(!flipHueDirection && hsl1[0] < hsl0[0]);
+      const intermediateHue = lerp(hsl0Updated, hsl1Updated, t);
       return new Color({
         type: "hsl",
         h: intermediateHue,
         s: lerp(hsl0[1], hsl1[1], t),
-        l: lerp(hsl0[2], hsl1[2], t)
+        l: lerp(hsl0[2], hsl1[2], t),
       });
     } else if (mode == "lch") {
       let lch0 = color0.getLCH();
@@ -177,7 +174,7 @@ export default class Color {
         type: "lch",
         l: lerp(lch0[0], lch1[0], t),
         c: lerp(lch0[1], lch1[1], t),
-        h: lerp(lch0[2], lch1[2], t)
+        h: lerp(lch0[2], lch1[2], t),
       });
     }
     return new Color({
@@ -185,7 +182,7 @@ export default class Color {
       r: lerp(color0.r, color1.r, t),
       g: lerp(color0.g, color1.g, t),
       b: lerp(color0.b, color1.b, t),
-      a: lerp(color0.a, color1.a, t)
+      a: lerp(color0.a, color1.a, t),
     });
   }
 }

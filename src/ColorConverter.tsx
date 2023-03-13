@@ -7,6 +7,7 @@ import Color from "./Color";
 import styles from "./styles/ColorConverter.module.css";
 
 interface InputValues {
+  color: Color; // Key for the color that was last updated
   hexValue?: string;
   rgb255Value?: string;
   rgb01Value?: string;
@@ -53,12 +54,21 @@ export default function ColorConverter({
   verbose?: boolean;
   copiedTimeout?: number;
 }) {
-  // The keys here are a hack to force the input to update when the color changes.
-  const [inputValues, setInputValues] = useState<InputValues>({});
+  const [inputValues, setInputValues] = useState<InputValues>({
+    color,
+  });
   const [copied, setCopied] = useReducer(
     copiedStateReducer,
     defaultCopiedState
   );
+
+  // If the color has changed, remove the input values.
+  if (color != inputValues.color) {
+    console.log("color != inputValues.color");
+    setInputValues({
+      color,
+    });
+  }
 
   function updateFromHex(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
@@ -66,19 +76,18 @@ export default function ColorConverter({
     const match = hexRegex.exec(value);
     if (match && match.length == 2) {
       if (verbose) console.log(`Found Hex: #${match[1]}`);
-      setColor(
-        new Color({
-          type: "hex",
-          hex: match[1],
-        })
-      );
-      setInputValues({ hexValue: value });
-    } else {
-      setInputValues({
-        ...inputValues,
-        hexValue: value,
+      const newColor = new Color({
+        type: "hex",
+        hex: match[1],
       });
+      setColor(newColor);
+      setInputValues({ color: newColor, hexValue: value });
+      return;
     }
+    setInputValues({
+      ...inputValues,
+      hexValue: value,
+    });
   }
 
   function updateFromRGB255(e: React.ChangeEvent<HTMLInputElement>) {
@@ -88,21 +97,20 @@ export default function ColorConverter({
     if (match && match.length == 4) {
       if (verbose)
         console.log(`Found RGB255: ${match[1]}, ${match[2]}, ${match[3]}`);
-      setColor(
-        new Color({
-          type: "rgb255",
-          r: parseInt(match[1]),
-          g: parseInt(match[2]),
-          b: parseInt(match[3]),
-        })
-      );
-      setInputValues({ rgb255Value: value });
-    } else {
-      setInputValues({
-        ...inputValues,
-        rgb255Value: value,
+      const newColor = new Color({
+        type: "rgb255",
+        r: parseInt(match[1]),
+        g: parseInt(match[2]),
+        b: parseInt(match[3]),
       });
+      setColor(newColor);
+      setInputValues({ color: newColor, rgb255Value: value });
+      return;
     }
+    setInputValues({
+      ...inputValues,
+      rgb255Value: value,
+    });
   }
 
   function updateFromRGB01(e: React.ChangeEvent<HTMLInputElement>) {
@@ -113,21 +121,20 @@ export default function ColorConverter({
     if (match && match.length == 4) {
       if (verbose)
         console.log(`Found RGB01: ${match[1]}, ${match[2]}, ${match[3]}`);
-      setColor(
-        new Color({
-          type: "rgb01",
-          r: parseFloat(match[1]),
-          g: parseFloat(match[2]),
-          b: parseFloat(match[3]),
-        })
-      );
-      setInputValues({ rgb01Value: value });
-    } else {
-      setInputValues({
-        ...inputValues,
-        rgb01Value: value,
+      const newColor = new Color({
+        type: "rgb01",
+        r: parseFloat(match[1]),
+        g: parseFloat(match[2]),
+        b: parseFloat(match[3]),
       });
+      setColor(newColor);
+      setInputValues({ color: newColor, rgb01Value: value });
+      return;
     }
+    setInputValues({
+      ...inputValues,
+      rgb01Value: value,
+    });
   }
 
   function updateFromHSV(e: React.ChangeEvent<HTMLInputElement>) {
@@ -136,23 +143,27 @@ export default function ColorConverter({
       /^([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+\s*([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+\s*([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)$/;
     const match = hsvRegex.exec(value);
     if (match && match.length == 4) {
-      if (verbose)
-        console.log(`Found HSV: ${match[1]}, ${match[2]}, ${match[3]}`);
-      setColor(
-        new Color({
+      const h = parseFloat(match[1]);
+      const s = parseFloat(match[2]);
+      const v = parseFloat(match[3]);
+      if (0 <= h && h <= 360 && 0 <= s && s <= 100 && 0 <= v && v <= 100) {
+        if (verbose)
+          console.log(`Found HSV: ${match[1]}, ${match[2]}, ${match[3]}`);
+        const newColor = new Color({
           type: "hsv",
           h: parseInt(match[1]),
           s: parseInt(match[2]),
           v: parseInt(match[3]),
-        })
-      );
-      setInputValues({ hsvValue: value });
-    } else {
-      setInputValues({
-        ...inputValues,
-        hsvValue: value,
-      });
+        });
+        setColor(newColor);
+        setInputValues({ color: newColor, hsvValue: value });
+        return;
+      }
     }
+    setInputValues({
+      ...inputValues,
+      hsvValue: value,
+    });
   }
 
   function onCopy(key: keyof CopiedStateUpdate = "hex") {

@@ -1,6 +1,6 @@
 import React from "react";
 import clamp from "clamp";
-import Color from "./Color";
+import Color, { ColorInputType } from "./Color";
 import styles from "./styles/ColorSelection.module.css";
 
 export default function ColorSelection({
@@ -25,7 +25,7 @@ export default function ColorSelection({
       const newValue = (1 - y) * 100;
       setColor(
         new Color({
-          type: "hsv",
+          type: ColorInputType.HSV,
           h: hue,
           s: newSaturation,
           v: newValue,
@@ -42,7 +42,7 @@ export default function ColorSelection({
       const newHue = x * 360;
       setColor(
         new Color({
-          type: "hsv",
+          type: ColorInputType.HSV,
           h: newHue,
           s: saturation,
           v: value,
@@ -54,7 +54,7 @@ export default function ColorSelection({
   const hueColorHex =
     "#" +
     new Color({
-      type: "hsv",
+      type: ColorInputType.HSV,
       h: hue,
       s: 100,
       v: 100,

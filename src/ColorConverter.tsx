@@ -3,7 +3,7 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import Form from "react-bootstrap/Form";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import InputGroup from "react-bootstrap/InputGroup";
-import Color from "./Color";
+import Color, { ColorInputType } from "./Color";
 import styles from "./styles/ColorConverter.module.css";
 
 interface InputValues {
@@ -77,7 +77,7 @@ export default function ColorConverter({
     if (match && match.length == 2) {
       if (verbose) console.log(`Found Hex: #${match[1]}`);
       const newColor = new Color({
-        type: "hex",
+        type: ColorInputType.HEX,
         hex: match[1],
       });
       setColor(newColor);
@@ -98,7 +98,7 @@ export default function ColorConverter({
       if (verbose)
         console.log(`Found RGB255: ${match[1]}, ${match[2]}, ${match[3]}`);
       const newColor = new Color({
-        type: "rgb255",
+        type: ColorInputType.RGB255,
         r: parseInt(match[1]),
         g: parseInt(match[2]),
         b: parseInt(match[3]),
@@ -122,7 +122,7 @@ export default function ColorConverter({
       if (verbose)
         console.log(`Found RGB01: ${match[1]}, ${match[2]}, ${match[3]}`);
       const newColor = new Color({
-        type: "rgb01",
+        type: ColorInputType.RGB01,
         r: parseFloat(match[1]),
         g: parseFloat(match[2]),
         b: parseFloat(match[3]),
@@ -150,7 +150,7 @@ export default function ColorConverter({
         if (verbose)
           console.log(`Found HSV: ${match[1]}, ${match[2]}, ${match[3]}`);
         const newColor = new Color({
-          type: "hsv",
+          type: ColorInputType.HSV,
           h: parseInt(match[1]),
           s: parseInt(match[2]),
           v: parseInt(match[3]),

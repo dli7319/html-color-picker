@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
-import Color from "./Color";
+import Color, { ColorInputType } from "./Color";
 import styles from "./styles/ImageSampling.module.css";
 
 export enum OverlayColor {
@@ -78,7 +78,7 @@ export default function ImageSampling({
         const imageData = ctx.getImageData(x, y, 1, 1);
         setColor(
           new Color({
-            type: "rgb255",
+            type: ColorInputType.RGB255,
             r: imageData.data[0],
             g: imageData.data[1],
             b: imageData.data[2],

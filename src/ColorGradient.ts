@@ -1,4 +1,4 @@
-import Color from "./Color";
+import Color, { ColorInputType } from "./Color";
 
 export class ColorGradient {
   colors: Color[] = [];
@@ -6,13 +6,13 @@ export class ColorGradient {
 
   constructor(
     leftColor = new Color({
-      type: "rgb01",
+      type: ColorInputType.RGB01,
       r: 1,
       g: 0,
       b: 0,
     }),
     rightColor = new Color({
-      type: "rgb01",
+      type: ColorInputType.RGB01,
       r: 1,
       g: 1,
       b: 1,

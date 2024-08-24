@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Color from "./Color";
+import Color, { ColorInputType } from "./Color";
 import ColorSelection from "./ColorSelection";
 import ColorConverter from "./ColorConverter";
 import ImageSampling from "./ImageSampling";
@@ -10,7 +10,7 @@ import styles from "./styles/ColorPicker.module.css";
 export default function ColorPicker() {
   const [color, setColor] = useState(
     new Color({
-      type: "rgb255",
+      type: ColorInputType.RGB255,
       r: 255,
       g: 255,
       b: 255,
@@ -24,7 +24,7 @@ export default function ColorPicker() {
   });
   const [interpolationLeft, setInterpolationLeft] = useState(
     new Color({
-      type: "rgb255",
+      type: ColorInputType.RGB255,
       r: 255,
       g: 0,
       b: 0,
@@ -32,7 +32,7 @@ export default function ColorPicker() {
   );
   const [interpolationRight, setInterpolationRight] = useState(
     new Color({
-      type: "rgb255",
+      type: ColorInputType.RGB255,
       r: 255,
       g: 255,
       b: 255,

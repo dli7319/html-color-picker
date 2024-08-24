@@ -64,7 +64,6 @@ export default function ColorConverter({
 
   // If the color has changed, remove the input values.
   if (color != inputValues.color) {
-    console.log("color != inputValues.color");
     setInputValues({
       color,
     });

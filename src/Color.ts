@@ -91,7 +91,6 @@ export default class Color {
         (this.input.b || 0) / 255,
       ];
     } else if (this.input.type === ColorInputType.RGB01) {
-      // Use the original input values to avoid rounding errors.
       return [this.input.r || 0, this.input.g || 0, this.input.b || 0];
     }
     return this.getRGB255().map((x) => x / 255);
@@ -102,24 +101,20 @@ export default class Color {
   }
 
   getHSV(raw: boolean = true): number[] {
-    if (this.input.type === "hsv") {
+    if (this.input.type === ColorInputType.HSV) {
       const output = [this.input.h || 0, this.input.s || 0, this.input.v || 0];
       return raw ? output : output.map((x) => Math.round(x));
     }
     if (raw) {
-      console.log(
-        "hsv:",
-        this.#colorConvertFunction.hsv.raw(this.#conversionInput)
-      );
       return this.#colorConvertFunction.hsv.raw(this.#conversionInput);
     }
     return this.#colorConvertFunction.hsv(this.#conversionInput);
   }
 
   getHSL(raw: boolean = true): number[] {
-    if (this.input.type === "hsl") {
-      // Use the original input values to avoid rounding errors.
-      return [this.input.h || 0, this.input.s || 0, this.input.l || 0];
+    if (this.input.type === ColorInputType.HSL) {
+      const hslArray = [this.input.h || 0, this.input.s || 0, this.input.l || 0];
+      return raw ? hslArray : hslArray.map((x) => Math.round(x));
     }
     if (raw) {
       return this.#colorConvertFunction.hsl.raw(this.#conversionInput);
@@ -128,9 +123,9 @@ export default class Color {
   }
 
   getLCH(raw: boolean = true): number[] {
-    if (this.input.type === "lch") {
-      // Use the original input values to avoid rounding errors.
-      return [this.input.l || 0, this.input.c || 0, this.input.h || 0];
+    if (this.input.type === ColorInputType.LCH) {
+      const lchArray = [this.input.l || 0, this.input.c || 0, this.input.h || 0];
+      return raw ? lchArray : lchArray.map((x) => Math.round(x));
     }
     if (raw) {
       return this.#colorConvertFunction.lch.raw(this.#conversionInput);

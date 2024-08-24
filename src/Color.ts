@@ -26,101 +26,116 @@ export interface ColorInput {
 }
 
 export default class Color {
-  r: number = 0;
-  g: number = 0;
-  b: number = 0;
   a: number = 1;
   input: ColorInput;
+  #conversionInput: String | Array<number>;
+  #colorConvertFunction: any;
 
   constructor(color: ColorInput) {
     if (color == null) {
       color = {};
     }
     if (color.type == ColorInputType.RGB255) {
-      this.r = clamp((color.r || 0) / 255, 0, 1);
-      this.g = clamp((color.g || 0) / 255, 0, 1);
-      this.b = clamp((color.b || 0) / 255, 0, 1);
-      if (color.a != null) {
-        this.a = clamp(color.a / 255, 0, 1);
-      } else {
-        this.a = 1;
-      }
+      this.#conversionInput = [
+        clamp(color.r || 0, 0, 255),
+        clamp(color.g || 0, 0, 255),
+        clamp(color.b || 0, 0, 255),
+      ];
+      this.#colorConvertFunction = colorConvert.rgb;
     } else if (color.type == ColorInputType.RGB01) {
-      this.r = clamp(color.r || 0, 0, 1);
-      this.g = clamp(color.g || 0, 0, 1);
-      this.b = clamp(color.b || 0, 0, 1);
-      if (color.a != null) {
-        this.a = clamp(color.a, 0, 1);
-      } else {
-        this.a = 1;
-      }
+      this.#conversionInput = [
+        clamp(Math.round((color.r || 0) * 255), 0, 255),
+        clamp(Math.round((color.g || 0) * 255), 0, 255),
+        clamp(Math.round((color.b || 0) * 255), 0, 255),
+      ];
+      this.#colorConvertFunction = colorConvert.rgb;
     } else if (color.type == ColorInputType.HEX) {
-      let rgb255Color = colorConvert.hex.rgb(color.hex || "#000000");
-      this.r = rgb255Color[0] / 255;
-      this.g = rgb255Color[1] / 255;
-      this.b = rgb255Color[2] / 255;
+      this.#conversionInput = color.hex || "#000000";
+      this.#colorConvertFunction = colorConvert.hex;
     } else if (color.type == ColorInputType.HSV) {
-      let newColor = colorConvert.hsv.rgb([
-        color.h || 0,
-        color.s || 0,
-        color.v || 0,
-      ]);
-      this.r = newColor[0] / 255;
-      this.g = newColor[1] / 255;
-      this.b = newColor[2] / 255;
+      this.#conversionInput = [color.h || 0, color.s || 0, color.v || 0];
+      this.#colorConvertFunction = colorConvert.hsv;
     } else if (color.type == ColorInputType.HSL) {
-      let newColor = colorConvert.hsl.rgb([
-        color.h || 0,
-        color.s || 0,
-        color.l || 0,
-      ]);
-      this.r = newColor[0] / 255;
-      this.g = newColor[1] / 255;
-      this.b = newColor[2] / 255;
+      this.#conversionInput = [color.h || 0, color.s || 0, color.l || 0];
+      this.#colorConvertFunction = colorConvert.hsl;
     } else if (color.type == ColorInputType.LCH) {
-      let newColor = colorConvert.lch.rgb([
-        color.l || 0,
-        color.c || 0,
-        color.h || 0,
-      ]);
-      this.r = newColor[0] / 255;
-      this.g = newColor[1] / 255;
-      this.b = newColor[2] / 255;
+      this.#conversionInput = [color.l || 0, color.c || 0, color.h || 0];
+      this.#colorConvertFunction = colorConvert.lch;
+    } else {
+      // Assume black color by default.
+      this.#conversionInput = [0, 0, 0];
+      this.#colorConvertFunction = colorConvert.rgb;
     }
     this.input = color;
     Object.freeze(this);
   }
 
   getRGB255(): [number, number, number] {
-    return [
-      clamp(Math.round(this.r * 255), 0, 255),
-      clamp(Math.round(this.g * 255), 0, 255),
-      clamp(Math.round(this.b * 255), 0, 255),
-    ];
-  }
-
-  getRGB01() {
-    return [this.r, this.g, this.b, this.a];
-  }
-
-  getHex() {
-    return colorConvert.rgb.hex(this.getRGB255());
-  }
-
-  getHSV() {
-    if (this.input.type === "hsv") {
-      // Use the original input values to avoid rounding errors.
-      return [this.input.h || 0, this.input.s || 0, this.input.v || 0];
+    if (this.input.type === ColorInputType.RGB255) {
+      return [this.input.r || 0, this.input.g || 0, this.input.b || 0];
+    } else if (this.input.type === ColorInputType.RGB01) {
+      return [
+        Math.round((this.input.r || 0) * 255),
+        Math.round((this.input.g || 0) * 255),
+        Math.round((this.input.b || 0) * 255),
+      ];
     }
-    return colorConvert.rgb.hsv(this.getRGB255());
+    return this.#colorConvertFunction.rgb(this.#conversionInput);
   }
 
-  getHSL() {
-    return colorConvert.rgb.hsl(this.getRGB255());
+  getRGB01(): number[] {
+    if (this.input.type === ColorInputType.RGB255) {
+      return [
+        (this.input.r || 0) / 255,
+        (this.input.g || 0) / 255,
+        (this.input.b || 0) / 255,
+      ];
+    } else if (this.input.type === ColorInputType.RGB01) {
+      // Use the original input values to avoid rounding errors.
+      return [this.input.r || 0, this.input.g || 0, this.input.b || 0];
+    }
+    return this.getRGB255().map((x) => x / 255);
   }
 
-  getLCH() {
-    return colorConvert.rgb.lch(this.getRGB255());
+  getHex(): string {
+    return this.#colorConvertFunction.hex(this.#conversionInput);
+  }
+
+  getHSV(raw: boolean = true): number[] {
+    if (this.input.type === "hsv") {
+      const output = [this.input.h || 0, this.input.s || 0, this.input.v || 0];
+      return raw ? output : output.map((x) => Math.round(x));
+    }
+    if (raw) {
+      console.log(
+        "hsv:",
+        this.#colorConvertFunction.hsv.raw(this.#conversionInput)
+      );
+      return this.#colorConvertFunction.hsv.raw(this.#conversionInput);
+    }
+    return this.#colorConvertFunction.hsv(this.#conversionInput);
+  }
+
+  getHSL(raw: boolean = true): number[] {
+    if (this.input.type === "hsl") {
+      // Use the original input values to avoid rounding errors.
+      return [this.input.h || 0, this.input.s || 0, this.input.l || 0];
+    }
+    if (raw) {
+      return this.#colorConvertFunction.hsl.raw(this.#conversionInput);
+    }
+    return this.#colorConvertFunction.hsl(this.#conversionInput);
+  }
+
+  getLCH(raw: boolean = true): number[] {
+    if (this.input.type === "lch") {
+      // Use the original input values to avoid rounding errors.
+      return [this.input.l || 0, this.input.c || 0, this.input.h || 0];
+    }
+    if (raw) {
+      return this.#colorConvertFunction.lch.raw(this.#conversionInput);
+    }
+    return this.#colorConvertFunction.lch(this.#conversionInput);
   }
 
   toCSS() {
@@ -186,11 +201,13 @@ export default class Color {
         h: lerp(lch0[2], lch1[2], t),
       });
     }
+    const [color0r, color0g, color0b] = color0.getRGB01();
+    const [color1r, color1g, color1b] = color1.getRGB01();
     return new Color({
       type: ColorInputType.RGB01,
-      r: lerp(color0.r, color1.r, t),
-      g: lerp(color0.g, color1.g, t),
-      b: lerp(color0.b, color1.b, t),
+      r: lerp(color0r, color1r, t),
+      g: lerp(color0g, color1g, t),
+      b: lerp(color0b, color1b, t),
       a: lerp(color0.a, color1.a, t),
     });
   }

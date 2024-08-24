@@ -188,9 +188,8 @@ export default function ColorConverter({
     inputValues.hsvValue != null
       ? inputValues.hsvValue
       : color
-          .getHSV()
+          .getHSV(false)
           .splice(0, 3)
-          .map((x) => Math.round(x))
           .toString();
 
   const floatCoordinates = {

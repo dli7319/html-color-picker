@@ -1,6 +1,6 @@
 import React from "react";
 
-import Color from "./Color";
+import Color, { ColorLerpMode } from "./Color";
 import { ColorGradient } from "./ColorGradient";
 import styles from "./styles/ColorInterpolation.module.css";
 
@@ -35,7 +35,7 @@ export default function ColorInterpolation({
       const mode = e.currentTarget.getAttribute("data-mode") || "";
       const rect = e.currentTarget.getBoundingClientRect();
       const x = (e.clientX - rect.left) / rect.width;
-      const newColor = colorGradient.getColorAt(x, mode);
+      const newColor = colorGradient.getColorAt(x, ColorLerpMode[mode as keyof typeof ColorLerpMode]);
       setActiveColor("none");
       setColor(newColor);
     }
@@ -76,9 +76,9 @@ export default function ColorInterpolation({
               <div
                 className={`${styles.gradient}`}
                 style={{
-                  background: colorGradient.getBackgroundImageStyle("rgb"),
+                  background: colorGradient.getBackgroundImageStyle(ColorLerpMode.RGB),
                 }}
-                data-mode="rgb"
+                data-mode={ColorLerpMode.RGB}
                 onMouseDown={onMouseMoveGradient}
                 onMouseMove={onMouseMoveGradient}
               ></div>
@@ -90,9 +90,9 @@ export default function ColorInterpolation({
               <div
                 className={`${styles.gradient}`}
                 style={{
-                  background: colorGradient.getBackgroundImageStyle("hsl"),
+                  background: colorGradient.getBackgroundImageStyle(ColorLerpMode.HSL),
                 }}
-                data-mode="hsl"
+                data-mode={ColorLerpMode.HSL}
                 onMouseDown={onMouseMoveGradient}
                 onMouseMove={onMouseMoveGradient}
               ></div>
@@ -104,9 +104,9 @@ export default function ColorInterpolation({
               <div
                 className={`${styles.gradient}`}
                 style={{
-                  background: colorGradient.getBackgroundImageStyle("hsl_flip"),
+                  background: colorGradient.getBackgroundImageStyle(ColorLerpMode.HSL_FLIP),
                 }}
-                data-mode="hsl_flip"
+                data-mode={ColorLerpMode.HSL_FLIP}
                 onMouseDown={onMouseMoveGradient}
                 onMouseMove={onMouseMoveGradient}
               ></div>
@@ -118,9 +118,9 @@ export default function ColorInterpolation({
               <div
                 className={`${styles.gradient}`}
                 style={{
-                  background: colorGradient.getBackgroundImageStyle("lch"),
+                  background: colorGradient.getBackgroundImageStyle(ColorLerpMode.LCH),
                 }}
-                data-mode="lch"
+                data-mode={ColorLerpMode.LCH}
                 onMouseDown={onMouseMoveGradient}
                 onMouseMove={onMouseMoveGradient}
               ></div>

@@ -11,6 +11,14 @@ export enum ColorInputType {
   LCH = "lch",
 }
 
+export enum ColorLerpMode {
+  RGB = "rgb",
+  HSV = "hsv",
+  HSL = "hsl",
+  HSL_FLIP = "hsl_flip",
+  LCH = "lch",
+}
+
 export interface ColorInput {
   type?: ColorInputType;
   r?: number;
@@ -146,8 +154,8 @@ export default class Color {
     });
   }
 
-  static lerp(color0: Color, color1: Color, t: number, mode: string = "rgb") {
-    if (mode === "hsv") {
+  static lerp(color0: Color, color1: Color, t: number, mode: ColorLerpMode = ColorLerpMode.RGB) {
+    if (mode === ColorLerpMode.HSV) {
       let hsv0 = color0.getHSV();
       let hsv1 = color1.getHSV();
       return new Color({
@@ -156,7 +164,7 @@ export default class Color {
         s: lerp(hsv0[1], hsv1[1], t),
         v: lerp(hsv0[2], hsv1[2], t),
       });
-    } else if (mode === "hsl") {
+    } else if (mode === ColorLerpMode.HSL) {
       const hsl0 = color0.getHSL();
       const hsl1 = color1.getHSL();
       const flipHueDirection = Math.abs(hsl0[0] - hsl1[0]) > 180;
@@ -171,7 +179,7 @@ export default class Color {
         s: lerp(hsl0[1], hsl1[1], t),
         l: lerp(hsl0[2], hsl1[2], t),
       });
-    } else if (mode === "hsl_flip") {
+    } else if (mode === ColorLerpMode.HSL_FLIP) {
       const hsl0 = color0.getHSL();
       const hsl1 = color1.getHSL();
       const flipHueDirection = Math.abs(hsl0[0] - hsl1[0]) > 180;
@@ -186,7 +194,7 @@ export default class Color {
         s: lerp(hsl0[1], hsl1[1], t),
         l: lerp(hsl0[2], hsl1[2], t),
       });
-    } else if (mode == "lch") {
+    } else if (mode == ColorLerpMode.LCH) {
       let lch0 = color0.getLCH();
       let lch1 = color1.getLCH();
       return new Color({

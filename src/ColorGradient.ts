@@ -1,4 +1,4 @@
-import Color, { ColorInputType } from "./Color";
+import Color, { ColorInputType, ColorLerpMode } from "./Color";
 
 export class ColorGradient {
   colors: Color[] = [];
@@ -36,7 +36,7 @@ export class ColorGradient {
     this.positions.push(position);
   }
 
-  getColorAt(position: number, mode: string): Color {
+  getColorAt(position: number, mode: ColorLerpMode): Color {
     if (this.colors.length === 0) {
       return new Color({});
     }
@@ -66,7 +66,7 @@ export class ColorGradient {
     return Color.lerp(c0, c1, t, (mode = mode));
   }
 
-  getBackgroundImageStyle(mode = "rgb") {
+  getBackgroundImageStyle(mode: ColorLerpMode = ColorLerpMode.RGB) {
     let gradient = "linear-gradient(to right";
     for (let i = 0; i < 100; i++) {
       gradient += ", " + this.getColorAt(i / 100, mode).toCSS() + " " + i + "%";

@@ -4,11 +4,17 @@ import Color, { ColorLerpMode } from "./Color";
 import { ColorGradient } from "./ColorGradient";
 import styles from "./styles/ColorInterpolation.module.css";
 
+export enum ActiveColorSide {
+  LEFT = "left",
+  RIGHT = "right",
+  NONE = "none",
+}
+
 export default function ColorInterpolation({
   className,
   leftColor,
   rightColor,
-  activeColor = "none",
+  activeColor = ActiveColorSide.NONE,
   setActiveColor,
   setColor,
 }: {
@@ -16,18 +22,18 @@ export default function ColorInterpolation({
   leftColor: Color;
   rightColor: Color;
   activeColor?: string;
-  setActiveColor: (activeColor: string) => void;
+  setActiveColor: (activeColor: ActiveColorSide) => void;
   setColor: (color: Color) => void;
 }) {
   const colorGradient = new ColorGradient(leftColor, rightColor);
-  const leftActive = activeColor == "left" ? styles.active : "";
-  const rightActive = activeColor == "right" ? styles.active : "";
+  const leftActive = activeColor == ActiveColorSide.LEFT ? styles.active : "";
+  const rightActive = activeColor == ActiveColorSide.RIGHT ? styles.active : "";
 
   function setActiveColorLeft() {
-    setActiveColor(leftActive ? "none" : "left");
+    setActiveColor(leftActive ? ActiveColorSide.NONE : ActiveColorSide.LEFT);
   }
   function setActiveColorRight() {
-    setActiveColor(rightActive ? "none" : "right");
+    setActiveColor(rightActive ? ActiveColorSide.NONE : ActiveColorSide.RIGHT);
   }
 
   function onMouseMoveGradient(e: React.MouseEvent) {
@@ -36,7 +42,7 @@ export default function ColorInterpolation({
       const rect = e.currentTarget.getBoundingClientRect();
       const x = (e.clientX - rect.left) / rect.width;
       const newColor = colorGradient.getColorAt(x, ColorLerpMode[mode as keyof typeof ColorLerpMode]);
-      setActiveColor("none");
+      setActiveColor(ActiveColorSide.NONE);
       setColor(newColor);
     }
   }

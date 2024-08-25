@@ -3,7 +3,7 @@ import Color, { ColorInputType } from "./Color";
 import ColorSelection from "./ColorSelection";
 import ColorConverter from "./ColorConverter";
 import ImageSampling from "./ImageSampling";
-import ColorInterpolation from "./ColorInterpolation";
+import ColorInterpolation, { ActiveColorSide } from "./ColorInterpolation";
 import OtherTools from "./OtherTools";
 import styles from "./styles/ColorPicker.module.css";
 
@@ -38,13 +38,13 @@ export default function ColorPicker() {
       b: 255,
     })
   );
-  const [interpolationActive, setInterpolationActive] = useState("none");
+  const [interpolationActive, setInterpolationActive] = useState(ActiveColorSide.NONE);
 
   function updateColor(newColor: Color) {
     setColor(newColor);
-    if (interpolationActive == "left") {
+    if (interpolationActive === ActiveColorSide.LEFT) {
       setInterpolationLeft(newColor);
-    } else if (interpolationActive == "right") {
+    } else if (interpolationActive == ActiveColorSide.RIGHT) {
       setInterpolationRight(newColor);
     }
   }

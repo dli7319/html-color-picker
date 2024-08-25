@@ -211,7 +211,6 @@ export default class Color {
       r: lerp(color0r, color1r, t),
       g: lerp(color0g, color1g, t),
       b: lerp(color0b, color1b, t),
-      a: lerp(color0.a, color1.a, t),
     });
   }
 }

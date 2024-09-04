@@ -105,6 +105,9 @@ export default class Color {
   }
 
   getHex(): string {
+    if (this.input.type === ColorInputType.HEX) {
+      return this.input.hex || "";
+    }
     return this.#colorConvertFunction.hex(this.#conversionInput);
   }
 

@@ -12,24 +12,23 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(js|jsx|tsx|ts)$/,
+        test: /\.tsx?$/,
+        use: 'ts-loader',
         exclude: /node_modules/,
-        loader: 'babel-loader'
       },
       {
         test: /\.css$/i,
+        resourceQuery: { not: [/raw/] },
         use: ["style-loader", "css-loader"],
       },
+      {
+        resourceQuery: /raw/,
+        type: 'asset/source',
+      }
     ]
   },
   resolve: {
-    extensions: ['*', '.js', '.jsx', '.tsx', '.ts'],
-    "alias": {
-      "react": "preact/compat",
-      "react-dom/test-utils": "preact/test-utils",
-      "react-dom": "preact/compat",     // Must be below test-utils
-      "react/jsx-runtime": "preact/jsx-runtime"
-    },
+    extensions: ['*', '.js', '.jsx', '.tsx', '.ts']
   },
   devServer: {
     hot: true,

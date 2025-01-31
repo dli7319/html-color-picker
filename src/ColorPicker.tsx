@@ -4,8 +4,8 @@ import ColorSelection from "./ColorSelection";
 import ColorConverter from "./ColorConverter";
 import ImageSampling from "./ImageSampling";
 import ColorInterpolation, { ActiveColorSide } from "./ColorInterpolation";
-import OtherTools from "./OtherTools";
 import styles from "./styles/ColorPicker.module.css";
+import './OtherTools.ts';
 
 export default function ColorPicker() {
   const [color, setColor] = useState(
@@ -78,7 +78,7 @@ export default function ColorPicker() {
         setActiveColor={setInterpolationActive}
         setColor={setColor}
       />
-      <OtherTools className={styles.component} />
+      <other-tools className={styles.component} />
     </div>
   );
 }

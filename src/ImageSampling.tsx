@@ -117,9 +117,10 @@ export default function ImageSampling({
             onChange={(e) =>
               setOverlayColor(e.currentTarget.value as OverlayColor)
             }
+            defaultValue={OverlayColor.Black}
           >
             <option value={OverlayColor.Transparent}>None</option>
-            <option value={OverlayColor.Black} selected>
+            <option value={OverlayColor.Black}>
               Black
             </option>
             <option value={OverlayColor.White}>White</option>
@@ -129,9 +130,10 @@ export default function ImageSampling({
           <Form.Select
             aria-label="Select Overlay Size"
             onChange={(e) => setOverlaySize(e.target.value as OverlaySize)}
+            defaultValue={OverlaySize.Medium}
           >
             <option value={OverlaySize.Small}>Small</option>
-            <option value={OverlaySize.Medium} selected>
+            <option value={OverlaySize.Medium}>
               Medium
             </option>
             <option value={OverlaySize.Large}>Large</option>

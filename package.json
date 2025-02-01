@@ -34,7 +34,6 @@
     "@types/react-copy-to-clipboard": "^5.0.4",
     "@types/react-dom": "^18.0.11",
     "babel-loader": "^9.1.2",
-    "bootstrap": "^5.2.2",
     "clamp": "^1.0.1",
     "color-convert": "^2.0.1",
     "css-loader": "^6.7.3",

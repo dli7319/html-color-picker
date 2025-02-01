@@ -1,6 +1,7 @@
 declare namespace JSX {
   interface IntrinsicElements {
     "other-tools": any;
+    "color-interpolation": any;
   }
 }
 declare module "*.css";

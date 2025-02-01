@@ -39,10 +39,7 @@ export default class Color {
   #conversionInput: String | Array<number>;
   #colorConvertFunction: any;
 
-  constructor(color: ColorInput) {
-    if (color == null) {
-      color = {};
-    }
+  constructor(color: ColorInput = {}) {
     if (color.type == ColorInputType.RGB255) {
       this.#conversionInput = [
         clamp(color.r || 0, 0, 255),
@@ -71,6 +68,7 @@ export default class Color {
       this.#colorConvertFunction = colorConvert.lch;
     } else {
       // Assume black color by default.
+      color = { type: ColorInputType.RGB255, ...color };
       this.#conversionInput = [0, 0, 0];
       this.#colorConvertFunction = colorConvert.rgb;
     }
@@ -124,7 +122,11 @@ export default class Color {
 
   getHSL(raw: boolean = true): number[] {
     if (this.input.type === ColorInputType.HSL) {
-      const hslArray = [this.input.h || 0, this.input.s || 0, this.input.l || 0];
+      const hslArray = [
+        this.input.h || 0,
+        this.input.s || 0,
+        this.input.l || 0,
+      ];
       return raw ? hslArray : hslArray.map((x) => Math.round(x));
     }
     if (raw) {
@@ -135,7 +137,11 @@ export default class Color {
 
   getLCH(raw: boolean = true): number[] {
     if (this.input.type === ColorInputType.LCH) {
-      const lchArray = [this.input.l || 0, this.input.c || 0, this.input.h || 0];
+      const lchArray = [
+        this.input.l || 0,
+        this.input.c || 0,
+        this.input.h || 0,
+      ];
       return raw ? lchArray : lchArray.map((x) => Math.round(x));
     }
     if (raw) {
@@ -157,7 +163,12 @@ export default class Color {
     });
   }
 
-  static lerp(color0: Color, color1: Color, t: number, mode: ColorLerpMode = ColorLerpMode.RGB) {
+  static lerp(
+    color0: Color,
+    color1: Color,
+    t: number,
+    mode: ColorLerpMode = ColorLerpMode.RGB
+  ) {
     if (mode === ColorLerpMode.HSV) {
       let hsv0 = color0.getHSV();
       let hsv1 = color1.getHSV();

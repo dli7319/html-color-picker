@@ -1,4 +1,6 @@
-.colorSelection {
+import { css } from 'lit';
+export const styles = css`
+.color-selection {
     width: 2rem;
     height: 2rem;
     background-color: red;
@@ -6,11 +8,11 @@
     margin: 0 auto;
 }
 
-.colorSelection.rightColor {
+.color-selection.rightColor {
     background-color: white;
 }
 
-.colorSelection.active {
+.color-selection.active {
     border: black dashed 0.2rem;
 }
 
@@ -24,3 +26,4 @@
 .table th {
     width: 1rem;
 }
+`;

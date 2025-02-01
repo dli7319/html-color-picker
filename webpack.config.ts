@@ -1,13 +1,15 @@
-const path = require('path');
+import path from 'path';
+import webpack from 'webpack';
+import 'webpack-dev-server';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
-module.exports = {
+const config: webpack.Configuration = {
   mode: isDevelopment ? 'development' : 'production',
   entry: './src/index.tsx',
   output: {
     filename: 'main.js',
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(import.meta.dirname, 'dist'),
   },
   module: {
     rules: [
@@ -33,8 +35,10 @@ module.exports = {
   devServer: {
     hot: true,
     static: {
-      directory: path.join(__dirname, 'dist'),
+      directory: path.join(import.meta.dirname, 'dist'),
     },
     compress: true,
   },
 };
+
+export default config;

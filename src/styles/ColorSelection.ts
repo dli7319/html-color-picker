@@ -28,7 +28,6 @@ export const styles = css`
     background: linear-gradient(to bottom, #ffffff00 0%, #000 100%);
 }
 
-
 .color-grad-circle {
     z-index: 2;
     position: absolute;

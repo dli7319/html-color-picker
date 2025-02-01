@@ -1,11 +1,11 @@
-import { html, css, LitElement, unsafeCSS } from "lit";
+import { html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import bootstrapcss from "bootstrap/dist/css/bootstrap.min.css?raw";
 
 import Color, { ColorLerpMode } from "./Color";
 import { ColorGradient } from "./ColorGradient";
 import { componentStyle } from "./styles/Common";
-import { styles } from "./styles/ColorInterpolation.js";
+import { styles } from "./styles/ColorInterpolation";
+import { bootstrap } from "./styles/Bootstrap";
 
 export enum ActiveColorSide {
   LEFT = "left",
@@ -15,20 +15,14 @@ export enum ActiveColorSide {
 
 @customElement("color-interpolation")
 export class ColorInterpolation extends LitElement {
-  static styles = [
-    styles,
-    componentStyle,
-    css`
-      ${unsafeCSS(bootstrapcss)}
-    `,
-  ];
+  static styles = [styles, componentStyle];
 
   // Reactive properties
   @property()
   activeColor: ActiveColorSide = ActiveColorSide.NONE;
-  @property({attribute: false})
+  @property({ attribute: false })
   leftColor: Color = new Color({});
-  @property({attribute: false})
+  @property({ attribute: false })
   rightColor: Color = new Color({});
   @property()
   setActiveColor: (activeColor: ActiveColorSide) => void = () => {};
@@ -46,12 +40,18 @@ export class ColorInterpolation extends LitElement {
     this.setActiveColor(ActiveColorSide.RIGHT);
   }
 
-   onMouseMoveGradient(event: MouseEvent) {
+  onMouseMoveGradient(event: MouseEvent) {
     if (event.buttons == 1) {
-      const mode = (event.currentTarget as HTMLDivElement).getAttribute("data-mode") || "";
-      const rect = (event.currentTarget as HTMLDivElement).getBoundingClientRect();
+      const mode =
+        (event.currentTarget as HTMLDivElement).getAttribute("data-mode") || "";
+      const rect = (
+        event.currentTarget as HTMLDivElement
+      ).getBoundingClientRect();
       const x = (event.clientX - rect.left) / rect.width;
-      const newColor = this.colorGradient.getColorAt(x, ColorLerpMode[mode as keyof typeof ColorLerpMode]);
+      const newColor = this.colorGradient.getColorAt(
+        x,
+        ColorLerpMode[mode as keyof typeof ColorLerpMode]
+      );
       this.setActiveColor(ActiveColorSide.NONE);
       this.setColor(newColor);
     }
@@ -59,21 +59,28 @@ export class ColorInterpolation extends LitElement {
 
   render() {
     this.colorGradient = new ColorGradient(this.leftColor, this.rightColor);
-    return html`<div className="{className}">
+    return html`
+      ${bootstrap}
       <h5>Color Interpolation</h5>
       <table class="table mb-0">
         <tbody>
           <tr>
             <td>
               <div
-                class="color-selection ${this.activeColor === ActiveColorSide.LEFT ? "active" : ""}"
+                class="color-selection ${this.activeColor ===
+                ActiveColorSide.LEFT
+                  ? "active"
+                  : ""}"
                 @click=${this.setActiveColorLeft}
                 style="background: #${this.leftColor.getHex()}"
               ></div>
             </td>
             <td>
               <div
-                class="color-selection ${this.activeColor === ActiveColorSide.RIGHT ? "active" : ""}"
+                class="color-selection ${this.activeColor ===
+                ActiveColorSide.RIGHT
+                  ? "active"
+                  : ""}"
                 @click=${this.setActiveColorRight}
                 style="background: #${this.rightColor.getHex()}"
               ></div>
@@ -88,7 +95,9 @@ export class ColorInterpolation extends LitElement {
             <td>
               <div
                 class="gradient"
-                style="background: ${this.colorGradient.getBackgroundImageStyle(ColorLerpMode.RGB)}"
+                style="background: ${this.colorGradient.getBackgroundImageStyle(
+                  ColorLerpMode.RGB
+                )}"
                 data-mode=${ColorLerpMode.RGB}
                 @mousedown=${this.onMouseMoveGradient}
                 @mousemove=${this.onMouseMoveGradient}
@@ -100,7 +109,9 @@ export class ColorInterpolation extends LitElement {
             <td>
               <div
                 class="gradient"
-                style="background: ${this.colorGradient.getBackgroundImageStyle(ColorLerpMode.HSL)}"
+                style="background: ${this.colorGradient.getBackgroundImageStyle(
+                  ColorLerpMode.HSL
+                )}"
                 data-mode=${ColorLerpMode.HSL}
                 @mousedown=${this.onMouseMoveGradient}
                 @mousemove=${this.onMouseMoveGradient}
@@ -112,7 +123,9 @@ export class ColorInterpolation extends LitElement {
             <td>
               <div
                 class="gradient"
-                style="background: ${this.colorGradient.getBackgroundImageStyle(ColorLerpMode.HSL_FLIP)}"
+                style="background: ${this.colorGradient.getBackgroundImageStyle(
+                  ColorLerpMode.HSL_FLIP
+                )}"
                 data-mode=${ColorLerpMode.HSL_FLIP}
                 @mousedown=${this.onMouseMoveGradient}
                 @mousemove=${this.onMouseMoveGradient}
@@ -124,7 +137,9 @@ export class ColorInterpolation extends LitElement {
             <td>
               <div
                 class="gradient"
-                style="background: ${this.colorGradient.getBackgroundImageStyle(ColorLerpMode.LCH)}"
+                style="background: ${this.colorGradient.getBackgroundImageStyle(
+                  ColorLerpMode.LCH
+                )}"
                 data-mode=${ColorLerpMode.LCH}
                 @mousedown=${this.onMouseMoveGradient}
                 @mousemove=${this.onMouseMoveGradient}
@@ -133,6 +148,6 @@ export class ColorInterpolation extends LitElement {
           </tr>
         </tbody>
       </table>
-    </div>`;
+    `;
   }
 }

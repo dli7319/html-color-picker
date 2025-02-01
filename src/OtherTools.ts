@@ -1,16 +1,16 @@
-import { html, css, LitElement, unsafeCSS } from "lit";
+import { html, LitElement } from "lit";
 import { customElement } from "lit/decorators.js";
-import bootstrapcss from 'bootstrap/dist/css/bootstrap.min.css?raw';
+import { bootstrap } from "./styles/Bootstrap";
 
 import other_tools from "./other_tools.json";
 import { componentStyle } from "./styles/Common";
 
 @customElement("other-tools")
 export class OtherTools extends LitElement {
-  static styles = [componentStyle, css`${unsafeCSS(bootstrapcss)}`];
+  static styles = [componentStyle];
 
   render() {
-    return html`
+    return html` ${bootstrap}
       <h5>Other Tools</h5>
       <ul>
         ${Object.entries(other_tools).map(

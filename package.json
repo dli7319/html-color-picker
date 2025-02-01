@@ -14,8 +14,8 @@
     "url": "git+https://github.com/dli7319/html-color-picker.git"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "David Li",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/dli7319/html-color-picker/issues"
   },

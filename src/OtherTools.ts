@@ -10,9 +10,7 @@ export class OtherTools extends LitElement {
   static styles = [componentStyle, css`${unsafeCSS(bootstrapcss)}`];
 
   render() {
-    console.log("rendering");
-    console.log(bootstrapcss);
-    return html`<div class="component">
+    return html`
       <h5>Other Tools</h5>
       <ul>
         ${Object.entries(other_tools).map(
@@ -21,7 +19,6 @@ export class OtherTools extends LitElement {
               <a href=${value} target="_blank">${key}</a>
             </li>`
         )}
-      </ul>
-    </div>`;
+      </ul>`;
   }
 }

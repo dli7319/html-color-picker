@@ -1,6 +1,6 @@
 import { css } from 'lit';
 export const componentStyle = css`
-  .component {
+  :host {
     border-radius: 1rem;
     background: #eee;
     padding: 1rem;

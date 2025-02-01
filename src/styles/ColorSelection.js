@@ -1,4 +1,6 @@
-.colorGradContainer {
+import { css } from 'lit';
+export const styles = css`
+.color-grad-container {
     width: 100%;
     position: relative;
     min-height: 10rem;
@@ -6,8 +8,7 @@
     flex-grow: 1;
 }
 
-
-.colorGrad {
+.color-grad {
     position: absolute;
     width: 100%;
     height: 100%;
@@ -17,18 +18,18 @@
     right: 0;
 }
 
-.colorGrad1 {
+.color-grad-1 {
     z-index: 0;
     background: linear-gradient(to right, #ffffff 0%, #f00 100%);
 }
 
-.colorGrad2 {
+.color-grad-2 {
     z-index: 1;
     background: linear-gradient(to bottom, #ffffff00 0%, #000 100%);
 }
 
 
-.colorGradCircle {
+.color-grad-circle {
     z-index: 2;
     position: absolute;
     width: 1rem;
@@ -40,8 +41,7 @@
     pointer-events: none;
 }
 
-
-.colorBar {
+.color-bar {
     width: 100%;
     height: 1.5rem;
     margin-top: 0.5rem;
@@ -49,9 +49,7 @@
     background: linear-gradient(to right, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 66%, #f0f 83%, #f00 100%);
 }
 
-
-
-.colorBarPointer {
+.color-bar-pointer {
     height: 0;
     width: 0;
     border-left: 0.4em solid transparent;
@@ -62,7 +60,7 @@
     top: 60%;
 }
 
-.colorBarPointer2 {
+.color-bar-pointer-2 {
     height: 0;
     width: 0;
     border-left: 0.4em solid black;
@@ -73,8 +71,7 @@
     top: 0.5em;
 }
 
-.colorBarPointer3 {
-    /* visibility: hidden; */
+.color-bar-pointer-3 {
     height: 0;
     width: 0;
     border-left: 0.3em solid transparent;
@@ -86,7 +83,7 @@
     top: 0.125em;
 }
 
-.colorBarPointer4 {
+.color-bar-pointer-4 {
     height: 0;
     width: 0;
     border-left: 0.3em solid white;
@@ -95,4 +92,4 @@
     position: absolute;
     transform: translateX(-50%);
     top: 0.5em;
-}
+}`;

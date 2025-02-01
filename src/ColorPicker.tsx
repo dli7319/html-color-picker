@@ -2,13 +2,18 @@ import React, { useState } from "react";
 import {createComponent} from '@lit/react';
 
 import Color, { ColorInputType } from "./Color";
-import ColorSelection from "./ColorSelection";
+import {ColorSelection} from "./ColorSelection";
 import ColorConverter from "./ColorConverter";
 import ImageSampling from "./ImageSampling";
 import {ColorInterpolation, ActiveColorSide } from "./ColorInterpolation";
 import styles from "./styles/ColorPicker.module.css";
 import './OtherTools.ts';
 
+const ColorSelectionReact = createComponent({
+  tagName: 'color-selection',
+  elementClass: ColorSelection,
+  react: React,
+});
 
 const ColorInterpolationReact = createComponent({
   tagName: 'color-interpolation',
@@ -62,8 +67,7 @@ export default function ColorPicker() {
 
   return (
     <div className={`d-flex flex-row flex-wrap ${styles.mainContainer}`}>
-      <ColorSelection
-        className={styles.component}
+      <ColorSelectionReact
         color={color}
         setColor={updateColor}
       />

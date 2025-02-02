@@ -3,13 +3,12 @@ import { customElement, property } from "lit/decorators.js";
 import clamp from "clamp";
 
 import Color, { ColorInputType } from "./Color";
-import { componentStyle } from "./styles/Common";
 import { styles } from "./styles/ColorSelection";
 import { bootstrap } from "./styles/Bootstrap";
 
 @customElement("color-selection")
 export class ColorSelection extends LitElement {
-  static styles = [styles, componentStyle];
+  static styles = [styles];
 
   @property({ attribute: false })
   color: Color = new Color();

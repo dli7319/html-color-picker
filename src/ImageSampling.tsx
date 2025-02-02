@@ -5,7 +5,6 @@ import { createRef, ref, Ref } from "lit/directives/ref.js";
 import { styles } from "./styles/ImageSampling";
 import { bootstrap } from "./styles/Bootstrap";
 import Color, { ColorInputType } from "./Color";
-import { componentStyle } from "./styles/Common";
 
 export enum OverlayColor {
   Transparent = "transparent",
@@ -34,7 +33,7 @@ const overlaySizeToRem = {
 
 @customElement("image-sampling")
 export class ImageSampling extends LitElement {
-  static styles = [styles, componentStyle];
+  static styles = [styles];
 
   @property({ attribute: false })
   setColor: (color: Color) => void = () => {};

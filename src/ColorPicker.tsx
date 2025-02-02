@@ -74,6 +74,7 @@ export default function ColorPicker() {
   return (
     <div className={`d-flex flex-row flex-wrap ${styles.mainContainer}`}>
       <ColorSelectionReact
+        className={styles.component}
         color={color}
         setColor={updateColor}
       />
@@ -84,18 +85,20 @@ export default function ColorPicker() {
         coordinates={coordinates}
       />
       <ImageSamplingReact
+        className={styles.component}
         setColor={updateColor}
         coordinates={coordinates}
         setCoordinates={setCoordinates}
       />
       <ColorInterpolationReact
+        className={styles.component}
         leftColor={interpolationLeft}
         rightColor={interpolationRight}
         activeColor={interpolationActive}
         setActiveColor={setInterpolationActive}
         setColor={setColor}
       />
-      <other-tools/>
+      <other-tools class={styles.component}/>
     </div>
   );
 }

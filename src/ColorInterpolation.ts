@@ -3,7 +3,6 @@ import { customElement, property } from "lit/decorators.js";
 
 import Color, { ColorLerpMode } from "./Color";
 import { ColorGradient } from "./ColorGradient";
-import { componentStyle } from "./styles/Common";
 import { styles } from "./styles/ColorInterpolation";
 import { bootstrap } from "./styles/Bootstrap";
 
@@ -15,7 +14,7 @@ export enum ActiveColorSide {
 
 @customElement("color-interpolation")
 export class ColorInterpolation extends LitElement {
-  static styles = [styles, componentStyle];
+  static styles = [styles];
 
   // Reactive properties
   @property()

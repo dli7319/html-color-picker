@@ -6,7 +6,7 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 
 const config: webpack.Configuration = {
   mode: isDevelopment ? 'development' : 'production',
-  entry: './src/index.tsx',
+  entry: './src/index.ts',
   output: {
     filename: 'main.js',
     path: path.resolve(import.meta.dirname, 'dist'),

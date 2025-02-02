@@ -592,7 +592,7 @@
     border-width: 0.1rem;
     pointer-events: none;
   }
-`;var $i,xi,Ci=function(t,e,o,i){var r,n=arguments.length,s=n<3?e:null===i?i=Object.getOwnPropertyDescriptor(e,o):i;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)s=Reflect.decorate(t,e,o,i);else for(var a=t.length-1;a>=0;a--)(r=t[a])&&(s=(n<3?r(s):n>3?r(e,o,s):r(e,o))||s);return n>3&&s&&Object.defineProperty(e,o,s),s};!function(t){t.Transparent="transparent",t.Black="black",t.White="white"}($i||($i={})),function(t){t.Small="small",t.Medium="medium",t.Large="large"}(xi||(xi={}));const _i={[xi.Small]:"1rem",[xi.Medium]:"1.5rem",[xi.Large]:"3rem"};let Ai=class extends ct{constructor(){super(),this.coordinates={x:0,y:0,width:0,height:0},this.setCoordinates=()=>{},this.initialOverlayColor=$i.Black,this.overlayColor=$i.Black,this.overlaySize=xi.Medium,this.loadedImage=!1,this.canvasRef=new yi,this.overlayColor=this.initialOverlayColor}setColor(t){this.dispatchEvent(new Tt(t))}loadImage(t){const e=t.currentTarget.files?.item(0);if(e){const t=new FileReader;t.onload=t=>{const e=new Image;e.onload=()=>{const t=this.canvasRef.value,o=t.getContext("2d");o&&(t.width=e.width,t.height=e.height,o.drawImage(e,0,0)),this.loadedImage=!0},e.src=t.target?.result},t.readAsDataURL(e)}}sampleImage(t){if(t instanceof MouseEvent&&1==t.buttons){const e=this.canvasRef.value,o=e.getContext("2d");if(o){const i=e.getBoundingClientRect(),r=(t.clientX-i.left)/i.width*e.width,n=(t.clientY-i.top)/i.height*e.height,s=o.getImageData(r,n,1,1);this.setColor(new Ot({type:Et.RGB255,r:s.data[0],g:s.data[1],b:s.data[2]})),this.setCoordinates({x:r,y:n,width:e.width,height:e.height})}}}selectOverlayColor(t){this.overlayColor=t.currentTarget.value}selectOverlaySize(t){this.overlaySize=t.currentTarget.value}render(){const t=this.coordinates.x/this.coordinates.width*100,e=this.coordinates.y/this.coordinates.height*100,o=`\n      border-color: ${this.overlayColor};\n      top: calc(${e}% - var(--circle-diameter) / 2);\n      left: calc(${t}% - var(--circle-diameter) / 2);\n      --circle-diameter: ${_i[this.overlaySize]};\n    `;return U`
+`;class $i extends Event{constructor(t){super($i.eventName,{bubbles:!0,composed:!0}),this.coordinates=t}}$i.eventName="set-coordinates";var xi,Ci,_i=function(t,e,o,i){var r,n=arguments.length,s=n<3?e:null===i?i=Object.getOwnPropertyDescriptor(e,o):i;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)s=Reflect.decorate(t,e,o,i);else for(var a=t.length-1;a>=0;a--)(r=t[a])&&(s=(n<3?r(s):n>3?r(e,o,s):r(e,o))||s);return n>3&&s&&Object.defineProperty(e,o,s),s};!function(t){t.Transparent="transparent",t.Black="black",t.White="white"}(xi||(xi={})),function(t){t.Small="small",t.Medium="medium",t.Large="large"}(Ci||(Ci={}));const Ai={[Ci.Small]:"1rem",[Ci.Medium]:"1.5rem",[Ci.Large]:"3rem"};let Si=class extends ct{constructor(){super(),this.coordinates={x:0,y:0,width:0,height:0},this.initialOverlayColor=xi.Black,this.overlayColor=xi.Black,this.overlaySize=Ci.Medium,this.loadedImage=!1,this.canvasRef=new yi,this.overlayColor=this.initialOverlayColor}setColor(t){this.dispatchEvent(new Tt(t))}setCoordinates(t){this.dispatchEvent(new $i(t))}loadImage(t){const e=t.currentTarget.files?.item(0);if(e){const t=new FileReader;t.onload=t=>{const e=new Image;e.onload=()=>{const t=this.canvasRef.value,o=t.getContext("2d");o&&(t.width=e.width,t.height=e.height,o.drawImage(e,0,0)),this.loadedImage=!0},e.src=t.target?.result},t.readAsDataURL(e)}}sampleImage(t){if(t instanceof MouseEvent&&1==t.buttons){const e=this.canvasRef.value,o=e.getContext("2d");if(o){const i=e.getBoundingClientRect(),r=(t.clientX-i.left)/i.width*e.width,n=(t.clientY-i.top)/i.height*e.height,s=o.getImageData(r,n,1,1);this.setColor(new Ot({type:Et.RGB255,r:s.data[0],g:s.data[1],b:s.data[2]})),this.setCoordinates({x:r,y:n,width:e.width,height:e.height})}}}selectOverlayColor(t){this.overlayColor=t.currentTarget.value}selectOverlaySize(t){this.overlaySize=t.currentTarget.value}render(){const t=this.coordinates.x/this.coordinates.width*100,e=this.coordinates.y/this.coordinates.height*100,o=`\n      border-color: ${this.overlayColor};\n      top: calc(${e}% - var(--circle-diameter) / 2);\n      left: calc(${t}% - var(--circle-diameter) / 2);\n      --circle-diameter: ${Ai[this.overlaySize]};\n    `;return U`
       ${zt}
       <h5>Image Sampling</h5>
       <div>
@@ -606,20 +606,20 @@
             @change=${this.selectOverlayColor}
           >
             <option
-              value=${$i.Transparent}
-              .selected=${this.overlayColor==$i.Transparent}
+              value=${xi.Transparent}
+              .selected=${this.overlayColor==xi.Transparent}
             >
               None
             </option>
             <option
-              value=${$i.Black}
-              .selected=${this.overlayColor==$i.Black}
+              value=${xi.Black}
+              .selected=${this.overlayColor==xi.Black}
             >
               Black
             </option>
             <option
-              value=${$i.White}
-              .selected=${this.overlayColor==$i.White}
+              value=${xi.White}
+              .selected=${this.overlayColor==xi.White}
             >
               White
             </option>
@@ -633,20 +633,20 @@
             @change=${this.selectOverlaySize}
           >
             <option
-              value=${xi.Small}
-              .selected=${this.overlaySize==xi.Small}
+              value=${Ci.Small}
+              .selected=${this.overlaySize==Ci.Small}
             >
               Small
             </option>
             <option
-              value=${xi.Medium}
-              .selected=${this.overlaySize==xi.Medium}
+              value=${Ci.Medium}
+              .selected=${this.overlaySize==Ci.Medium}
             >
               Medium
             </option>
             <option
-              value=${xi.Large}
-              .selected=${this.overlaySize==xi.Large}
+              value=${Ci.Large}
+              .selected=${this.overlaySize==Ci.Large}
             >
               Large
             </option>
@@ -669,13 +669,13 @@
           style=${o}
         ></div>
       </div>
-    `}};Ai.styles=[wi],Ci([ft({attribute:!1})],Ai.prototype,"coordinates",void 0),Ci([ft({attribute:!1})],Ai.prototype,"setCoordinates",void 0),Ci([ft({attribute:!1})],Ai.prototype,"initialOverlayColor",void 0),Ci([gt()],Ai.prototype,"overlayColor",void 0),Ci([gt()],Ai.prototype,"overlaySize",void 0),Ci([gt()],Ai.prototype,"loadedImage",void 0),Ai=Ci([dt("image-sampling")],Ai);const Si=JSON.parse('{"Coolors.co":"https://coolors.co/app","Colorbrewer2.org":"http://colorbrewer2.org/","Material Color Tool":"https://m2.material.io/resources/color/","Refractoring GUI: Building Your Color Palette":"https://refactoringui.com/previews/building-your-color-palette/"}');let ki=class extends ct{render(){return U` ${zt}
+    `}};Si.styles=[wi],_i([ft({attribute:!1})],Si.prototype,"coordinates",void 0),_i([ft({attribute:!1})],Si.prototype,"initialOverlayColor",void 0),_i([gt()],Si.prototype,"overlayColor",void 0),_i([gt()],Si.prototype,"overlaySize",void 0),_i([gt()],Si.prototype,"loadedImage",void 0),Si=_i([dt("image-sampling")],Si);const ki=JSON.parse('{"Coolors.co":"https://coolors.co/app","Colorbrewer2.org":"http://colorbrewer2.org/","Material Color Tool":"https://m2.material.io/resources/color/","Refractoring GUI: Building Your Color Palette":"https://refactoringui.com/previews/building-your-color-palette/"}');let Ei=class extends ct{render(){return U` ${zt}
       <h5>Other Tools</h5>
       <ul>
-        ${Object.entries(Si).map((([t,e])=>U`<li key=${t}>
+        ${Object.entries(ki).map((([t,e])=>U`<li key=${t}>
               <a href=${e} target="_blank">${t}</a>
             </li>`))}
-      </ul>`}};ki=function(t,e,o,i){var r,n=arguments.length,s=n<3?e:null===i?i=Object.getOwnPropertyDescriptor(e,o):i;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)s=Reflect.decorate(t,e,o,i);else for(var a=t.length-1;a>=0;a--)(r=t[a])&&(s=(n<3?r(s):n>3?r(e,o,s):r(e,o))||s);return n>3&&s&&Object.defineProperty(e,o,s),s}([dt("other-tools")],ki);var Ei=function(t,e,o,i){var r,n=arguments.length,s=n<3?e:null===i?i=Object.getOwnPropertyDescriptor(e,o):i;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)s=Reflect.decorate(t,e,o,i);else for(var a=t.length-1;a>=0;a--)(r=t[a])&&(s=(n<3?r(s):n>3?r(e,o,s):r(e,o))||s);return n>3&&s&&Object.defineProperty(e,o,s),s};let Mi=class extends ct{constructor(){super(),this.color=new Ot({type:Et.RGB255,r:255,g:255,b:255}),this.coordinates={x:0,y:0,width:1,height:1},this.interpolationLeft=new Ot({type:Et.RGB255,r:255,g:0,b:0}),this.interpolationRight=new Ot({type:Et.RGB255,r:255,g:255,b:255}),this.interpolationActive=Nt.NONE,this.addEventListener(Tt.eventName,(t=>{t instanceof Tt&&this.setColor(t.color)}))}setColor(t){this.color=t,this.interpolationActive===Nt.LEFT?this.interpolationLeft=t:this.interpolationActive==Nt.RIGHT&&(this.interpolationRight=t)}setCoordinates(t){this.coordinates=t}setInterpolationActive(t){this.interpolationActive=t}render(){const t="#"+this.color.getHex();return this.style.background=t,U` ${zt}
+      </ul>`}};Ei=function(t,e,o,i){var r,n=arguments.length,s=n<3?e:null===i?i=Object.getOwnPropertyDescriptor(e,o):i;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)s=Reflect.decorate(t,e,o,i);else for(var a=t.length-1;a>=0;a--)(r=t[a])&&(s=(n<3?r(s):n>3?r(e,o,s):r(e,o))||s);return n>3&&s&&Object.defineProperty(e,o,s),s}([dt("other-tools")],Ei);var Mi=function(t,e,o,i){var r,n=arguments.length,s=n<3?e:null===i?i=Object.getOwnPropertyDescriptor(e,o):i;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)s=Reflect.decorate(t,e,o,i);else for(var a=t.length-1;a>=0;a--)(r=t[a])&&(s=(n<3?r(s):n>3?r(e,o,s):r(e,o))||s);return n>3&&s&&Object.defineProperty(e,o,s),s};let Ri=class extends ct{constructor(){super(),this.color=new Ot({type:Et.RGB255,r:255,g:255,b:255}),this.coordinates={x:0,y:0,width:1,height:1},this.interpolationLeft=new Ot({type:Et.RGB255,r:255,g:0,b:0}),this.interpolationRight=new Ot({type:Et.RGB255,r:255,g:255,b:255}),this.interpolationActive=Nt.NONE,this.addEventListener(Tt.eventName,(t=>{t instanceof Tt&&this.setColor(t.color)})),this.addEventListener($i.eventName,(t=>{t instanceof $i&&this.setCoordinates(t.coordinates)}))}setColor(t){this.color=t,this.interpolationActive===Nt.LEFT?this.interpolationLeft=t:this.interpolationActive==Nt.RIGHT&&(this.interpolationRight=t)}setCoordinates(t){this.coordinates=t}setInterpolationActive(t){this.interpolationActive=t}render(){const t="#"+this.color.getHex();return this.style.background=t,U` ${zt}
       <div class="d-flex flex-row flex-wrap main-container">
         <color-selection .color=${this.color}></color-selection>
         <color-converter
@@ -684,7 +684,6 @@
         ></color-converter>
         <image-sampling
           .coordinates=${this.coordinates}
-          .setCoordinates=${this.setCoordinates}
         ></image-sampling>
         <color-interpolation
           .leftColor=${this.interpolationLeft}
@@ -693,4 +692,4 @@
           .setActiveColor=${this.setInterpolationActive.bind(this)}
         ></color-interpolation>
         <other-tools></other-tools>
-      </div>`}};Mi.styles=[Ft],Ei([gt()],Mi.prototype,"color",void 0),Ei([gt()],Mi.prototype,"coordinates",void 0),Ei([gt()],Mi.prototype,"interpolationLeft",void 0),Ei([gt()],Mi.prototype,"interpolationRight",void 0),Ei([gt()],Mi.prototype,"interpolationActive",void 0),Mi=Ei([dt("color-picker")],Mi)})()})();
+      </div>`}};Ri.styles=[Ft],Mi([gt()],Ri.prototype,"color",void 0),Mi([gt()],Ri.prototype,"coordinates",void 0),Mi([gt()],Ri.prototype,"interpolationLeft",void 0),Mi([gt()],Ri.prototype,"interpolationRight",void 0),Mi([gt()],Ri.prototype,"interpolationActive",void 0),Ri=Mi([dt("color-picker")],Ri)})()})();

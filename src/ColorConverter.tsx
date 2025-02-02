@@ -24,7 +24,6 @@ interface ColorConverterProps {
   coordinates: { x: number; y: number; width: number; height: number };
   className?: string;
   verbose?: boolean;
-  copiedTimeout?: number;
 }
 
 export default function ColorConverter({
@@ -33,7 +32,6 @@ export default function ColorConverter({
   coordinates,
   className = "",
   verbose = true,
-  copiedTimeout = 1000,
 }: ColorConverterProps) {
   const [inputValues, setInputValues] = useState<InputValues>({
     color,
@@ -162,25 +160,21 @@ export default function ColorConverter({
           label="Hex"
           value={hex}
           onChange={updateFromHex}
-          copiedTimeout={copiedTimeout}
         />
         <ColorConverterInput
           label="RGB (0-255)"
           value={rgb255}
           onChange={updateFromRGB255}
-          copiedTimeout={copiedTimeout}
         />
         <ColorConverterInput
           label="RGB (0-1)"
           value={rgb01}
           onChange={updateFromRGB01}
-          copiedTimeout={copiedTimeout}
         />
         <ColorConverterInput
           label="HSV (°, %, %)"
           value={hsv}
           onChange={updateFromHSV}
-          copiedTimeout={copiedTimeout}
         />
       </div>
     </div>

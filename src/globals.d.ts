@@ -5,6 +5,7 @@ declare namespace JSX {
   interface IntrinsicElements {
     "other-tools": any;
     "color-interpolation": any;
+    "sl-copy-button": any;
   }
 }
 

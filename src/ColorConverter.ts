@@ -7,7 +7,15 @@ import { Coordinates } from "./Coordinates";
 import { styles } from "./styles/ColorConverter";
 import "./ColorConverterInput";
 import { ColorPickerSetColorEvent } from "./ColorPickerSetColorEvent";
-import { InputType, InputValues } from "./ColorConverterInput";
+import { InputType, inputTypeToInputValueKey, InputValues } from "./ColorConverterInput";
+import { ColorConverterInputEvent } from "./ColorConverterInputEvent";
+
+const typeToParseFunction = {
+  [InputType.HEX]: Color.parseHex,
+  [InputType.RGB255]: Color.parseRGB255,
+  [InputType.RGB01]: Color.parseRGB01,
+  [InputType.HSV]: Color.parseHSV,
+};
 
 @customElement("color-converter")
 export class ColorConverter extends LitElement {
@@ -17,83 +25,29 @@ export class ColorConverter extends LitElement {
   color: Color = new Color();
   @property({ attribute: false })
   coordinates: Coordinates = { x: 0, y: 0, width: 0, height: 0 };
-  @property({ type: Boolean })
-  verbose: boolean = true;
 
   @state()
   inputValues: InputValues = {};
 
+  constructor() {
+    super();
+    this.addEventListener(ColorConverterInputEvent.type, (event) => {
+      if (event instanceof ColorConverterInputEvent) {
+        const { inputType, value } = event;
+        const parsedColor = typeToParseFunction[inputType](value);
+        if (parsedColor != null) {
+          this.setColor(parsedColor);
+          this.inputValues = {
+            ...this.inputValues,
+            [inputTypeToInputValueKey[inputType]]: value,
+          };
+        }
+      }
+    });
+  }
+
   setColor(color: Color) {
     this.dispatchEvent(new ColorPickerSetColorEvent(color));
-  }
-
-  updateFromHex(event: Event) {
-    const value = (event.target as HTMLInputElement).value;
-    const parsedColor = Color.parseHex(value);
-    if (parsedColor != null) {
-      if (this.verbose) console.log(`Found Hex: #${parsedColor.getHex()}`);
-      this.setColor(parsedColor);
-      this.inputValues = { hexValue: value };
-      return;
-    }
-    this.inputValues = {
-      ...this.inputValues,
-      hexValue: value,
-    };
-  }
-
-  updateFromRGB255(event: Event) {
-    const value = (event.target as HTMLInputElement).value;
-    const parsedColor = Color.parseRGB255(value);
-    if (parsedColor != null) {
-      if (this.verbose)
-        console.log(
-          `Found RGB255: ${parsedColor.getRGB255().splice(0, 3).toString()}`
-        );
-      this.setColor(parsedColor);
-      this.inputValues = { rgb255Value: value };
-      return;
-    }
-    this.inputValues = {
-      ...this.inputValues,
-      rgb255Value: value,
-    };
-  }
-
-  updateFromRGB01(event: Event) {
-    const value = (event.target as HTMLInputElement).value;
-    const parsedColor = Color.parseRGB01(value);
-    if (parsedColor != null) {
-      if (this.verbose)
-        console.log(
-          `Found RGB01: ${parsedColor.getRGB01().splice(0, 3).toString()}`
-        );
-      this.setColor(parsedColor);
-      this.inputValues = { rgb01Value: value };
-      return;
-    }
-    this.inputValues = {
-      ...this.inputValues,
-      rgb01Value: value,
-    };
-  }
-
-  updateFromHSV(event: Event) {
-    const value = (event.target as HTMLInputElement).value;
-    const parsedColor = Color.parseHSV(value);
-    if (parsedColor != null) {
-      if (this.verbose)
-        console.log(
-          `Found HSV: ${parsedColor.getHSV(false).splice(0, 3).toString()}`
-        );
-      this.setColor(parsedColor);
-      this.inputValues = { hsvValue: value };
-      return;
-    }
-    this.inputValues = {
-      ...this.inputValues,
-      hsvValue: value,
-    };
   }
 
   render() {
@@ -131,25 +85,21 @@ export class ColorConverter extends LitElement {
           type=${InputType.HEX}
           .inputValues=${this.inputValues}
           .color=${this.color}
-          .onValueChange=${this.updateFromHex.bind(this)}
         ></color-converter-input>
         <color-converter-input
           type=${InputType.RGB255}
           .inputValues=${this.inputValues}
           .color=${this.color}
-          .onValueChange=${this.updateFromRGB255.bind(this)}
         ></color-converter-input>
         <color-converter-input
           type=${InputType.RGB01}
           .inputValues=${this.inputValues}
           .color=${this.color}
-          .onValueChange=${this.updateFromRGB01.bind(this)}
         ></color-converter-input>
         <color-converter-input
           type=${InputType.HSV}
           .inputValues=${this.inputValues}
           .color=${this.color}
-          .onValueChange=${this.updateFromHSV.bind(this)}
         ></color-converter-input>
       </div>
     `;

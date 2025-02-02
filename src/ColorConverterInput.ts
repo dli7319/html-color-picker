@@ -4,6 +4,7 @@ import "@shoelace-style/shoelace/dist/components/copy-button/copy-button.js";
 
 import { bootstrap } from "./styles/Bootstrap";
 import Color from "./Color";
+import { ColorConverterInputEvent } from "./ColorConverterInputEvent";
 
 export interface InputValues {
   hexValue?: string;
@@ -55,8 +56,10 @@ export class ColorConverterInput extends LitElement {
   inputValues: InputValues = {};
   @property({ attribute: false })
   color: Color = new Color();
-  @property()
-  onValueChange: (event: Event) => void = () => {};
+
+  onValueChange(event: Event) {
+    this.dispatchEvent(new ColorConverterInputEvent(this.type, (event.target as HTMLInputElement).value));
+  }
 
   render() {
     const value =

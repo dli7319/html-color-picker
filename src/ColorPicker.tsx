@@ -3,11 +3,18 @@ import {createComponent} from '@lit/react';
 
 import Color, { ColorInputType } from "./Color";
 import {ColorSelection} from "./ColorSelection";
-import ColorConverter from "./ColorConverter";
-import {Coordinates, ImageSampling} from "./ImageSampling";
+import {ColorConverter} from "./ColorConverter";
+import {ImageSampling} from "./ImageSampling";
+import { Coordinates } from "./Coordinates";
 import {ColorInterpolation, ActiveColorSide } from "./ColorInterpolation";
 import styles from "./styles/ColorPicker.module.css";
 import './OtherTools.ts';
+
+const ColorConverterReact = createComponent({
+  tagName: 'color-converter',
+  elementClass: ColorConverter,
+  react: React,
+});
 
 const ColorSelectionReact = createComponent({
   tagName: 'color-selection',
@@ -78,7 +85,7 @@ export default function ColorPicker() {
         color={color}
         setColor={updateColor}
       />
-      <ColorConverter
+      <ColorConverterReact
         className={styles.component}
         color={color}
         setColor={updateColor}

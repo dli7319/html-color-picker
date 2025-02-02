@@ -1,6 +1,13 @@
 import clamp from "clamp";
 import colorConvert from "color-convert";
 
+import {
+  parseHexColor,
+  parseHSVColor,
+  parseRGB01Color,
+  parseRGB255Color,
+} from "./ColorStringParsing";
+
 export function lerp(a: number, b: number, t: number) {
   return a + (b - a) * t;
 }
@@ -230,4 +237,9 @@ export default class Color {
       b: lerp(color0b, color1b, t),
     });
   }
+
+  static parseHex = parseHexColor;
+  static parseRGB255 = parseRGB255Color;
+  static parseRGB01 = parseRGB01Color;
+  static parseHSV = parseHSVColor;
 }

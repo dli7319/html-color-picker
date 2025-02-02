@@ -5,6 +5,7 @@ import { createRef, ref, Ref } from "lit/directives/ref.js";
 import { styles } from "./styles/ImageSampling";
 import { bootstrap } from "./styles/Bootstrap";
 import Color, { ColorInputType } from "./Color";
+import { Coordinates } from "./Coordinates";
 
 export enum OverlayColor {
   Transparent = "transparent",
@@ -16,13 +17,6 @@ export enum OverlaySize {
   Small = "small",
   Medium = "medium",
   Large = "large",
-}
-
-export interface Coordinates {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
 }
 
 const overlaySizeToRem = {

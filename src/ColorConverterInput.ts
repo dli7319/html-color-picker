@@ -11,7 +11,7 @@ export class ColorConverterInput extends LitElement {
   @property()
   value: string = "";
   @property()
-  onChange: (event: InputEvent) => void = () => {};
+  onValueChange: (event: Event) => void = () => {};
 
   render() {
     return html`
@@ -22,7 +22,7 @@ export class ColorConverterInput extends LitElement {
             type="text"
             class="form-control"
             .value=${this.value}
-            @input=${this.onChange}
+            @input=${this.onValueChange}
           />
           <label>${this.label}</label>
         </div>

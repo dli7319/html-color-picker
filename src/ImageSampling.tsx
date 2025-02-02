@@ -60,7 +60,6 @@ export class ImageSampling extends LitElement {
   }
 
   loadImage(e: Event) {
-    console.log(e);
     const file = (e.currentTarget as HTMLInputElement).files?.item(0);
     if (file) {
       const reader = new FileReader();
@@ -122,7 +121,6 @@ export class ImageSampling extends LitElement {
   render() {
     const xPercent = (this.coordinates.x / this.coordinates.width) * 100;
     const yPercent = (this.coordinates.y / this.coordinates.height) * 100;
-    console.log("percent", xPercent, yPercent);
     const overlayStyle = `
       border-color: ${this.overlayColor};
       top: calc(${yPercent}% - var(--circle-diameter) / 2);

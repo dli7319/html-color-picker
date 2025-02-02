@@ -17,10 +17,6 @@ const config: webpack.Configuration = {
         test: /\.tsx?$/,
         use: 'ts-loader',
         exclude: /node_modules/,
-      },
-      {
-        resourceQuery: /raw/,
-        type: 'asset/source',
       }
     ]
   },

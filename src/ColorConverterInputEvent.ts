@@ -1,7 +1,7 @@
 import { InputType } from "./ColorConverterInput";
 
 export class ColorConverterInputEvent extends Event {
-  static type = "color-converter-input";
+  static readonly type = "color-converter-input";
   inputType: InputType;
   value: string;
 

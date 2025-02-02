@@ -1,7 +1,7 @@
 import { ActiveColorSide } from "./ColorInterpolation";
 
 export class ColorPickerSetInterpolationActiveEvent extends Event {
-    static eventName = "set-interpolation-active";
+    static readonly eventName = "set-interpolation-active";
     active: ActiveColorSide;
     
     constructor(active: ActiveColorSide) {

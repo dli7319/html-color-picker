@@ -1,7 +1,7 @@
 import { Coordinates } from "./Coordinates";
 
 export class ColorPickerSetCoordinatesEvent extends Event {
-  static eventName = "set-coordinates";
+  static readonly eventName = "set-coordinates";
   coordinates: Coordinates;
 
   constructor(coordinates: Coordinates) {

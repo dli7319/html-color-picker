@@ -1,7 +1,7 @@
 import { Color } from "./Color";
 
 export class ColorPickerSetColorEvent extends Event {
-  static eventName = "set-color";
+  static readonly eventName = "set-color";
   color: Color;
 
   constructor(color: Color) {

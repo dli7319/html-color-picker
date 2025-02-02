@@ -1,19 +1,21 @@
-.mainDiv {
+import { css } from "lit";
+export const styles = css`
+  :host {
     gap: 0.25rem;
-}
+  }
 
-.imagePreviewCanvasWrapper {
+  .image-preview-canvas-wrapper {
     position: relative;
     width: fit-content;
     height: fit-content;
-}
+  }
 
-.imagePreviewCanvas {
+  .image-preview-canvas {
     max-width: 100%;
     max-height: 100%;
-}
+  }
 
-.imagePreviewOverlay {
+  .image-preview-overlay {
     --circle-diameter: 1.5rem;
     z-index: 2;
     position: absolute;
@@ -24,4 +26,5 @@
     border-color: black;
     border-width: 0.1rem;
     pointer-events: none;
-}
+  }
+`;

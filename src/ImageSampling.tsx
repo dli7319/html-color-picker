@@ -1,8 +1,11 @@
-import React, { useState, useRef } from "react";
-import FloatingLabel from "react-bootstrap/FloatingLabel";
-import Form from "react-bootstrap/Form";
+import { html, LitElement } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+import { createRef, ref, Ref } from "lit/directives/ref.js";
+
+import { styles } from "./styles/ImageSampling";
+import { bootstrap } from "./styles/Bootstrap";
 import Color, { ColorInputType } from "./Color";
-import styles from "./styles/ImageSampling.module.css";
+import { componentStyle } from "./styles/Common";
 
 export enum OverlayColor {
   Transparent = "transparent",
@@ -16,67 +19,79 @@ export enum OverlaySize {
   Large = "large",
 }
 
+export interface Coordinates {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
 const overlaySizeToRem = {
   [OverlaySize.Small]: "1rem",
   [OverlaySize.Medium]: "1.5rem",
   [OverlaySize.Large]: "3rem",
 };
 
-export default function ImageSampling({
-  className,
-  setColor,
-  coordinates,
-  setCoordinates,
-  initialOverlayColor = OverlayColor.Black,
-}: {
-  className?: string;
-  setColor: (color: Color) => void;
-  coordinates: { x: number; y: number; width: number; height: number };
-  setCoordinates: (coordinates: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  }) => void;
-  initialOverlayColor?: OverlayColor;
-}) {
-  const [overlayColor, setOverlayColor] = useState(initialOverlayColor);
-  const [overlaySize, setOverlaySize] = useState(OverlaySize.Medium);
-  const [loadedImage, setLoadedImage] = useState(false);
-  const imagePreviewCanvasRef = useRef(null);
-  function loadImage(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.currentTarget.files?.item(0);
+@customElement("image-sampling")
+export class ImageSampling extends LitElement {
+  static styles = [styles, componentStyle];
+
+  @property({ attribute: false })
+  setColor: (color: Color) => void = () => {};
+  @property({ attribute: false })
+  coordinates: Coordinates = { x: 0, y: 0, width: 0, height: 0 };
+  @property({ attribute: false })
+  setCoordinates: (coordinates: Coordinates) => void = () => {};
+  @property({ attribute: false })
+  initialOverlayColor: OverlayColor = OverlayColor.Black;
+
+  @state()
+  overlayColor: OverlayColor = OverlayColor.Black;
+  @state()
+  overlaySize: OverlaySize = OverlaySize.Medium;
+  @state()
+  loadedImage = false;
+
+  canvasRef: Ref<HTMLCanvasElement> = createRef();
+
+  constructor() {
+    super();
+    this.overlayColor = this.initialOverlayColor;
+  }
+
+  loadImage(e: Event) {
+    console.log(e);
+    const file = (e.currentTarget as HTMLInputElement).files?.item(0);
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
         const img = new Image();
         img.onload = () => {
-          const canvas =
-            imagePreviewCanvasRef.current as unknown as HTMLCanvasElement;
+          const canvas = this.canvasRef.value!;
           const ctx = canvas.getContext("2d");
           if (ctx) {
             canvas.width = img.width;
             canvas.height = img.height;
             ctx.drawImage(img, 0, 0);
           }
-          setLoadedImage(true);
+          this.loadedImage = true;
         };
         img.src = e.target?.result as string;
       };
       reader.readAsDataURL(file);
     }
   }
-  function sampleImage(e: React.MouseEvent) {
-    if (e.buttons == 1) {
-      const canvas =
-        imagePreviewCanvasRef.current as unknown as HTMLCanvasElement;
+
+  sampleImage(e: Event) {
+    if (e instanceof MouseEvent && e.buttons == 1) {
+      const canvas = this.canvasRef.value!;
       const ctx = canvas.getContext("2d");
       if (ctx) {
         const rect = canvas.getBoundingClientRect();
         const x = ((e.clientX - rect.left) / rect.width) * canvas.width;
         const y = ((e.clientY - rect.top) / rect.height) * canvas.height;
         const imageData = ctx.getImageData(x, y, 1, 1);
-        setColor(
+        this.setColor(
           new Color({
             type: ColorInputType.RGB255,
             r: imageData.data[0],
@@ -84,7 +99,7 @@ export default function ImageSampling({
             b: imageData.data[2],
           })
         );
-        setCoordinates({
+        this.setCoordinates({
           x: x,
           y: y,
           width: canvas.width,
@@ -94,67 +109,88 @@ export default function ImageSampling({
     }
   }
 
-  const xPercent = (coordinates.x / coordinates.width) * 100;
-  const yPercent = (coordinates.y / coordinates.height) * 100;
-  const overlayStyle = {
-    borderColor: overlayColor,
-    top: `calc(${yPercent}% - var(--circle-diameter) / 2)`,
-    left: `calc(${xPercent}% - var(--circle-diameter) / 2)`,
-    "--circle-diameter": overlaySizeToRem[overlaySize],
-  };
+  selectOverlayColor(e: Event) {
+    this.overlayColor = (e.currentTarget as HTMLSelectElement)
+      .value as OverlayColor;
+  }
 
-  return (
-    <div className={`${className} ${styles.mainDiv}`}>
+  selectOverlaySize(e: Event) {
+    this.overlaySize = (e.currentTarget as HTMLSelectElement)
+      .value as OverlaySize;
+  }
+
+  render() {
+    const xPercent = (this.coordinates.x / this.coordinates.width) * 100;
+    const yPercent = (this.coordinates.y / this.coordinates.height) * 100;
+    console.log("percent", xPercent, yPercent);
+    const overlayStyle = `
+      border-color: ${this.overlayColor};
+      top: calc(${yPercent}% - var(--circle-diameter) / 2);
+      left: calc(${xPercent}% - var(--circle-diameter) / 2);
+      --circle-diameter: ${overlaySizeToRem[this.overlaySize]};
+    `;
+    return html`
+      ${bootstrap}
       <h5>Image Sampling</h5>
-      <Form.Group controlId="formFile">
-        {/* <Form.Label>Default file input example</Form.Label> */}
-        <Form.Control type="file" onChange={loadImage} />
-      </Form.Group>
-      <div className="d-flex flex-row">
-        <FloatingLabel label="Overlay Color" className="flex-grow-1">
-          <Form.Select
+      <div>
+        <input class="form-control" type="file" @change=${this.loadImage} />
+      </div>
+      <div class="d-flex flex-row">
+        <div class="form-floating flex-grow-1">
+          <select
+            class="form-select"
             aria-label="Select Overlay Color"
-            onChange={(e) =>
-              setOverlayColor(e.currentTarget.value as OverlayColor)
-            }
-            defaultValue={OverlayColor.Black}
+            @change=${this.selectOverlayColor}
           >
-            <option value={OverlayColor.Transparent}>None</option>
-            <option value={OverlayColor.Black}>
+            <option
+              value=${OverlayColor.Transparent}
+              .selected=${this.overlayColor == OverlayColor.Transparent}
+            >
+              None
+            </option>
+            <option
+              value=${OverlayColor.Black}
+              .selected=${this.overlayColor == OverlayColor.Black}
+            >
               Black
             </option>
-            <option value={OverlayColor.White}>White</option>
-          </Form.Select>
-        </FloatingLabel>
-        <FloatingLabel label="Overlay Size" className="flex-grow-1">
-          <Form.Select
-            aria-label="Select Overlay Size"
-            onChange={(e) => setOverlaySize(e.target.value as OverlaySize)}
-            defaultValue={OverlaySize.Medium}
-          >
-            <option value={OverlaySize.Small}>Small</option>
-            <option value={OverlaySize.Medium}>
-              Medium
+            <option
+              value=${OverlayColor.White}
+              .selected=${this.overlayColor == OverlayColor.White}
+            >
+              White
             </option>
-            <option value={OverlaySize.Large}>Large</option>
-          </Form.Select>
-        </FloatingLabel>
+          </select>
+          <label>Overlay Color</label>
+        </div>
+        <div class="form-floating flex-grow-1">
+          <select
+            class="form-select"
+            aria-label="Select Overlay Size"
+            @change=${this.selectOverlaySize}
+          >
+            <option value=${OverlaySize.Small} .selected=${this.overlaySize == OverlaySize.Small}>Small</option>
+            <option value=${OverlaySize.Medium} .selected=${this.overlaySize == OverlaySize.Medium}>Medium</option>
+            <option value=${OverlaySize.Large} .selected=${this.overlaySize == OverlaySize.Large}>Large</option>
+          </select>
+          <label>Overlay Size</label>
+        </div>
       </div>
-      <div className={`mt-1 ${styles.imagePreviewCanvasWrapper}`}>
+      <div class="mt-1 image-preview-canvas-wrapper">
         <canvas
-          className={styles.imagePreviewCanvas}
+          class="image-preview-canvas"
           width="0"
           height="0"
-          ref={imagePreviewCanvasRef}
-          onMouseDown={sampleImage}
-          onMouseMove={sampleImage}
+          ${ref(this.canvasRef)}
+          @mousedown=${this.sampleImage}
+          @mousemove=${this.sampleImage}
         ></canvas>
         <div
-          className={styles.imagePreviewOverlay}
-          hidden={!Boolean(loadedImage)}
-          style={overlayStyle}
+          class="image-preview-overlay"
+          ?hidden=${!this.loadedImage}
+          style=${overlayStyle}
         ></div>
       </div>
-    </div>
-  );
+    `;
+  }
 }

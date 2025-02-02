@@ -4,7 +4,7 @@ import {createComponent} from '@lit/react';
 import Color, { ColorInputType } from "./Color";
 import {ColorSelection} from "./ColorSelection";
 import ColorConverter from "./ColorConverter";
-import ImageSampling from "./ImageSampling";
+import {Coordinates, ImageSampling} from "./ImageSampling";
 import {ColorInterpolation, ActiveColorSide } from "./ColorInterpolation";
 import styles from "./styles/ColorPicker.module.css";
 import './OtherTools.ts';
@@ -12,6 +12,12 @@ import './OtherTools.ts';
 const ColorSelectionReact = createComponent({
   tagName: 'color-selection',
   elementClass: ColorSelection,
+  react: React,
+});
+
+const ImageSamplingReact = createComponent({
+  tagName: 'image-sampling',
+  elementClass: ImageSampling,
   react: React,
 });
 
@@ -35,7 +41,7 @@ export default function ColorPicker() {
     y: 0,
     width: 1,
     height: 1,
-  });
+  } as Coordinates);
   const [interpolationLeft, setInterpolationLeft] = useState(
     new Color({
       type: ColorInputType.RGB255,
@@ -77,8 +83,7 @@ export default function ColorPicker() {
         setColor={updateColor}
         coordinates={coordinates}
       />
-      <ImageSampling
-        className={styles.component}
+      <ImageSamplingReact
         setColor={updateColor}
         coordinates={coordinates}
         setCoordinates={setCoordinates}

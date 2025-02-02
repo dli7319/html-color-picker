@@ -4,7 +4,7 @@ import { customElement, state } from "lit/decorators.js";
 import { Color, ColorInputType } from "./Color";
 import { Coordinates } from "./Coordinates";
 import { ActiveColorSide, ColorInterpolation } from "./ColorInterpolation";
-import { styles } from "./styles/ColorPicker";
+import { styles } from "./styles/ColorPicker.css";
 import { bootstrap } from "./styles/Bootstrap";
 import { ColorPickerSetColorEvent } from "./ColorPickerSetColorEvent";
 import { ColorPickerSetCoordinatesEvent } from "./ColorPickerSetCoordinatesEvent";

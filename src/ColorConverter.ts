@@ -4,7 +4,7 @@ import { customElement, property, state } from "lit/decorators.js";
 import { bootstrap } from "./styles/Bootstrap";
 import { Color } from "./Color";
 import { Coordinates } from "./Coordinates";
-import { styles } from "./styles/ColorConverter";
+import { styles } from "./styles/ColorConverter.css";
 import { ColorPickerSetColorEvent } from "./ColorPickerSetColorEvent";
 import {
   ColorConverterInput,

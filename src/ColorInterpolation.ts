@@ -3,7 +3,7 @@ import { customElement, property } from "lit/decorators.js";
 
 import { Color, ColorLerpMode } from "./Color";
 import { ColorGradient } from "./ColorGradient";
-import { styles } from "./styles/ColorInterpolation";
+import { styles } from "./styles/ColorInterpolation.css";
 import { bootstrap } from "./styles/Bootstrap";
 import { ColorPickerSetColorEvent } from "./ColorPickerSetColorEvent";
 import { ColorPickerSetInterpolationActiveEvent } from "./ColorPickerSetInterpolationActiveEvent";

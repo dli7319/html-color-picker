@@ -3,7 +3,7 @@ import { customElement, property } from "lit/decorators.js";
 import clamp from "clamp";
 
 import { Color, ColorInputType } from "./Color";
-import { styles } from "./styles/ColorSelection";
+import { styles } from "./styles/ColorSelection.css";
 import { bootstrap } from "./styles/Bootstrap";
 import { ColorPickerSetColorEvent } from "./ColorPickerSetColorEvent";
 

@@ -2,7 +2,7 @@ import { html, LitElement } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { createRef, ref, Ref } from "lit/directives/ref.js";
 
-import { styles } from "./styles/ImageSampling";
+import { styles } from "./styles/ImageSampling.css";
 import { bootstrap } from "./styles/Bootstrap";
 import { Color, ColorInputType } from "./Color";
 import { Coordinates } from "./Coordinates";

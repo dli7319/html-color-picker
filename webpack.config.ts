@@ -1,32 +1,36 @@
-import path from 'path';
-import webpack from 'webpack';
-import 'webpack-dev-server';
+import path from "path";
+import webpack from "webpack";
+import "webpack-dev-server";
 
-const isDevelopment = process.env.NODE_ENV !== 'production';
+const isDevelopment = process.env.NODE_ENV !== "production";
 
 const config: webpack.Configuration = {
-  mode: isDevelopment ? 'development' : 'production',
-  entry: './src/index.ts',
+  mode: isDevelopment ? "development" : "production",
+  entry: "./src/index.ts",
   output: {
-    filename: 'main.js',
-    path: path.resolve(import.meta.dirname, 'dist'),
+    filename: "main.js",
+    path: path.resolve(import.meta.dirname, "dist"),
   },
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        use: 'ts-loader',
+        use: "ts-loader",
         exclude: /node_modules/,
-      }
-    ]
+      },
+      {
+        test: /\.css$/i,
+        loader: 'lit-css-loader',
+      },
+    ],
   },
   resolve: {
-    extensions: ['*', '.js', '.jsx', '.tsx', '.ts']
+    extensions: ["*", ".js", ".jsx", ".tsx", ".ts"],
   },
   devServer: {
     hot: true,
     static: {
-      directory: path.join(import.meta.dirname, 'dist'),
+      directory: path.join(import.meta.dirname, "dist"),
     },
     compress: true,
   },

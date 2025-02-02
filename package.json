@@ -29,6 +29,7 @@
     "clamp": "^1.0.1",
     "color-convert": "^2.0.1",
     "lit": "^3.2.1",
+    "lit-css-loader": "^3.0.1",
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "typescript": "^4.9.5",

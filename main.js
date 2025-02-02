@@ -119,7 +119,7 @@
     padding: var(--gap);
 }
 
-.main-container > * {
+::slotted(*) {
     border-radius: 1rem;
     background: #eee;
     padding: 1rem;
@@ -675,18 +675,5 @@
         ${Object.entries(Hi).map((([t,e])=>F`<li key=${t}>
               <a href=${e} target="_blank">${t}</a>
             </li>`))}
-      </ul>`}};Bi=function(t,e,o,i){var r,n=arguments.length,s=n<3?e:null===i?i=Object.getOwnPropertyDescriptor(e,o):i;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)s=Reflect.decorate(t,e,o,i);else for(var a=t.length-1;a>=0;a--)(r=t[a])&&(s=(n<3?r(s):n>3?r(e,o,s):r(e,o))||s);return n>3&&s&&Object.defineProperty(e,o,s),s}([dt("other-tools")],Bi);var zi=function(t,e,o,i){var r,n=arguments.length,s=n<3?e:null===i?i=Object.getOwnPropertyDescriptor(e,o):i;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)s=Reflect.decorate(t,e,o,i);else for(var a=t.length-1;a>=0;a--)(r=t[a])&&(s=(n<3?r(s):n>3?r(e,o,s):r(e,o))||s);return n>3&&s&&Object.defineProperty(e,o,s),s};let Ti=class extends ct{constructor(){super(),this.color=new Ot({type:Et.RGB255,r:255,g:255,b:255}),this.coordinates={x:0,y:0,width:1,height:1},this.interpolationLeft=new Ot({type:Et.RGB255,r:255,g:0,b:0}),this.interpolationRight=new Ot({type:Et.RGB255,r:255,g:255,b:255}),this.interpolationActive=jt.NONE,this.addEventListener(Tt.eventName,(t=>{t instanceof Tt&&this.setColor(t.color)})),this.addEventListener(Dt.eventName,(t=>{t instanceof Dt&&this.setCoordinates(t.coordinates)})),this.addEventListener(Nt.eventName,(t=>{t instanceof Nt&&this.setInterpolationActive(t.active)}))}setColor(t){this.color=t,this.interpolationActive===jt.LEFT?this.interpolationLeft=t:this.interpolationActive==jt.RIGHT&&(this.interpolationRight=t)}setCoordinates(t){this.coordinates=t}setInterpolationActive(t){this.interpolationActive=t}render(){const t="#"+this.color.getHex();return this.style.background=t,F` ${zt}
-      <div class="d-flex flex-row flex-wrap main-container">
-        <color-selection .color=${this.color}></color-selection>
-        <color-converter
-          .color=${this.color}
-          .coordinates=${this.coordinates}
-        ></color-converter>
-        <image-sampling .coordinates=${this.coordinates}></image-sampling>
-        <color-interpolation
-          .leftColor=${this.interpolationLeft}
-          .rightColor=${this.interpolationRight}
-          .activeColor=${this.interpolationActive}
-        ></color-interpolation>
-        <other-tools></other-tools>
-      </div>`}};Ti.styles=[Vt],zi([gt()],Ti.prototype,"color",void 0),zi([gt()],Ti.prototype,"coordinates",void 0),zi([gt()],Ti.prototype,"interpolationLeft",void 0),zi([gt()],Ti.prototype,"interpolationRight",void 0),zi([gt()],Ti.prototype,"interpolationActive",void 0),Ti=zi([dt("color-picker")],Ti)})()})();
+      </ul>`}};Bi=function(t,e,o,i){var r,n=arguments.length,s=n<3?e:null===i?i=Object.getOwnPropertyDescriptor(e,o):i;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)s=Reflect.decorate(t,e,o,i);else for(var a=t.length-1;a>=0;a--)(r=t[a])&&(s=(n<3?r(s):n>3?r(e,o,s):r(e,o))||s);return n>3&&s&&Object.defineProperty(e,o,s),s}([dt("other-tools")],Bi);var zi=function(t,e,o,i){var r,n=arguments.length,s=n<3?e:null===i?i=Object.getOwnPropertyDescriptor(e,o):i;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)s=Reflect.decorate(t,e,o,i);else for(var a=t.length-1;a>=0;a--)(r=t[a])&&(s=(n<3?r(s):n>3?r(e,o,s):r(e,o))||s);return n>3&&s&&Object.defineProperty(e,o,s),s};let Ti=class extends ct{constructor(){super(),this.color=new Ot({type:Et.RGB255,r:255,g:255,b:255}),this.coordinates={x:0,y:0,width:1,height:1},this.interpolationLeft=new Ot({type:Et.RGB255,r:255,g:0,b:0}),this.interpolationRight=new Ot({type:Et.RGB255,r:255,g:255,b:255}),this.interpolationActive=jt.NONE,this.addEventListener(Tt.eventName,(t=>{t instanceof Tt&&this.setColor(t.color)})),this.addEventListener(Dt.eventName,(t=>{t instanceof Dt&&this.setCoordinates(t.coordinates)})),this.addEventListener(Nt.eventName,(t=>{t instanceof Nt&&this.setInterpolationActive(t.active)}))}setColor(t){this.color=t,this.interpolationActive===jt.LEFT?this.interpolationLeft=t:this.interpolationActive==jt.RIGHT&&(this.interpolationRight=t)}setCoordinates(t){this.coordinates=t}setInterpolationActive(t){this.interpolationActive=t}get _slottedChildren(){return this.shadowRoot?.querySelector("slot")?.assignedElements({flatten:!0})??[]}render(){return this.style.background="#"+this.color.getHex(),this._slottedChildren.forEach((t=>{t instanceof Wt?t.color=this.color:t instanceof yi?(t.color=this.color,t.coordinates=this.coordinates):t instanceof Oi?t.coordinates=this.coordinates:t instanceof Gt&&(t.leftColor=this.interpolationLeft,t.rightColor=this.interpolationRight,t.activeColor=this.interpolationActive)})),F` ${zt}
+      <slot class="d-flex flex-row flex-wrap main-container"> </slot>`}};Ti.styles=[Vt],zi([gt()],Ti.prototype,"color",void 0),zi([gt()],Ti.prototype,"coordinates",void 0),zi([gt()],Ti.prototype,"interpolationLeft",void 0),zi([gt()],Ti.prototype,"interpolationRight",void 0),zi([gt()],Ti.prototype,"interpolationActive",void 0),Ti=zi([dt("color-picker")],Ti)})()})();

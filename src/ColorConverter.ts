@@ -7,14 +7,7 @@ import { Coordinates } from "./Coordinates";
 import { styles } from "./styles/ColorConverter";
 import "./ColorConverterInput";
 import { ColorPickerSetColorEvent } from "./ColorPickerSetColorEvent";
-
-interface InputValues {
-  color: Color; // Key for the color that was last updated
-  hexValue?: string;
-  rgb255Value?: string;
-  rgb01Value?: string;
-  hsvValue?: string;
-}
+import { InputType, InputValues } from "./ColorConverterInput";
 
 @customElement("color-converter")
 export class ColorConverter extends LitElement {
@@ -28,7 +21,7 @@ export class ColorConverter extends LitElement {
   verbose: boolean = true;
 
   @state()
-  inputValues: InputValues = { color: this.color };
+  inputValues: InputValues = {};
 
   setColor(color: Color) {
     this.dispatchEvent(new ColorPickerSetColorEvent(color));
@@ -40,7 +33,7 @@ export class ColorConverter extends LitElement {
     if (parsedColor != null) {
       if (this.verbose) console.log(`Found Hex: #${parsedColor.getHex()}`);
       this.setColor(parsedColor);
-      this.inputValues = { color: parsedColor, hexValue: value };
+      this.inputValues = { hexValue: value };
       return;
     }
     this.inputValues = {
@@ -58,7 +51,7 @@ export class ColorConverter extends LitElement {
           `Found RGB255: ${parsedColor.getRGB255().splice(0, 3).toString()}`
         );
       this.setColor(parsedColor);
-      this.inputValues = { color: parsedColor, rgb255Value: value };
+      this.inputValues = { rgb255Value: value };
       return;
     }
     this.inputValues = {
@@ -76,7 +69,7 @@ export class ColorConverter extends LitElement {
           `Found RGB01: ${parsedColor.getRGB01().splice(0, 3).toString()}`
         );
       this.setColor(parsedColor);
-      this.inputValues = { color: parsedColor, rgb01Value: value };
+      this.inputValues = { rgb01Value: value };
       return;
     }
     this.inputValues = {
@@ -94,7 +87,7 @@ export class ColorConverter extends LitElement {
           `Found HSV: ${parsedColor.getHSV(false).splice(0, 3).toString()}`
         );
       this.setColor(parsedColor);
-      this.inputValues = { color: parsedColor, hsvValue: value };
+      this.inputValues = { hsvValue: value };
       return;
     }
     this.inputValues = {
@@ -135,30 +128,27 @@ export class ColorConverter extends LitElement {
       </table>
       <div class="d-flex flex-column inputs-container">
         <color-converter-input
-          label="Hex"
-          value=${this.inputValues.hexValue ?? "#" + this.color.getHex()}
+          type=${InputType.HEX}
+          .inputValues=${this.inputValues}
+          .color=${this.color}
           .onValueChange=${this.updateFromHex.bind(this)}
         ></color-converter-input>
         <color-converter-input
-          label="RGB (0-255)"
-          value=${this.inputValues.rgb255Value ??
-          this.color.getRGB255().splice(0, 3).toString()}
+          type=${InputType.RGB255}
+          .inputValues=${this.inputValues}
+          .color=${this.color}
           .onValueChange=${this.updateFromRGB255.bind(this)}
         ></color-converter-input>
         <color-converter-input
-          label="RGB (0-1)"
-          value=${this.inputValues.rgb01Value ??
-          this.color
-            .getRGB01()
-            .splice(0, 3)
-            .map((x) => x.toFixed(3))
-            .toString()}
+          type=${InputType.RGB01}
+          .inputValues=${this.inputValues}
+          .color=${this.color}
           .onValueChange=${this.updateFromRGB01.bind(this)}
         ></color-converter-input>
         <color-converter-input
-          label="HSV (°, %, %)"
-          value=${this.inputValues.hsvValue ??
-          this.color.getHSV(false).splice(0, 3).toString()}
+          type=${InputType.HSV}
+          .inputValues=${this.inputValues}
+          .color=${this.color}
           .onValueChange=${this.updateFromHSV.bind(this)}
         ></color-converter-input>
       </div>

@@ -49,8 +49,8 @@ export class ColorConverter extends LitElement {
     };
   }
 
-  updateFromRGB255(e: Event) {
-    const value = (e.target as HTMLInputElement).value;
+  updateFromRGB255(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
     const parsedColor = Color.parseRGB255(value);
     if (parsedColor != null) {
       if (this.verbose)
@@ -67,8 +67,8 @@ export class ColorConverter extends LitElement {
     };
   }
 
-  updateFromRGB01(e: Event) {
-    const value = (e.target as HTMLInputElement).value;
+  updateFromRGB01(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
     const parsedColor = Color.parseRGB01(value);
     if (parsedColor != null) {
       if (this.verbose)
@@ -85,8 +85,8 @@ export class ColorConverter extends LitElement {
     };
   }
 
-  updateFromHSV(e: Event) {
-    const value = (e.target as HTMLInputElement).value;
+  updateFromHSV(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
     const parsedColor = Color.parseHSV(value);
     if (parsedColor != null) {
       if (this.verbose)

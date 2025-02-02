@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { createComponent } from "@lit/react";
 
 import Color from "./Color";
 import styles from "./styles/ColorConverter.module.css";
@@ -9,6 +10,12 @@ import {
   parseRGB255Color,
 } from "./ColorStringParsing";
 import { ColorConverterInput } from "./ColorConverterInput";
+
+const ColorConverterInputReact = createComponent({
+  tagName: "color-converter-input",
+  elementClass: ColorConverterInput,
+  react: React,
+});
 
 interface InputValues {
   color: Color; // Key for the color that was last updated
@@ -44,8 +51,8 @@ export default function ColorConverter({
     });
   }
 
-  function updateFromHex(e: React.ChangeEvent<HTMLInputElement>) {
-    const value = e.target.value;
+  function updateFromHex(e: InputEvent) {
+    const value = (e.target as HTMLInputElement).value;
     const parsedColor = parseHexColor(value);
     if (parsedColor != null) {
       if (verbose) console.log(`Found Hex: #${parsedColor.getHex()}`);
@@ -59,8 +66,8 @@ export default function ColorConverter({
     });
   }
 
-  function updateFromRGB255(e: React.ChangeEvent<HTMLInputElement>) {
-    const value = e.target.value;
+  function updateFromRGB255(e: InputEvent) {
+    const value = (e.target as HTMLInputElement).value;
     const parsedColor = parseRGB255Color(value);
     if (parsedColor != null) {
       if (verbose)
@@ -77,8 +84,8 @@ export default function ColorConverter({
     });
   }
 
-  function updateFromRGB01(e: React.ChangeEvent<HTMLInputElement>) {
-    const value = e.target.value;
+  function updateFromRGB01(e: InputEvent) {
+    const value = (e.target as HTMLInputElement).value;
     const parsedColor = parseRGB01Color(value);
     if (parsedColor != null) {
       if (verbose)
@@ -95,8 +102,8 @@ export default function ColorConverter({
     });
   }
 
-  function updateFromHSV(e: React.ChangeEvent<HTMLInputElement>) {
-    const value = e.target.value;
+  function updateFromHSV(e: InputEvent) {
+    const value = (e.target as HTMLInputElement).value;
     const parsedColor = parseHSVColor(value);
     if (parsedColor != null) {
       if (verbose)
@@ -156,22 +163,22 @@ export default function ColorConverter({
         </tbody>
       </table>
       <div className={`d-flex flex-column ${styles.inputsContainer}`}>
-        <ColorConverterInput
+        <ColorConverterInputReact
           label="Hex"
           value={hex}
           onChange={updateFromHex}
         />
-        <ColorConverterInput
+        <ColorConverterInputReact
           label="RGB (0-255)"
           value={rgb255}
           onChange={updateFromRGB255}
         />
-        <ColorConverterInput
+        <ColorConverterInputReact
           label="RGB (0-1)"
           value={rgb01}
           onChange={updateFromRGB01}
         />
-        <ColorConverterInput
+        <ColorConverterInputReact
           label="HSV (°, %, %)"
           value={hsv}
           onChange={updateFromHSV}

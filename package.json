@@ -23,6 +23,7 @@
   "devDependencies": {
     "@lit/react": "^1.0.7",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.10",
+    "@shoelace-style/shoelace": "^2.19.1",
     "@types/clamp": "^1.0.1",
     "@types/color-convert": "^2.0.0",
     "@types/node": "^22.13.0",

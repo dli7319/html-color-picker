@@ -62,6 +62,15 @@ export class ColorConverter extends LitElement {
     );
   }
 
+  updateChildren() {
+    this._slottedChildren.forEach((child) => {
+      if (child instanceof ColorConverterInput) {
+        child.inputValues = this.inputValues;
+        child.color = this.color;
+      }
+    });
+  }
+
   render() {
     const floatCoordinates = {
       x: this.coordinates.x / this.coordinates.width,
@@ -75,12 +84,7 @@ export class ColorConverter extends LitElement {
       Math.round(this.coordinates.x),
       Math.round(this.coordinates.y),
     ];
-    this._slottedChildren.forEach((child) => {
-      if (child instanceof ColorConverterInput) {
-        child.inputValues = this.inputValues;
-        child.color = this.color;
-      }
-    });
+    this.updateChildren();
     return html`
       ${bootstrap}
       <h5>Color Converter</h5>
@@ -100,7 +104,7 @@ export class ColorConverter extends LitElement {
       </table>
       <slot
         class="d-flex flex-column inputs-container"
-        @slotchange=${this.render}
+        @slotchange=${this.updateChildren}
       >
       </slot>
     `;

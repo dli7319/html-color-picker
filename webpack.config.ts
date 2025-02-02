@@ -19,11 +19,6 @@ const config: webpack.Configuration = {
         exclude: /node_modules/,
       },
       {
-        test: /\.css$/i,
-        resourceQuery: { not: [/raw/] },
-        use: ["style-loader", "css-loader"],
-      },
-      {
         resourceQuery: /raw/,
         type: 'asset/source',
       }

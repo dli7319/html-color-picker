@@ -32,11 +32,19 @@ export class ColorInterpolation extends LitElement {
   colorGradient: ColorGradient = new ColorGradient();
 
   setActiveColorLeft() {
-    this.setActiveColor(ActiveColorSide.LEFT);
+    this.setActiveColor(
+      this.activeColor == ActiveColorSide.LEFT
+        ? ActiveColorSide.NONE
+        : ActiveColorSide.LEFT
+    );
   }
 
   setActiveColorRight() {
-    this.setActiveColor(ActiveColorSide.RIGHT);
+    this.setActiveColor(
+      this.activeColor == ActiveColorSide.RIGHT
+        ? ActiveColorSide.NONE
+        : ActiveColorSide.RIGHT
+    );
   }
 
   onMouseMoveGradient(event: MouseEvent) {

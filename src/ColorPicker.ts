@@ -3,16 +3,15 @@ import { customElement, state } from "lit/decorators.js";
 
 import { Color, ColorInputType } from "./Color";
 import { Coordinates } from "./Coordinates";
-import { ActiveColorSide } from "./ColorInterpolation";
+import { ActiveColorSide, ColorInterpolation } from "./ColorInterpolation";
 import { styles } from "./styles/ColorPicker";
 import { bootstrap } from "./styles/Bootstrap";
 import { ColorPickerSetColorEvent } from "./ColorPickerSetColorEvent";
 import { ColorPickerSetCoordinatesEvent } from "./ColorPickerSetCoordinatesEvent";
 import { ColorPickerSetInterpolationActiveEvent } from "./ColorPickerSetInterpolationActiveEvent";
-import "./ColorSelection";
-import "./ColorConverter";
-import "./ImageSampling";
-import "./ColorInterpolation";
+import { ColorSelection } from "./ColorSelection";
+import { ColorConverter } from "./ColorConverter";
+import { ImageSampling } from "./ImageSampling";
 import "./OtherTools";
 
 @customElement("color-picker")
@@ -95,23 +94,31 @@ export class ColorPicker extends LitElement {
     this.interpolationActive = newActive;
   }
 
+  get _slottedChildren() {
+    return (
+      this.shadowRoot
+        ?.querySelector("slot")
+        ?.assignedElements({ flatten: true }) ?? []
+    );
+  }
+
   render() {
-    const background = "#" + this.color.getHex();
-    this.style.background = background;
+    this.style.background = "#" + this.color.getHex();
+    this._slottedChildren.forEach((child) => {
+      if (child instanceof ColorSelection) {
+        child.color = this.color;
+      } else if (child instanceof ColorConverter) {
+        child.color = this.color;
+        child.coordinates = this.coordinates;
+      } else if (child instanceof ImageSampling) {
+        child.coordinates = this.coordinates;
+      } else if (child instanceof ColorInterpolation) {
+        child.leftColor = this.interpolationLeft;
+        child.rightColor = this.interpolationRight;
+        child.activeColor = this.interpolationActive;
+      }
+    });
     return html` ${bootstrap}
-      <div class="d-flex flex-row flex-wrap main-container">
-        <color-selection .color=${this.color}></color-selection>
-        <color-converter
-          .color=${this.color}
-          .coordinates=${this.coordinates}
-        ></color-converter>
-        <image-sampling .coordinates=${this.coordinates}></image-sampling>
-        <color-interpolation
-          .leftColor=${this.interpolationLeft}
-          .rightColor=${this.interpolationRight}
-          .activeColor=${this.interpolationActive}
-        ></color-interpolation>
-        <other-tools></other-tools>
-      </div>`;
+      <slot class="d-flex flex-row flex-wrap main-container"> </slot>`;
   }
 }

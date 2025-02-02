@@ -118,21 +118,16 @@ export default function ColorConverter({
   const hex =
     inputValues.hexValue != null ? inputValues.hexValue : "#" + color.getHex();
   const rgb255 =
-    inputValues.rgb255Value != null
-      ? inputValues.rgb255Value
-      : color.getRGB255().splice(0, 3).toString();
+    inputValues.rgb255Value ?? color.getRGB255().splice(0, 3).toString();
   const rgb01 =
-    inputValues.rgb01Value != null
-      ? inputValues.rgb01Value
-      : color
-          .getRGB01()
-          .splice(0, 3)
-          .map((x) => x.toFixed(3))
-          .toString();
+    inputValues.rgb01Value ??
+    color
+      .getRGB01()
+      .splice(0, 3)
+      .map((x) => x.toFixed(3))
+      .toString();
   const hsv =
-    inputValues.hsvValue != null
-      ? inputValues.hsvValue
-      : color.getHSV(false).splice(0, 3).toString();
+    inputValues.hsvValue ?? color.getHSV(false).splice(0, 3).toString();
 
   const floatCoordinates = {
     x: coordinates.x / coordinates.width,

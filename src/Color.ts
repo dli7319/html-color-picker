@@ -1,6 +1,9 @@
 import clamp from "clamp";
-import lerp from "lerp";
 import colorConvert from "color-convert";
+
+export function lerp(a: number, b: number, t: number) {
+  return a + (b - a) * t;
+}
 
 export enum ColorInputType {
   RGB255 = "rgb255",

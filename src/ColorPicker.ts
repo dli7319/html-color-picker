@@ -7,12 +7,13 @@ import { ActiveColorSide } from "./ColorInterpolation";
 import { styles } from "./styles/ColorPicker";
 import { bootstrap } from "./styles/Bootstrap";
 import { ColorPickerSetColorEvent } from "./ColorPickerSetColorEvent";
+import { ColorPickerSetCoordinatesEvent } from "./ColorPickerSetCoordinatesEvent";
+import { ColorPickerSetInterpolationActiveEvent } from "./ColorPickerSetInterpolationActiveEvent";
 import "./ColorSelection";
 import "./ColorConverter";
 import "./ImageSampling";
 import "./ColorInterpolation";
 import "./OtherTools";
-import { ColorPickerSetCoordinatesEvent } from "./ColorPickerSetCoordinatesEvent";
 
 @customElement("color-picker")
 export class ColorPicker extends LitElement {
@@ -61,6 +62,11 @@ export class ColorPicker extends LitElement {
         this.setCoordinates(event.coordinates);
       }
     });
+    this.addEventListener(ColorPickerSetInterpolationActiveEvent.eventName, (event: Event) => {
+      if (event instanceof ColorPickerSetInterpolationActiveEvent) {
+        this.setInterpolationActive(event.active);
+      }
+    });
   }
 
   setColor(newColor: Color) {
@@ -97,7 +103,6 @@ export class ColorPicker extends LitElement {
           .leftColor=${this.interpolationLeft}
           .rightColor=${this.interpolationRight}
           .activeColor=${this.interpolationActive}
-          .setActiveColor=${this.setInterpolationActive.bind(this)}
         ></color-interpolation>
         <other-tools></other-tools>
       </div>`;

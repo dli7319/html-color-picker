@@ -6,6 +6,7 @@ import { ColorGradient } from "./ColorGradient";
 import { styles } from "./styles/ColorInterpolation";
 import { bootstrap } from "./styles/Bootstrap";
 import { ColorPickerSetColorEvent } from "./ColorPickerSetColorEvent";
+import { ColorPickerSetInterpolationActiveEvent } from "./ColorPickerSetInterpolationActiveEvent";
 
 export enum ActiveColorSide {
   LEFT = "left",
@@ -23,13 +24,15 @@ export class ColorInterpolation extends LitElement {
   leftColor: Color = new Color({});
   @property({ attribute: false })
   rightColor: Color = new Color({});
-  @property()
-  setActiveColor: (activeColor: ActiveColorSide) => void = () => {};
 
   colorGradient: ColorGradient = new ColorGradient();
 
   setColor(color: Color) {
     this.dispatchEvent(new ColorPickerSetColorEvent(color));
+  }
+
+  setActiveColor(activeColor: ActiveColorSide) {
+    this.dispatchEvent(new ColorPickerSetInterpolationActiveEvent(activeColor));
   }
 
   setActiveColorLeft() {

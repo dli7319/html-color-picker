@@ -682,9 +682,7 @@
           .color=${this.color}
           .coordinates=${this.coordinates}
         ></color-converter>
-        <image-sampling
-          .coordinates=${this.coordinates}
-        ></image-sampling>
+        <image-sampling .coordinates=${this.coordinates}></image-sampling>
         <color-interpolation
           .leftColor=${this.interpolationLeft}
           .rightColor=${this.interpolationRight}

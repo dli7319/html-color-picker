@@ -3,8 +3,15 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import Form from "react-bootstrap/Form";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import InputGroup from "react-bootstrap/InputGroup";
-import Color, { ColorInputType } from "./Color";
+
+import Color from "./Color";
 import styles from "./styles/ColorConverter.module.css";
+import {
+  parseHexColor,
+  parseHSVColor,
+  parseRGB01Color,
+  parseRGB255Color,
+} from "./ColorStringParsing";
 
 interface InputValues {
   color: Color; // Key for the color that was last updated
@@ -71,16 +78,11 @@ export default function ColorConverter({
 
   function updateFromHex(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
-    const hexRegex = /^#?([0-9a-fA-F]{3}(?:[0-9a-fA-F]{3})?)$/;
-    const match = hexRegex.exec(value);
-    if (match && match.length == 2) {
-      if (verbose) console.log(`Found Hex: #${match[1]}`);
-      const newColor = new Color({
-        type: ColorInputType.HEX,
-        hex: match[1],
-      });
-      setColor(newColor);
-      setInputValues({ color: newColor, hexValue: value });
+    const parsedColor = parseHexColor(value);
+    if (parsedColor != null) {
+      if (verbose) console.log(`Found Hex: #${parsedColor.getHex()}`);
+      setColor(parsedColor);
+      setInputValues({ color: parsedColor, hexValue: value });
       return;
     }
     setInputValues({
@@ -91,19 +93,14 @@ export default function ColorConverter({
 
   function updateFromRGB255(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
-    const rgb255Regex = /^(\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})$/;
-    const match = rgb255Regex.exec(value);
-    if (match && match.length == 4) {
+    const parsedColor = parseRGB255Color(value);
+    if (parsedColor != null) {
       if (verbose)
-        console.log(`Found RGB255: ${match[1]}, ${match[2]}, ${match[3]}`);
-      const newColor = new Color({
-        type: ColorInputType.RGB255,
-        r: parseInt(match[1]),
-        g: parseInt(match[2]),
-        b: parseInt(match[3]),
-      });
-      setColor(newColor);
-      setInputValues({ color: newColor, rgb255Value: value });
+        console.log(
+          `Found RGB255: ${parsedColor.getRGB255().splice(0, 3).toString()}`
+        );
+      setColor(parsedColor);
+      setInputValues({ color: parsedColor, rgb255Value: value });
       return;
     }
     setInputValues({
@@ -114,20 +111,14 @@ export default function ColorConverter({
 
   function updateFromRGB01(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
-    const rgb01Regex =
-      /^([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+\s*([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+\s*([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)$/;
-    const match = rgb01Regex.exec(value);
-    if (match && match.length == 4) {
+    const parsedColor = parseRGB01Color(value);
+    if (parsedColor != null) {
       if (verbose)
-        console.log(`Found RGB01: ${match[1]}, ${match[2]}, ${match[3]}`);
-      const newColor = new Color({
-        type: ColorInputType.RGB01,
-        r: parseFloat(match[1]),
-        g: parseFloat(match[2]),
-        b: parseFloat(match[3]),
-      });
-      setColor(newColor);
-      setInputValues({ color: newColor, rgb01Value: value });
+        console.log(
+          `Found RGB01: ${parsedColor.getRGB01().splice(0, 3).toString()}`
+        );
+      setColor(parsedColor);
+      setInputValues({ color: parsedColor, rgb01Value: value });
       return;
     }
     setInputValues({
@@ -138,26 +129,15 @@ export default function ColorConverter({
 
   function updateFromHSV(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
-    const hsvRegex =
-      /^([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+\s*([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+\s*([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)$/;
-    const match = hsvRegex.exec(value);
-    if (match && match.length == 4) {
-      const h = parseFloat(match[1]);
-      const s = parseFloat(match[2]);
-      const v = parseFloat(match[3]);
-      if (0 <= h && h <= 360 && 0 <= s && s <= 100 && 0 <= v && v <= 100) {
-        if (verbose)
-          console.log(`Found HSV: ${match[1]}, ${match[2]}, ${match[3]}`);
-        const newColor = new Color({
-          type: ColorInputType.HSV,
-          h: parseInt(match[1]),
-          s: parseInt(match[2]),
-          v: parseInt(match[3]),
-        });
-        setColor(newColor);
-        setInputValues({ color: newColor, hsvValue: value });
-        return;
-      }
+    const parsedColor = parseHSVColor(value);
+    if (parsedColor != null) {
+      if (verbose)
+        console.log(
+          `Found HSV: ${parsedColor.getHSV().splice(0, 3).toString()}`
+        );
+      setColor(parsedColor);
+      setInputValues({ color: parsedColor, hsvValue: value });
+      return;
     }
     setInputValues({
       ...inputValues,
@@ -187,10 +167,7 @@ export default function ColorConverter({
   const hsv =
     inputValues.hsvValue != null
       ? inputValues.hsvValue
-      : color
-          .getHSV(false)
-          .splice(0, 3)
-          .toString();
+      : color.getHSV(false).splice(0, 3).toString();
 
   const floatCoordinates = {
     x: coordinates.x / coordinates.width,

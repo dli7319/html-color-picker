@@ -3,4 +3,8 @@ export const styles = css`
   .inputs-container {
     gap: 0.25rem;
   }
+
+  table > * {
+    --bs-table-bg: transparent;
+  }
 `;

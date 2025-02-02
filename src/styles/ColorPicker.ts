@@ -1,18 +1,18 @@
-import {css} from 'lit';
+import { css } from "lit";
 export const styles = css`
-:host {
+  :host {
     display: block;
     width: 100%;
     height: 100%;
-}
+  }
 
-.main-container {
+  .main-container {
     --gap: 1rem;
     gap: var(--gap);
     padding: var(--gap);
-}
+  }
 
-::slotted(*) {
+  ::slotted(*) {
     border-radius: 1rem;
     background: #eee;
     padding: 1rem;
@@ -20,4 +20,5 @@ export const styles = css`
     flex: 1 1 30%;
     display: flex;
     flex-direction: column;
-}`;
+  }
+`;

@@ -1,29 +1,32 @@
-import { css } from 'lit';
+import { css } from "lit";
 export const styles = css`
-.color-selection {
+  .color-selection {
     width: 2rem;
     height: 2rem;
     background-color: red;
     border-radius: 10%;
     margin: 0 auto;
-}
+  }
 
-.color-selection.rightColor {
+  .color-selection.rightColor {
     background-color: white;
-}
+  }
 
-.color-selection.active {
+  .color-selection.active {
     border: black dashed 0.2rem;
-}
+  }
 
-.gradient {
+  .gradient {
     width: 100%;
     height: 2rem;
     background-image: linear-gradient(to right, red, white);
-    ;
-}
+  }
 
-.table th {
+  .table th {
     width: 1rem;
-}
+  }
+
+  table > * {
+    --bs-table-bg: transparent;
+  }
 `;

@@ -7,6 +7,7 @@ import { Coordinates } from "./Coordinates";
 import { styles } from "./styles/ColorConverter";
 import { ColorPickerSetColorEvent } from "./ColorPickerSetColorEvent";
 import {
+  ColorConverterInput,
   InputType,
   inputTypeToInputValueKey,
   InputValues,
@@ -53,6 +54,14 @@ export class ColorConverter extends LitElement {
     this.dispatchEvent(new ColorPickerSetColorEvent(color));
   }
 
+  get _slottedChildren() {
+    return (
+      this.shadowRoot
+        ?.querySelector("slot")
+        ?.assignedElements({ flatten: true }) ?? []
+    );
+  }
+
   render() {
     const floatCoordinates = {
       x: this.coordinates.x / this.coordinates.width,
@@ -66,6 +75,12 @@ export class ColorConverter extends LitElement {
       Math.round(this.coordinates.x),
       Math.round(this.coordinates.y),
     ];
+    this._slottedChildren.forEach((child) => {
+      if (child instanceof ColorConverterInput) {
+        child.inputValues = this.inputValues;
+        child.color = this.color;
+      }
+    });
     return html`
       ${bootstrap}
       <h5>Color Converter</h5>
@@ -83,28 +98,11 @@ export class ColorConverter extends LitElement {
           </tr>
         </tbody>
       </table>
-      <div class="d-flex flex-column inputs-container">
-        <color-converter-input
-          type=${InputType.HEX}
-          .inputValues=${this.inputValues}
-          .color=${this.color}
-        ></color-converter-input>
-        <color-converter-input
-          type=${InputType.RGB255}
-          .inputValues=${this.inputValues}
-          .color=${this.color}
-        ></color-converter-input>
-        <color-converter-input
-          type=${InputType.RGB01}
-          .inputValues=${this.inputValues}
-          .color=${this.color}
-        ></color-converter-input>
-        <color-converter-input
-          type=${InputType.HSV}
-          .inputValues=${this.inputValues}
-          .color=${this.color}
-        ></color-converter-input>
-      </div>
+      <slot
+        class="d-flex flex-column inputs-container"
+        @slotchange=${this.render}
+      >
+      </slot>
     `;
   }
 }

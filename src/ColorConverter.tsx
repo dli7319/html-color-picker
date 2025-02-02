@@ -1,8 +1,4 @@
-import React, { useState, useReducer } from "react";
-import { CopyToClipboard } from "react-copy-to-clipboard";
-import Form from "react-bootstrap/Form";
-import FloatingLabel from "react-bootstrap/FloatingLabel";
-import InputGroup from "react-bootstrap/InputGroup";
+import React, { useState } from "react";
 
 import Color from "./Color";
 import styles from "./styles/ColorConverter.module.css";
@@ -12,6 +8,7 @@ import {
   parseRGB01Color,
   parseRGB255Color,
 } from "./ColorStringParsing";
+import { ColorConverterInput } from "./ColorConverterInput";
 
 interface InputValues {
   color: Color; // Key for the color that was last updated
@@ -21,29 +18,13 @@ interface InputValues {
   hsvValue?: string;
 }
 
-interface CopiedState {
-  hex: boolean;
-  rgb255: boolean;
-  rgb01: boolean;
-  hsv: boolean;
-}
-
-const defaultCopiedState: CopiedState = Object.freeze({
-  hex: false,
-  rgb255: false,
-  rgb01: false,
-  hsv: false,
-});
-
-interface CopiedStateUpdate {
-  hex?: boolean;
-  rgb255?: boolean;
-  rgb01?: boolean;
-  hsv?: boolean;
-}
-
-function copiedStateReducer(state: CopiedState, newState: CopiedStateUpdate) {
-  return { ...state, ...newState };
+interface ColorConverterProps {
+  color: Color;
+  setColor: (color: Color) => void;
+  coordinates: { x: number; y: number; width: number; height: number };
+  className?: string;
+  verbose?: boolean;
+  copiedTimeout?: number;
 }
 
 export default function ColorConverter({
@@ -53,21 +34,10 @@ export default function ColorConverter({
   className = "",
   verbose = true,
   copiedTimeout = 1000,
-}: {
-  color: Color;
-  setColor: (color: Color) => void;
-  coordinates: { x: number; y: number; width: number; height: number };
-  className?: string;
-  verbose?: boolean;
-  copiedTimeout?: number;
-}) {
+}: ColorConverterProps) {
   const [inputValues, setInputValues] = useState<InputValues>({
     color,
   });
-  const [copied, setCopied] = useReducer(
-    copiedStateReducer,
-    defaultCopiedState
-  );
 
   // If the color has changed, remove the input values.
   if (color != inputValues.color) {
@@ -145,11 +115,6 @@ export default function ColorConverter({
     });
   }
 
-  function onCopy(key: keyof CopiedStateUpdate = "hex") {
-    setCopied({ [key]: true });
-    setTimeout(() => setCopied({ [key]: false }), copiedTimeout);
-  }
-
   const hex =
     inputValues.hexValue != null ? inputValues.hexValue : "#" + color.getHex();
   const rgb255 =
@@ -198,90 +163,30 @@ export default function ColorConverter({
         </tbody>
       </table>
       <div className={`d-flex flex-column ${styles.inputsContainer}`}>
-        <div className="d-flex">
-          <InputGroup>
-            <FloatingLabel label="Hex" className="flex-grow-1">
-              <Form.Control type="text" value={hex} onChange={updateFromHex} />
-            </FloatingLabel>
-            <InputGroup.Text>
-              <CopyToClipboard text={hex} onCopy={() => onCopy("hex")}>
-                <i
-                  className={`bi bi-clipboard2 ${styles.copyIcon}`}
-                  hidden={copied.hex}
-                ></i>
-              </CopyToClipboard>
-              <i
-                className={`bi bi-check ${styles.copyIcon}`}
-                hidden={!copied.hex}
-              ></i>
-            </InputGroup.Text>
-          </InputGroup>
-        </div>
-        <div className="d-flex">
-          <InputGroup>
-            <FloatingLabel label="RGB (0-255)" className="flex-grow-1">
-              <Form.Control
-                type="text"
-                value={rgb255}
-                onChange={updateFromRGB255}
-              />
-            </FloatingLabel>
-            <InputGroup.Text>
-              <CopyToClipboard text={rgb255} onCopy={() => onCopy("rgb255")}>
-                <i
-                  className={`bi bi-clipboard2 ${styles.copyIcon}`}
-                  hidden={copied.rgb255}
-                ></i>
-              </CopyToClipboard>
-              <i
-                className={`bi bi-check ${styles.copyIcon}`}
-                hidden={!copied.rgb255}
-              ></i>
-            </InputGroup.Text>
-          </InputGroup>
-        </div>
-        <div className="d-flex">
-          <InputGroup>
-            <FloatingLabel label="RGB (0-1)" className="flex-grow-1">
-              <Form.Control
-                type="text"
-                value={rgb01}
-                onChange={updateFromRGB01}
-              />
-            </FloatingLabel>
-            <InputGroup.Text>
-              <CopyToClipboard text={rgb01} onCopy={() => onCopy("rgb01")}>
-                <i
-                  className={`bi bi-clipboard2 ${styles.copyIcon}`}
-                  hidden={copied.rgb01}
-                ></i>
-              </CopyToClipboard>
-              <i
-                className={`bi bi-check ${styles.copyIcon}`}
-                hidden={!copied.rgb01}
-              ></i>
-            </InputGroup.Text>
-          </InputGroup>
-        </div>
-        <div className="d-flex">
-          <InputGroup>
-            <FloatingLabel label="HSV (&#176;, %, %)" className="flex-grow-1">
-              <Form.Control type="text" value={hsv} onChange={updateFromHSV} />
-            </FloatingLabel>
-            <InputGroup.Text>
-              <CopyToClipboard text={hsv} onCopy={() => onCopy("hsv")}>
-                <i
-                  className={`bi bi-clipboard2 ${styles.copyIcon}`}
-                  hidden={copied.hsv}
-                ></i>
-              </CopyToClipboard>
-              <i
-                className={`bi bi-check ${styles.copyIcon}`}
-                hidden={!copied.hsv}
-              ></i>
-            </InputGroup.Text>
-          </InputGroup>
-        </div>
+        <ColorConverterInput
+          label="Hex"
+          value={hex}
+          onChange={updateFromHex}
+          copiedTimeout={copiedTimeout}
+        />
+        <ColorConverterInput
+          label="RGB (0-255)"
+          value={rgb255}
+          onChange={updateFromRGB255}
+          copiedTimeout={copiedTimeout}
+        />
+        <ColorConverterInput
+          label="RGB (0-1)"
+          value={rgb01}
+          onChange={updateFromRGB01}
+          copiedTimeout={copiedTimeout}
+        />
+        <ColorConverterInput
+          label="HSV (°, %, %)"
+          value={hsv}
+          onChange={updateFromHSV}
+          copiedTimeout={copiedTimeout}
+        />
       </div>
     </div>
   );

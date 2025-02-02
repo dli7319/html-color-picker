@@ -119,8 +119,10 @@ export class ColorPicker extends LitElement {
       }
     });
     return html` ${bootstrap}
-      <slot class="d-flex flex-row flex-wrap main-container"
-      @slotchange=${this.render}
-      > </slot>`;
+      <slot
+        class="d-flex flex-row flex-wrap main-container"
+        @slotchange=${this.render}
+      >
+      </slot>`;
   }
 }

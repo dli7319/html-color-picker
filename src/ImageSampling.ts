@@ -7,6 +7,7 @@ import { bootstrap } from "./styles/Bootstrap";
 import Color, { ColorInputType } from "./Color";
 import { Coordinates } from "./Coordinates";
 import { ColorPickerSetColorEvent } from "./ColorPickerSetColorEvent";
+import { ColorPickerSetCoordinatesEvent } from "./ColorPickerSetCoordinatesEvent";
 
 export enum OverlayColor {
   Transparent = "transparent",
@@ -33,8 +34,6 @@ export class ImageSampling extends LitElement {
   @property({ attribute: false })
   coordinates: Coordinates = { x: 0, y: 0, width: 0, height: 0 };
   @property({ attribute: false })
-  setCoordinates: (coordinates: Coordinates) => void = () => {};
-  @property({ attribute: false })
   initialOverlayColor: OverlayColor = OverlayColor.Black;
 
   @state()
@@ -53,6 +52,10 @@ export class ImageSampling extends LitElement {
 
   setColor(color: Color) {
     this.dispatchEvent(new ColorPickerSetColorEvent(color));
+  }
+
+  setCoordinates(coordinates: Coordinates) {
+    this.dispatchEvent(new ColorPickerSetCoordinatesEvent(coordinates));
   }
 
   loadImage(e: Event) {

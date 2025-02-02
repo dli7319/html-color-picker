@@ -12,6 +12,7 @@ import "./ColorConverter";
 import "./ImageSampling";
 import "./ColorInterpolation";
 import "./OtherTools";
+import { ColorPickerSetCoordinatesEvent } from "./ColorPickerSetCoordinatesEvent";
 
 @customElement("color-picker")
 export class ColorPicker extends LitElement {
@@ -55,6 +56,11 @@ export class ColorPicker extends LitElement {
         this.setColor(event.color);
       }
     });
+    this.addEventListener(ColorPickerSetCoordinatesEvent.eventName, (event: Event) => {
+      if (event instanceof ColorPickerSetCoordinatesEvent) {
+        this.setCoordinates(event.coordinates);
+      }
+    });
   }
 
   setColor(newColor: Color) {
@@ -86,7 +92,6 @@ export class ColorPicker extends LitElement {
         ></color-converter>
         <image-sampling
           .coordinates=${this.coordinates}
-          .setCoordinates=${this.setCoordinates}
         ></image-sampling>
         <color-interpolation
           .leftColor=${this.interpolationLeft}

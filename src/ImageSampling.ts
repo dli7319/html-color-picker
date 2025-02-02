@@ -6,6 +6,7 @@ import { styles } from "./styles/ImageSampling";
 import { bootstrap } from "./styles/Bootstrap";
 import Color, { ColorInputType } from "./Color";
 import { Coordinates } from "./Coordinates";
+import { ColorPickerSetColorEvent } from "./ColorPickerSetColorEvent";
 
 export enum OverlayColor {
   Transparent = "transparent",
@@ -30,8 +31,6 @@ export class ImageSampling extends LitElement {
   static styles = [styles];
 
   @property({ attribute: false })
-  setColor: (color: Color) => void = () => {};
-  @property({ attribute: false })
   coordinates: Coordinates = { x: 0, y: 0, width: 0, height: 0 };
   @property({ attribute: false })
   setCoordinates: (coordinates: Coordinates) => void = () => {};
@@ -50,6 +49,10 @@ export class ImageSampling extends LitElement {
   constructor() {
     super();
     this.overlayColor = this.initialOverlayColor;
+  }
+
+  setColor(color: Color) {
+    this.dispatchEvent(new ColorPickerSetColorEvent(color));
   }
 
   loadImage(e: Event) {
@@ -160,9 +163,24 @@ export class ImageSampling extends LitElement {
             aria-label="Select Overlay Size"
             @change=${this.selectOverlaySize}
           >
-            <option value=${OverlaySize.Small} .selected=${this.overlaySize == OverlaySize.Small}>Small</option>
-            <option value=${OverlaySize.Medium} .selected=${this.overlaySize == OverlaySize.Medium}>Medium</option>
-            <option value=${OverlaySize.Large} .selected=${this.overlaySize == OverlaySize.Large}>Large</option>
+            <option
+              value=${OverlaySize.Small}
+              .selected=${this.overlaySize == OverlaySize.Small}
+            >
+              Small
+            </option>
+            <option
+              value=${OverlaySize.Medium}
+              .selected=${this.overlaySize == OverlaySize.Medium}
+            >
+              Medium
+            </option>
+            <option
+              value=${OverlaySize.Large}
+              .selected=${this.overlaySize == OverlaySize.Large}
+            >
+              Large
+            </option>
           </select>
           <label>Overlay Size</label>
         </div>

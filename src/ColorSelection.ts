@@ -5,6 +5,7 @@ import clamp from "clamp";
 import Color, { ColorInputType } from "./Color";
 import { styles } from "./styles/ColorSelection";
 import { bootstrap } from "./styles/Bootstrap";
+import { ColorPickerSetColorEvent } from "./ColorPickerSetColorEvent";
 
 @customElement("color-selection")
 export class ColorSelection extends LitElement {
@@ -12,8 +13,10 @@ export class ColorSelection extends LitElement {
 
   @property({ attribute: false })
   color: Color = new Color();
-  @property({ attribute: false })
-  setColor: (color: Color) => void = () => {};
+
+  setColor(color: Color) {
+    this.dispatchEvent(new ColorPickerSetColorEvent(color));
+  }
 
   onMouseMoveColorGrad(e: MouseEvent) {
     const [hue] = this.color.getHSV();

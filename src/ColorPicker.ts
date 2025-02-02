@@ -4,8 +4,9 @@ import { customElement, state } from "lit/decorators.js";
 import Color, { ColorInputType } from "./Color";
 import { Coordinates } from "./Coordinates";
 import { ActiveColorSide } from "./ColorInterpolation";
-import {styles} from "./styles/ColorPicker";
+import { styles } from "./styles/ColorPicker";
 import { bootstrap } from "./styles/Bootstrap";
+import { ColorPickerSetColorEvent } from "./ColorPickerSetColorEvent";
 import "./ColorSelection";
 import "./ColorConverter";
 import "./ImageSampling";
@@ -47,6 +48,15 @@ export class ColorPicker extends LitElement {
   @state()
   interpolationActive: ActiveColorSide = ActiveColorSide.NONE;
 
+  constructor() {
+    super();
+    this.addEventListener(ColorPickerSetColorEvent.eventName, (event: Event) => {
+      if (event instanceof ColorPickerSetColorEvent) {
+        this.setColor(event.color);
+      }
+    });
+  }
+
   setColor(newColor: Color) {
     this.color = newColor;
     if (this.interpolationActive === ActiveColorSide.LEFT) {
@@ -69,32 +79,22 @@ export class ColorPicker extends LitElement {
     this.style.background = background;
     return html` ${bootstrap}
       <div class="d-flex flex-row flex-wrap main-container">
-        <color-selection
-          class="component"
-          .color=${this.color}
-          .setColor=${this.setColor.bind(this)}
-        ></color-selection>
+        <color-selection .color=${this.color}></color-selection>
         <color-converter
-          class="component"
           .color=${this.color}
-          .setColor=${this.setColor.bind(this)}
           .coordinates=${this.coordinates}
         ></color-converter>
         <image-sampling
-          class="component"
-          .setColor=${this.setColor.bind(this)}
           .coordinates=${this.coordinates}
           .setCoordinates=${this.setCoordinates}
         ></image-sampling>
         <color-interpolation
-          class="component"
           .leftColor=${this.interpolationLeft}
           .rightColor=${this.interpolationRight}
           .activeColor=${this.interpolationActive}
           .setActiveColor=${this.setInterpolationActive.bind(this)}
-          .setColor=${this.setColor.bind(this)}
         ></color-interpolation>
-        <other-tools class="component"></other-tools>
+        <other-tools></other-tools>
       </div>`;
   }
 }

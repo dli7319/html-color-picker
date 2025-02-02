@@ -5,6 +5,7 @@ import Color, { ColorLerpMode } from "./Color";
 import { ColorGradient } from "./ColorGradient";
 import { styles } from "./styles/ColorInterpolation";
 import { bootstrap } from "./styles/Bootstrap";
+import { ColorPickerSetColorEvent } from "./ColorPickerSetColorEvent";
 
 export enum ActiveColorSide {
   LEFT = "left",
@@ -16,7 +17,6 @@ export enum ActiveColorSide {
 export class ColorInterpolation extends LitElement {
   static styles = [styles];
 
-  // Reactive properties
   @property()
   activeColor: ActiveColorSide = ActiveColorSide.NONE;
   @property({ attribute: false })
@@ -25,11 +25,12 @@ export class ColorInterpolation extends LitElement {
   rightColor: Color = new Color({});
   @property()
   setActiveColor: (activeColor: ActiveColorSide) => void = () => {};
-  @property()
-  setColor: (color: Color) => void = (_color: Color) => {};
 
-  // Local properties
   colorGradient: ColorGradient = new ColorGradient();
+
+  setColor(color: Color) {
+    this.dispatchEvent(new ColorPickerSetColorEvent(color));
+  }
 
   setActiveColorLeft() {
     this.setActiveColor(

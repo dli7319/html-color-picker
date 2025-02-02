@@ -6,6 +6,7 @@ import Color from "./Color";
 import { Coordinates } from "./Coordinates";
 import { styles } from "./styles/ColorConverter";
 import "./ColorConverterInput";
+import { ColorPickerSetColorEvent } from "./ColorPickerSetColorEvent";
 
 interface InputValues {
   color: Color; // Key for the color that was last updated
@@ -22,14 +23,16 @@ export class ColorConverter extends LitElement {
   @property({ attribute: false })
   color: Color = new Color();
   @property({ attribute: false })
-  setColor: (color: Color) => void = () => {};
-  @property({ attribute: false })
   coordinates: Coordinates = { x: 0, y: 0, width: 0, height: 0 };
   @property({ type: Boolean })
   verbose: boolean = true;
 
   @state()
   inputValues: InputValues = { color: this.color };
+
+  setColor(color: Color) {
+    this.dispatchEvent(new ColorPickerSetColorEvent(color));
+  }
 
   updateFromHex(event: Event) {
     const value = (event.target as HTMLInputElement).value;

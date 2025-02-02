@@ -43,7 +43,7 @@ export interface ColorInput {
   c?: number;
 }
 
-export default class Color {
+export class Color {
   a: number = 1;
   input: ColorInput;
   #conversionInput: String | Array<number>;

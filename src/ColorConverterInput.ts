@@ -3,7 +3,7 @@ import { customElement, property } from "lit/decorators.js";
 import "@shoelace-style/shoelace/dist/components/copy-button/copy-button.js";
 
 import { bootstrap } from "./styles/Bootstrap";
-import Color from "./Color";
+import { Color } from "./Color";
 import { ColorConverterInputEvent } from "./ColorConverterInputEvent";
 
 export interface InputValues {
@@ -58,7 +58,12 @@ export class ColorConverterInput extends LitElement {
   color: Color = new Color();
 
   onValueChange(event: Event) {
-    this.dispatchEvent(new ColorConverterInputEvent(this.type, (event.target as HTMLInputElement).value));
+    this.dispatchEvent(
+      new ColorConverterInputEvent(
+        this.type,
+        (event.target as HTMLInputElement).value
+      )
+    );
   }
 
   render() {

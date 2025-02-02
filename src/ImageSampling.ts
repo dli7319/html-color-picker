@@ -4,7 +4,7 @@ import { createRef, ref, Ref } from "lit/directives/ref.js";
 
 import { styles } from "./styles/ImageSampling";
 import { bootstrap } from "./styles/Bootstrap";
-import Color, { ColorInputType } from "./Color";
+import { Color, ColorInputType } from "./Color";
 import { Coordinates } from "./Coordinates";
 import { ColorPickerSetColorEvent } from "./ColorPickerSetColorEvent";
 import { ColorPickerSetCoordinatesEvent } from "./ColorPickerSetCoordinatesEvent";

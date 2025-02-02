@@ -1,4 +1,4 @@
-import Color, { ColorInputType } from "./Color";
+import { Color, ColorInputType } from "./Color";
 
 const hexRegex = /^#?([0-9a-fA-F]{3}(?:[0-9a-fA-F]{3})?)$/;
 const rgb255Regex = /^(\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})$/;

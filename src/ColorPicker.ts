@@ -1,7 +1,7 @@
 import { html, LitElement } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
-import Color, { ColorInputType } from "./Color";
+import { Color, ColorInputType } from "./Color";
 import { Coordinates } from "./Coordinates";
 import { ActiveColorSide } from "./ColorInterpolation";
 import { styles } from "./styles/ColorPicker";
@@ -52,21 +52,30 @@ export class ColorPicker extends LitElement {
 
   constructor() {
     super();
-    this.addEventListener(ColorPickerSetColorEvent.eventName, (event: Event) => {
-      if (event instanceof ColorPickerSetColorEvent) {
-        this.setColor(event.color);
+    this.addEventListener(
+      ColorPickerSetColorEvent.eventName,
+      (event: Event) => {
+        if (event instanceof ColorPickerSetColorEvent) {
+          this.setColor(event.color);
+        }
       }
-    });
-    this.addEventListener(ColorPickerSetCoordinatesEvent.eventName, (event: Event) => {
-      if (event instanceof ColorPickerSetCoordinatesEvent) {
-        this.setCoordinates(event.coordinates);
+    );
+    this.addEventListener(
+      ColorPickerSetCoordinatesEvent.eventName,
+      (event: Event) => {
+        if (event instanceof ColorPickerSetCoordinatesEvent) {
+          this.setCoordinates(event.coordinates);
+        }
       }
-    });
-    this.addEventListener(ColorPickerSetInterpolationActiveEvent.eventName, (event: Event) => {
-      if (event instanceof ColorPickerSetInterpolationActiveEvent) {
-        this.setInterpolationActive(event.active);
+    );
+    this.addEventListener(
+      ColorPickerSetInterpolationActiveEvent.eventName,
+      (event: Event) => {
+        if (event instanceof ColorPickerSetInterpolationActiveEvent) {
+          this.setInterpolationActive(event.active);
+        }
       }
-    });
+    );
   }
 
   setColor(newColor: Color) {
@@ -96,9 +105,7 @@ export class ColorPicker extends LitElement {
           .color=${this.color}
           .coordinates=${this.coordinates}
         ></color-converter>
-        <image-sampling
-          .coordinates=${this.coordinates}
-        ></image-sampling>
+        <image-sampling .coordinates=${this.coordinates}></image-sampling>
         <color-interpolation
           .leftColor=${this.interpolationLeft}
           .rightColor=${this.interpolationRight}

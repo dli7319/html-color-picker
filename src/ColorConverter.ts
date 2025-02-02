@@ -2,12 +2,15 @@ import { html, LitElement } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import { bootstrap } from "./styles/Bootstrap";
-import Color from "./Color";
+import { Color } from "./Color";
 import { Coordinates } from "./Coordinates";
 import { styles } from "./styles/ColorConverter";
-import "./ColorConverterInput";
 import { ColorPickerSetColorEvent } from "./ColorPickerSetColorEvent";
-import { InputType, inputTypeToInputValueKey, InputValues } from "./ColorConverterInput";
+import {
+  InputType,
+  inputTypeToInputValueKey,
+  InputValues,
+} from "./ColorConverterInput";
 import { ColorConverterInputEvent } from "./ColorConverterInputEvent";
 
 const typeToParseFunction = {

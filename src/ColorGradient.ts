@@ -1,4 +1,4 @@
-import Color, { ColorInputType, ColorLerpMode } from "./Color";
+import { Color, ColorInputType, ColorLerpMode } from "./Color";
 
 export class ColorGradient {
   colors: Color[] = [];

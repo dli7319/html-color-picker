@@ -6,6 +6,7 @@ import { Color, ColorInputType } from "./Color";
 import { styles } from "./styles/ColorSelection.css";
 import { bootstrap } from "./styles/Bootstrap";
 import { ColorPickerSetColorEvent } from "./ColorPickerSetColorEvent";
+import "./ColorSelectionBarPointer";
 
 @customElement("color-selection")
 export class ColorSelection extends LitElement {
@@ -73,7 +74,6 @@ export class ColorSelection extends LitElement {
       background-color: #${this.color.getHex()};
       border-color: ${value < 50 ? "white" : "black"};
     `;
-    const huePointerStyleLeft = `${(hue / 360) * 100}%`;
     return html`
       ${bootstrap}
       <h5>Color Selection</h5>
@@ -94,17 +94,9 @@ export class ColorSelection extends LitElement {
         @mousemove=${this.onMouseMoveColorBar}
         @mousedown=${this.onMouseMoveColorBar}
       >
-        <div class="color-bar-pointer" style="left: ${huePointerStyleLeft};">
-          <div class="color-bar-pointer-2"></div>
-          <div
-            class="color-bar-pointer-3"
-            style="border-bottom-color: ${hueColorHex};"
-          ></div>
-          <div
-            class="color-bar-pointer-4"
-            style="border-color: ${hueColorHex};"
-          ></div>
-        </div>
+        <color-selection-bar-pointer
+          hue=${hue}
+        ></color-selection-bar-pointer>
       </div>
     `;
   }

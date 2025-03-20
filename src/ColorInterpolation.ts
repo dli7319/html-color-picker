@@ -61,7 +61,7 @@ export class ColorInterpolation extends LitElement {
       const x = (event.clientX - rect.left) / rect.width;
       const newColor = this.colorGradient.getColorAt(
         x,
-        ColorLerpMode[mode as keyof typeof ColorLerpMode]
+        ColorLerpMode[mode.toUpperCase() as keyof typeof ColorLerpMode]
       );
       this.setActiveColor(ActiveColorSide.NONE);
       this.setColor(newColor);

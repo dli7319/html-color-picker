@@ -12,6 +12,7 @@ import { ColorPickerSetInterpolationActiveEvent } from "./ColorPickerSetInterpol
 import { ColorSelection } from "./ColorSelection";
 import { ColorConverter } from "./ColorConverter";
 import { ImageSampling } from "./ImageSampling";
+import "./ColorMaps";
 import "./OtherTools";
 
 @customElement("color-picker")

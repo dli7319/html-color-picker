@@ -68,7 +68,7 @@ export class ColorGradient {
 
   getBackgroundImageStyle(mode: ColorLerpMode = ColorLerpMode.RGB) {
     let gradient = "linear-gradient(to right";
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i <= 100; i++) {
       gradient += ", " + this.getColorAt(i / 100, mode).toCSS() + " " + i + "%";
     }
     gradient += ")";

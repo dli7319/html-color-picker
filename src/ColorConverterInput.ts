@@ -3,8 +3,8 @@ import { customElement, property } from "lit/decorators.js";
 import "@shoelace-style/shoelace/dist/components/copy-button/copy-button.js";
 
 import { bootstrap } from "./styles/Bootstrap";
-import { Color } from "./Color";
-import { ColorConverterInputEvent } from "./ColorConverterInputEvent";
+import { Color } from "./lib/Color";
+import { ColorConverterInputEvent } from "./events/ColorConverterInputEvent";
 
 export interface InputValues {
   hexValue?: string;

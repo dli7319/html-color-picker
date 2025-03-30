@@ -1,4 +1,4 @@
-import { Coordinates } from "./Coordinates";
+import { Coordinates } from "../lib/Coordinates";
 
 export class ColorPickerSetCoordinatesEvent extends Event {
   static readonly eventName = "set-coordinates";

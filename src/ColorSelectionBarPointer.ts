@@ -1,6 +1,6 @@
 import { LitElement, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { Color, ColorInputType } from "./Color";
+import { Color, ColorInputType } from "./lib/Color";
 
 import { styles } from "./styles/ColorSelectionBarPointer.css";
 

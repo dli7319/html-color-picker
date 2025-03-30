@@ -2,17 +2,17 @@ import { html, LitElement } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import { bootstrap } from "./styles/Bootstrap";
-import { Color } from "./Color";
-import { Coordinates } from "./Coordinates";
+import { Color } from "./lib/Color";
+import { Coordinates } from "./lib/Coordinates";
 import { styles } from "./styles/ColorConverter.css";
-import { ColorPickerSetColorEvent } from "./ColorPickerSetColorEvent";
+import { ColorPickerSetColorEvent } from "./events/ColorPickerSetColorEvent";
 import {
   ColorConverterInput,
   InputType,
   inputTypeToInputValueKey,
   InputValues,
 } from "./ColorConverterInput";
-import { ColorConverterInputEvent } from "./ColorConverterInputEvent";
+import { ColorConverterInputEvent } from "./events/ColorConverterInputEvent";
 
 const typeToParseFunction = {
   [InputType.HEX]: Color.parseHex,

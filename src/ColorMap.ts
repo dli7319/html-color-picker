@@ -1,8 +1,8 @@
 import { html, css, LitElement } from "lit";
 
-import { Color, ColorInputType } from "./Color";
-import { ColorPickerSetColorEvent } from "./ColorPickerSetColorEvent";
-import { clamp } from "./utils/math";
+import { Color, ColorInputType } from "./lib/Color";
+import { ColorPickerSetColorEvent } from "./events/ColorPickerSetColorEvent";
+import { clamp } from "./lib/utils/math";
 
 export class ColorMap extends LitElement {
   static styles = [

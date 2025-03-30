@@ -1,14 +1,14 @@
 import { html, LitElement } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
-import { Color, ColorInputType } from "./Color";
-import { Coordinates } from "./Coordinates";
+import { Color, ColorInputType } from "./lib/Color";
+import { Coordinates } from "./lib/Coordinates";
 import { ActiveColorSide, ColorInterpolation } from "./ColorInterpolation";
 import { styles } from "./styles/ColorPicker.css";
 import { bootstrap } from "./styles/Bootstrap";
-import { ColorPickerSetColorEvent } from "./ColorPickerSetColorEvent";
-import { ColorPickerSetCoordinatesEvent } from "./ColorPickerSetCoordinatesEvent";
-import { ColorPickerSetInterpolationActiveEvent } from "./ColorPickerSetInterpolationActiveEvent";
+import { ColorPickerSetColorEvent } from "./events/ColorPickerSetColorEvent";
+import { ColorPickerSetCoordinatesEvent } from "./events/ColorPickerSetCoordinatesEvent";
+import { ColorPickerSetInterpolationActiveEvent } from "./events/ColorPickerSetInterpolationActiveEvent";
 import { ColorSelection } from "./ColorSelection";
 import { ColorConverter } from "./ColorConverter";
 import { ImageSampling } from "./ImageSampling";

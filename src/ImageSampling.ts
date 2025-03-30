@@ -4,10 +4,10 @@ import { createRef, ref, Ref } from "lit/directives/ref.js";
 
 import { styles } from "./styles/ImageSampling.css";
 import { bootstrap } from "./styles/Bootstrap";
-import { Color, ColorInputType } from "./Color";
-import { Coordinates } from "./Coordinates";
-import { ColorPickerSetColorEvent } from "./ColorPickerSetColorEvent";
-import { ColorPickerSetCoordinatesEvent } from "./ColorPickerSetCoordinatesEvent";
+import { Color, ColorInputType } from "./lib/Color";
+import { Coordinates } from "./lib/Coordinates";
+import { ColorPickerSetColorEvent } from "./events/ColorPickerSetColorEvent";
+import { ColorPickerSetCoordinatesEvent } from "./events/ColorPickerSetCoordinatesEvent";
 
 export enum OverlayColor {
   Transparent = "transparent",

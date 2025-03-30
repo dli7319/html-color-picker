@@ -1,4 +1,4 @@
-import { Color } from "./Color";
+import { Color } from "../lib/Color";
 
 export class ColorPickerSetColorEvent extends Event {
   static readonly eventName = "set-color";

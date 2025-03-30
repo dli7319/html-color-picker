@@ -1,11 +1,11 @@
 import { html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { clamp } from "./utils/math";
-import { Color, ColorInputType } from "./Color";
+import { clamp } from "./lib/utils/math";
+import { Color, ColorInputType } from "./lib/Color";
 import { styles } from "./styles/ColorSelection.css";
 import { bootstrap } from "./styles/Bootstrap";
-import { ColorPickerSetColorEvent } from "./ColorPickerSetColorEvent";
+import { ColorPickerSetColorEvent } from "./events/ColorPickerSetColorEvent";
 import "./ColorSelectionBarPointer";
 
 @customElement("color-selection")

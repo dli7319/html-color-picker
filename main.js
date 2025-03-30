@@ -111,7 +111,7 @@ table > * {
     `}};Gt.styles=[Bt],It([ft()],Gt.prototype,"activeColor",void 0),It([ft({attribute:!1})],Gt.prototype,"leftColor",void 0),It([ft({attribute:!1})],Gt.prototype,"rightColor",void 0),Gt=It([dt("color-interpolation")],Gt);const Dt=s`:host {
   display: block;
   width: 100%;
-  height: 100%;
+  flex: 1;
 }
 
 .main-container {

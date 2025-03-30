@@ -19,7 +19,7 @@ export class ColorMaps extends LitElement {
       ${bootstrap}
       <h5>Color Maps</h5>
       <div class="table mb-0">
-        <turbo-colormap></turbo-colormap>
+        <slot></slot>
       </div>
     `;
   }

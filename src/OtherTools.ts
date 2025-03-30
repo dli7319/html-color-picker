@@ -2,7 +2,8 @@ import { html, LitElement } from "lit";
 import { customElement } from "lit/decorators.js";
 import { bootstrap } from "./styles/Bootstrap";
 
-import other_tools from "./other_tools.json";
+import "./OtherToolsEntry";
+import { OtherToolsEntry } from "./OtherToolsEntry";
 
 @customElement("other-tools")
 export class OtherTools extends LitElement {
@@ -10,12 +11,13 @@ export class OtherTools extends LitElement {
     return html` ${bootstrap}
       <h5>Other Tools</h5>
       <ul>
-        ${Object.entries(other_tools).map(
-          ([key, value]) =>
-            html`<li key=${key}>
-              <a href=${value} target="_blank">${key}</a>
-            </li>`
-        )}
+        ${Array.prototype.map.call(this.children, (child) => {
+          if (child instanceof OtherToolsEntry) {
+            return html`<li>
+              <a href="${child.href}" target="_blank">${child.name}</a>
+            </li>`;
+          }
+        })}
       </ul>`;
   }
 }

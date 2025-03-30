@@ -54,16 +54,8 @@ export class ColorConverter extends LitElement {
     this.dispatchEvent(new ColorPickerSetColorEvent(color));
   }
 
-  get _slottedChildren() {
-    return (
-      this.shadowRoot
-        ?.querySelector("slot")
-        ?.assignedElements({ flatten: true }) ?? []
-    );
-  }
-
   updateChildren() {
-    this._slottedChildren.forEach((child) => {
+    Array.prototype.forEach.call(this.children, (child) => {
       if (child instanceof ColorConverterInput) {
         child.inputValues = this.inputValues;
         child.color = this.color;
@@ -102,11 +94,7 @@ export class ColorConverter extends LitElement {
           </tr>
         </tbody>
       </table>
-      <slot
-        class="d-flex flex-column inputs-container"
-        @slotchange=${this.updateChildren}
-      >
-      </slot>
+      <slot class="d-flex flex-column inputs-container"></slot>
     `;
   }
 }

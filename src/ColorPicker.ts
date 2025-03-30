@@ -95,16 +95,8 @@ export class ColorPicker extends LitElement {
     this.interpolationActive = newActive;
   }
 
-  get _slottedChildren() {
-    return (
-      this.shadowRoot
-        ?.querySelector("slot")
-        ?.assignedElements({ flatten: true }) ?? []
-    );
-  }
-
   updateChildren() {
-    this._slottedChildren.forEach((child) => {
+    Array.prototype.forEach.call(this.children, (child) => {
       if (child instanceof ColorSelection) {
         child.color = this.color;
       } else if (child instanceof ColorConverter) {
@@ -124,10 +116,6 @@ export class ColorPicker extends LitElement {
     this.style.background = "#" + this.color.getHex();
     this.updateChildren();
     return html` ${bootstrap}
-      <slot
-        class="d-flex flex-row flex-wrap main-container"
-        @slotchange=${this.updateChildren}
-      >
-      </slot>`;
+      <slot class="d-flex flex-row flex-wrap main-container"></slot>`;
   }
 }

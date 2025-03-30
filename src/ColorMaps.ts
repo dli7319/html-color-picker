@@ -13,6 +13,7 @@ export class ColorMaps extends LitElement {
       }
     `,
   ];
+
   render() {
     return html`
       ${bootstrap}

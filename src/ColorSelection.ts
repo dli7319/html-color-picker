@@ -1,7 +1,7 @@
 import { html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import clamp from "clamp";
 
+import { clamp } from "./utils/math";
 import { Color, ColorInputType } from "./Color";
 import { styles } from "./styles/ColorSelection.css";
 import { bootstrap } from "./styles/Bootstrap";
@@ -94,9 +94,7 @@ export class ColorSelection extends LitElement {
         @mousemove=${this.onMouseMoveColorBar}
         @mousedown=${this.onMouseMoveColorBar}
       >
-        <color-selection-bar-pointer
-          hue=${hue}
-        ></color-selection-bar-pointer>
+        <color-selection-bar-pointer hue=${hue}></color-selection-bar-pointer>
       </div>
     `;
   }

@@ -22,11 +22,9 @@
   "homepage": "https://github.com/dli7319/html-color-picker#readme",
   "devDependencies": {
     "@shoelace-style/shoelace": "^2.19.1",
-    "@types/clamp": "^1.0.1",
     "@types/color-convert": "^2.0.0",
     "@types/node": "^22.13.0",
     "@types/webpack": "^5.28.5",
-    "clamp": "^1.0.1",
     "color-convert": "^2.0.1",
     "lit": "^3.2.1",
     "lit-css-loader": "^3.0.1",

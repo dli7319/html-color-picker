@@ -1,4 +1,3 @@
-import clamp from "clamp";
 import colorConvert from "color-convert";
 
 import {
@@ -7,10 +6,7 @@ import {
   parseRGB01Color,
   parseRGB255Color,
 } from "./ColorStringParsing";
-
-export function lerp(a: number, b: number, t: number) {
-  return a + (b - a) * t;
-}
+import {clamp, lerp} from "./utils/math";
 
 export enum ColorInputType {
   RGB255 = "rgb255",

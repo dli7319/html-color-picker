@@ -2,7 +2,7 @@ import { css, html, LitElement } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import { bootstrap } from "./styles/Bootstrap";
-import "./colormaps/TurboColormap";
+import "./colormaps/all";
 
 @customElement("color-maps")
 export class ColorMaps extends LitElement {

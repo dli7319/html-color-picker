@@ -7,6 +7,7 @@ import { styles } from "./styles/ColorInterpolation.css";
 import { bootstrap } from "./styles/Bootstrap";
 import { ColorPickerSetColorEvent } from "./ColorPickerSetColorEvent";
 import { ColorPickerSetInterpolationActiveEvent } from "./ColorPickerSetInterpolationActiveEvent";
+import { ColorInterpolationGradient } from "./ColorInterpolationGradient";
 
 export enum ActiveColorSide {
   LEFT = "left",
@@ -101,62 +102,25 @@ export class ColorInterpolation extends LitElement {
       </table>
       <table class="table mb-0">
         <tbody>
-          <tr>
-            <th>RGB</th>
-            <td>
-              <div
-                class="gradient"
-                style="background: ${this.colorGradient.getBackgroundImageStyle(
-                  ColorLerpMode.RGB
-                )}"
-                data-mode=${ColorLerpMode.RGB}
-                @mousedown=${this.onMouseMoveGradient}
-                @mousemove=${this.onMouseMoveGradient}
-              ></div>
-            </td>
-          </tr>
-          <tr>
-            <th>HSL</th>
-            <td>
-              <div
-                class="gradient"
-                style="background: ${this.colorGradient.getBackgroundImageStyle(
-                  ColorLerpMode.HSL
-                )}"
-                data-mode=${ColorLerpMode.HSL}
-                @mousedown=${this.onMouseMoveGradient}
-                @mousemove=${this.onMouseMoveGradient}
-              ></div>
-            </td>
-          </tr>
-          <tr>
-            <th>HSL*</th>
-            <td>
-              <div
-                class="gradient"
-                style="background: ${this.colorGradient.getBackgroundImageStyle(
-                  ColorLerpMode.HSL_FLIP
-                )}"
-                data-mode=${ColorLerpMode.HSL_FLIP}
-                @mousedown=${this.onMouseMoveGradient}
-                @mousemove=${this.onMouseMoveGradient}
-              ></div>
-            </td>
-          </tr>
-          <tr>
-            <th>LCH</th>
-            <td>
-              <div
-                class="gradient"
-                style="background: ${this.colorGradient.getBackgroundImageStyle(
-                  ColorLerpMode.LCH
-                )}"
-                data-mode=${ColorLerpMode.LCH}
-                @mousedown=${this.onMouseMoveGradient}
-                @mousemove=${this.onMouseMoveGradient}
-              ></div>
-            </td>
-          </tr>
+          ${Array.prototype.map.call(this.children, (child) => {
+            if (child instanceof ColorInterpolationGradient) {
+              const lerpMode = ColorLerpMode[child.type as keyof typeof ColorLerpMode];
+              return html` <tr>
+                <th>${child.typeName || child.type}</th>
+                <td>
+                  <div
+                    class="gradient"
+                    style="background: ${this.colorGradient.getBackgroundImageStyle(
+                      lerpMode
+                    )}"
+                    data-mode=${lerpMode}
+                    @mousedown=${this.onMouseMoveGradient}
+                    @mousemove=${this.onMouseMoveGradient}
+                  ></div>
+                </td>
+              </tr>`;
+            }
+          })}
         </tbody>
       </table>
     `;

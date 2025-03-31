@@ -6,7 +6,10 @@ import {
   parseRGB01Color,
   parseRGB255Color,
 } from "./ColorStringParsing";
-import {clamp, lerp} from "./utils/math";
+import { clamp } from "./utils/math";
+import { ColorLerpMode, lerpColor } from "./ColorLerp";
+
+export { ColorLerpMode };
 
 export enum ColorInputType {
   RGB255 = "rgb255",
@@ -14,14 +17,6 @@ export enum ColorInputType {
   HEX = "hex",
   HSV = "hsv",
   HSL = "hsl",
-  LCH = "lch",
-}
-
-export enum ColorLerpMode {
-  RGB = "rgb",
-  HSV = "hsv",
-  HSL = "hsl",
-  HSL_FLIP = "hsl_flip",
   LCH = "lch",
 }
 
@@ -169,70 +164,7 @@ export class Color {
     });
   }
 
-  static lerp(
-    color0: Color,
-    color1: Color,
-    t: number,
-    mode: ColorLerpMode = ColorLerpMode.RGB
-  ) {
-    if (mode === ColorLerpMode.HSV) {
-      let hsv0 = color0.getHSV();
-      let hsv1 = color1.getHSV();
-      return new Color({
-        type: ColorInputType.HSV,
-        h: lerp(hsv0[0], hsv1[0], t),
-        s: lerp(hsv0[1], hsv1[1], t),
-        v: lerp(hsv0[2], hsv1[2], t),
-      });
-    } else if (mode === ColorLerpMode.HSL) {
-      const hsl0 = color0.getHSL();
-      const hsl1 = color1.getHSL();
-      const flipHueDirection = Math.abs(hsl0[0] - hsl1[0]) > 180;
-      const hsl0Updated =
-        hsl0[0] + 360 * Number(flipHueDirection && hsl0[0] < hsl1[0]);
-      const hsl1Updated =
-        hsl1[0] + 360 * Number(flipHueDirection && hsl1[0] < hsl0[0]);
-      const intermediateHue = lerp(hsl0Updated, hsl1Updated, t);
-      return new Color({
-        type: ColorInputType.HSL,
-        h: intermediateHue,
-        s: lerp(hsl0[1], hsl1[1], t),
-        l: lerp(hsl0[2], hsl1[2], t),
-      });
-    } else if (mode === ColorLerpMode.HSL_FLIP) {
-      const hsl0 = color0.getHSL();
-      const hsl1 = color1.getHSL();
-      const flipHueDirection = Math.abs(hsl0[0] - hsl1[0]) > 180;
-      const hsl0Updated =
-        hsl0[0] + 360 * Number(!flipHueDirection && hsl0[0] < hsl1[0]);
-      const hsl1Updated =
-        hsl1[0] + 360 * Number(!flipHueDirection && hsl1[0] < hsl0[0]);
-      const intermediateHue = lerp(hsl0Updated, hsl1Updated, t);
-      return new Color({
-        type: ColorInputType.HSL,
-        h: intermediateHue,
-        s: lerp(hsl0[1], hsl1[1], t),
-        l: lerp(hsl0[2], hsl1[2], t),
-      });
-    } else if (mode == ColorLerpMode.LCH) {
-      let lch0 = color0.getLCH();
-      let lch1 = color1.getLCH();
-      return new Color({
-        type: ColorInputType.LCH,
-        l: lerp(lch0[0], lch1[0], t),
-        c: lerp(lch0[1], lch1[1], t),
-        h: lerp(lch0[2], lch1[2], t),
-      });
-    }
-    const [color0r, color0g, color0b] = color0.getRGB01();
-    const [color1r, color1g, color1b] = color1.getRGB01();
-    return new Color({
-      type: ColorInputType.RGB01,
-      r: lerp(color0r, color1r, t),
-      g: lerp(color0g, color1g, t),
-      b: lerp(color0b, color1b, t),
-    });
-  }
+  static lerp = lerpColor;
 
   static parseHex = parseHexColor;
   static parseRGB255 = parseRGB255Color;

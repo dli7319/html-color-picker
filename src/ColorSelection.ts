@@ -4,6 +4,7 @@ import { customElement, property } from "lit/decorators.js";
 import { Color } from "./lib/Color";
 import { bootstrap } from "./styles/Bootstrap";
 import "./ColorSelectionTypeA";
+import "./ColorSelectionTypeB";
 
 @customElement("color-selection")
 export class ColorSelection extends LitElement {
@@ -29,6 +30,7 @@ export class ColorSelection extends LitElement {
       ${bootstrap}
       <h5>Color Selection</h5>
       <color-selection-type-a .color=${this.color}></color-selection-type-a>
+      <!-- <color-selection-type-b .color=${this.color}></color-selection-type-b> -->
     `;
   }
 }

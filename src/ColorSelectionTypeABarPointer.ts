@@ -2,10 +2,10 @@ import { LitElement, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { Color, ColorInputType } from "./lib/Color";
 
-import { styles } from "./styles/ColorSelectionBarPointer.css";
+import { styles } from "./styles/ColorSelectionTypeABarPointer.css";
 
-@customElement("color-selection-bar-pointer")
-export class ColorSelectionBarPointer extends LitElement {
+@customElement("color-selection-type-a-bar-pointer")
+export class ColorSelectionTypeABarPointer extends LitElement {
   static styles = [styles];
 
   @property({ type: Number })

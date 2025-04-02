@@ -1,3 +1,8 @@
+:host {
+  display: flex;
+  flex-direction: column;
+}
+
 .color-grad-container {
   width: 100%;
   position: relative;

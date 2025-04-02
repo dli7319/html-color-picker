@@ -28,6 +28,10 @@ export class ColorInterpolation extends LitElement {
 
   colorGradient: ColorGradient = new ColorGradient();
 
+  private onMouseMoveBound = this.onMouseMove.bind(this);
+  private onMouseUpBound = this.onMouseUp.bind(this);
+  private selectedGolorGradientDiv: HTMLDivElement | null = null;
+
   setColor(color: Color) {
     this.dispatchEvent(new ColorPickerSetColorEvent(color));
   }
@@ -52,13 +56,11 @@ export class ColorInterpolation extends LitElement {
     );
   }
 
-  onMouseMoveGradient(event: MouseEvent) {
-    if (event.buttons == 1) {
+  onMouseMove(event: MouseEvent) {
+    if (this.selectedGolorGradientDiv instanceof HTMLDivElement) {
       const mode =
-        (event.currentTarget as HTMLDivElement).getAttribute("data-mode") || "";
-      const rect = (
-        event.currentTarget as HTMLDivElement
-      ).getBoundingClientRect();
+        this.selectedGolorGradientDiv.getAttribute("data-mode") || "";
+      const rect = this.selectedGolorGradientDiv.getBoundingClientRect();
       const x = (event.clientX - rect.left) / rect.width;
       const newColor = this.colorGradient.getColorAt(
         x,
@@ -67,6 +69,18 @@ export class ColorInterpolation extends LitElement {
       this.setActiveColor(ActiveColorSide.NONE);
       this.setColor(newColor);
     }
+  }
+
+  onMouseDown(event: MouseEvent) {
+    this.selectedGolorGradientDiv = event.currentTarget as HTMLDivElement;
+    document.addEventListener("mousemove", this.onMouseMoveBound);
+    document.addEventListener("mouseup", this.onMouseUpBound);
+  }
+
+  onMouseUp() {
+    document.removeEventListener("mousemove", this.onMouseMoveBound);
+    document.removeEventListener("mouseup", this.onMouseUpBound);
+    this.selectedGolorGradientDiv = null;
   }
 
   render() {
@@ -104,7 +118,8 @@ export class ColorInterpolation extends LitElement {
         <tbody>
           ${Array.prototype.map.call(this.children, (child) => {
             if (child instanceof ColorInterpolationGradient) {
-              const lerpMode = ColorLerpMode[child.type as keyof typeof ColorLerpMode];
+              const lerpMode =
+                ColorLerpMode[child.type as keyof typeof ColorLerpMode];
               return html` <tr>
                 <th>${child.typeName || child.type}</th>
                 <td>
@@ -114,8 +129,7 @@ export class ColorInterpolation extends LitElement {
                       lerpMode
                     )}"
                     data-mode=${lerpMode}
-                    @mousedown=${this.onMouseMoveGradient}
-                    @mousemove=${this.onMouseMoveGradient}
+                    @mousedown=${this.onMouseDown.bind(this)}
                   ></div>
                 </td>
               </tr>`;

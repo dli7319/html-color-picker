@@ -1,4 +1,5 @@
 import { html, css, LitElement } from "lit";
+import { query } from "lit/decorators.js";
 
 import { Color, ColorInputType } from "./lib/Color";
 import { ColorPickerSetColorEvent } from "./events/ColorPickerSetColorEvent";
@@ -22,6 +23,12 @@ export class ColorMap extends LitElement {
       }
     `,
   ];
+
+  @query("#colormap-div")
+  private colorMapDiv!: HTMLDivElement;
+
+  private onMouseMoveBound = this.onMouseMove.bind(this);
+  private onMouseUpBound = this.onMouseUp.bind(this);
 
   getColorMapData(): number[][] {
     // This method should be overridden by subclasses to provide the actual color map data.
@@ -76,13 +83,21 @@ export class ColorMap extends LitElement {
 
   onMouseMove(event: MouseEvent) {
     if (event.buttons == 1) {
-      const rect = (
-        event.currentTarget as HTMLDivElement
-      ).getBoundingClientRect();
+      const rect = this.colorMapDiv.getBoundingClientRect();
       const x = (event.clientX - rect.left) / rect.width;
       const newColor = this.getColorAt(x);
       this.setColor(newColor);
     }
+  }
+
+  onMouseDown() {
+    document.addEventListener("mousemove", this.onMouseMoveBound);
+    document.addEventListener("mouseup", this.onMouseUpBound);
+  }
+
+  onMouseUp() {
+    document.removeEventListener("mousemove", this.onMouseMoveBound);
+    document.removeEventListener("mouseup", this.onMouseUpBound);
   }
 
   render() {
@@ -92,8 +107,8 @@ export class ColorMap extends LitElement {
         <div
           style="background: ${this.toCss()}"
           class="gradient"
-          @mousedown=${this.onMouseMove.bind(this)}
-          @mousemove=${this.onMouseMove.bind(this)}
+          @mousedown=${this.onMouseDown.bind(this)}
+          id="colormap-div"
         ></div>
       </td>
     </div>`;

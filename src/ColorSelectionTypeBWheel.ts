@@ -18,9 +18,22 @@ export class ColorSelectionTypeBWheel extends LitElement {
       }
 
       .color-grad {
+        aspect-ratio: 1;
         flex: 1;
-        width: 100%;
+        max-width: 100%;
         border-radius: 100%;
+        position: relative;
+      }
+
+      .color-grad-circle {
+        position: absolute;
+        border-width: 0.1rem;
+        border-style: solid;
+        border-radius: 50%;
+        width: 1rem;
+        height: 1rem;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
       }
     `,
   ];
@@ -45,15 +58,16 @@ export class ColorSelectionTypeBWheel extends LitElement {
     const radius = Math.sqrt(x * x + y * y) / (rect.width / 2);
     const clampedRadius = Math.min(radius, 1);
     const angle = Math.atan2(y, x) * (180 / Math.PI) + 90;
+    const clampedAngle = (angle + 360) % 360;
 
-    console.log("angle", angle);
-    console.log("clampedRadius", clampedRadius);
+    const [, , lightness] = this.color.getHSL();
+
     this.setColor(
       new Color({
         type: ColorInputType.HSL,
-        h: angle,
+        h: clampedAngle,
         s: 100.0 * clampedRadius,
-        l: 50,
+        l: lightness,
       })
     );
   }
@@ -69,7 +83,7 @@ export class ColorSelectionTypeBWheel extends LitElement {
   }
 
   render() {
-    const [, , lightness] = this.color.getHSL();
+    const [hue, saturation, lightness] = this.color.getHSL();
     const colorGradStyle = `
             background-image: radial-gradient(
             circle at center,
@@ -85,6 +99,16 @@ export class ColorSelectionTypeBWheel extends LitElement {
             /* Blue */ hsl(300, 100%, 50%),
             /* Magenta */ hsl(360, 100%, 50%) /* Red (completes circle) */
           );`;
+    const radius = (0.5 * saturation) / 100;
+    const angle = (3 * Math.PI) / 2 + hue * (Math.PI / 180);
+    const positionX = Math.cos(angle) * radius;
+    const positionY = Math.sin(angle) * radius;
+    const colorCircleStyle = `
+            top: ${50 + positionY * 100}%;
+            left: ${50 + positionX * 100}%;
+            background-color: #${this.color.getHex()};
+            border-color: ${lightness < 50 ? "white" : "black"};
+        `;
     return html`
       ${bootstrap}
       <div
@@ -92,7 +116,9 @@ export class ColorSelectionTypeBWheel extends LitElement {
         id="color-grad"
         style=${colorGradStyle}
         @mousedown=${this.onMouseDown}
-      ></div>
+      >
+        <div class="color-grad-circle" style=${colorCircleStyle}></div>
+      </div>
     `;
   }
 }

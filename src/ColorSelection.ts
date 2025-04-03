@@ -41,9 +41,13 @@ export class ColorSelection extends LitElement {
 
   getColorSelectionHtml() {
     if (this.colorSelectionType === ColorSelectionType.HSV) {
-      return html`<color-selection-type-a .color=${this.color}></color-selection-type-a>`;
+      return html`<color-selection-type-a
+        .color=${this.color}
+      ></color-selection-type-a>`;
     } else {
-      return html`<color-selection-type-b .color=${this.color}></color-selection-type-b>`;
+      return html`<color-selection-type-b
+        .color=${this.color}
+      ></color-selection-type-b>`;
     }
   }
 
@@ -51,27 +55,43 @@ export class ColorSelection extends LitElement {
     return html`
       ${bootstrap}
       <h5>Color Selection</h5>
-      <div class="btn-group color-selection-picker" role="group" aria-label="Color Selection">
+      <div
+        class="btn-group color-selection-picker"
+        role="group"
+        aria-label="Color Selection"
+      >
         <input
           type="radio"
           class="btn-check"
           name="options"
           id="option1"
           autocomplete="off"
+          .checked=${this.colorSelectionType === ColorSelectionType.HSV}
         />
-        <label class="btn btn-secondary" for="option1" @click=${() => {
+        <label
+          class="btn btn-secondary"
+          for="option1"
+          @click=${() => {
             this.colorSelectionType = ColorSelectionType.HSV;
-        }}>HSV</label>
+          }}
+          >HSV</label
+        >
         <input
           type="radio"
           class="btn-check"
           name="options"
           id="option2"
           autocomplete="off"
+          .checked=${this.colorSelectionType === ColorSelectionType.HSL_WHEEL}
         />
-        <label class="btn btn-secondary" for="option2" @click=${() => {
+        <label
+          class="btn btn-secondary"
+          for="option2"
+          @click=${() => {
             this.colorSelectionType = ColorSelectionType.HSL_WHEEL;
-        }}>HSL Wheel</label>
+          }}
+          >HSL Wheel</label
+        >
       </div>
       ${this.getColorSelectionHtml()}
     `;

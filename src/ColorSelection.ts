@@ -25,7 +25,7 @@ export class ColorSelection extends LitElement {
 
     :host > .color-selection-picker {
       flex: 0;
-      margin: 0.5rem 0rem;
+      margin-bottom: 0.5rem;
     }
 
     :host > * {

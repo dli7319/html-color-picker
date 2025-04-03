@@ -105,7 +105,12 @@ export class ColorSelectionTypeBWheel extends LitElement {
     const colorCircleStyle = `
             top: ${50 + positionY * 100}%;
             left: ${50 + positionX * 100}%;
-            background-color: #${this.color.getHex()};
+            background-color: #${new Color({
+              type: ColorInputType.HSL,
+              h: hue,
+              s: saturation,
+              l: 50,
+            }).getHex()};
         `;
     return html`
       ${bootstrap}

@@ -13,12 +13,14 @@ import {
   InputValues,
 } from "./ColorConverterInput";
 import { ColorConverterInputEvent } from "./events/ColorConverterInputEvent";
+import { parseHSLColor } from "./lib/ColorStringParsing";
 
 const typeToParseFunction = {
   [InputType.HEX]: Color.parseHex,
   [InputType.RGB255]: Color.parseRGB255,
   [InputType.RGB01]: Color.parseRGB01,
   [InputType.HSV]: Color.parseHSV,
+  [InputType.HSL]: parseHSLColor,
 };
 
 @customElement("color-converter")

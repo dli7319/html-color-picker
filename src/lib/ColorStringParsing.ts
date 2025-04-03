@@ -61,3 +61,21 @@ export function parseHSVColor(value: string) {
   }
   return null;
 }
+
+export function parseHSLColor(value: string) {
+  const match = hsvRegex.exec(value);
+  if (match && match.length == 4) {
+    const h = parseFloat(match[1]);
+    const s = parseFloat(match[2]);
+    const l = parseFloat(match[3]);
+    if (0 <= h && h <= 360 && 0 <= s && s <= 100 && 0 <= l && l <= 100) {
+      return new Color({
+        type: ColorInputType.HSL,
+        h: parseFloat(match[1]),
+        s: parseFloat(match[2]),
+        v: parseFloat(match[3]),
+      });
+    }
+  }
+  return null;
+}

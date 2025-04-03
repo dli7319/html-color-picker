@@ -11,6 +11,7 @@ export interface InputValues {
   rgb255Value?: string;
   rgb01Value?: string;
   hsvValue?: string;
+  hslValue?: string;
 }
 
 export enum InputType {
@@ -18,6 +19,7 @@ export enum InputType {
   RGB255 = "RGB255",
   RGB01 = "RGB01",
   HSV = "HSV",
+  HSL = "HSL",
 }
 
 const inputTypeToLabel = {
@@ -25,6 +27,7 @@ const inputTypeToLabel = {
   [InputType.RGB255]: "RGB (0-255)",
   [InputType.RGB01]: "RGB (0-1)",
   [InputType.HSV]: "HSV",
+  [InputType.HSL]: "HSL",
 };
 
 export const inputTypeToInputValueKey = {
@@ -32,6 +35,7 @@ export const inputTypeToInputValueKey = {
   [InputType.RGB255]: "rgb255Value",
   [InputType.RGB01]: "rgb01Value",
   [InputType.HSV]: "hsvValue",
+  [InputType.HSL]: "hslValue",
 } as Record<InputType, keyof InputValues>;
 
 const colorToString = {
@@ -46,6 +50,8 @@ const colorToString = {
       .toString(),
   [InputType.HSV]: (color: Color) =>
     color.getHSV(false).splice(0, 3).toString(),
+  [InputType.HSL]: (color: Color) =>
+    color.getHSL(false).splice(0, 3).toString(),
 };
 
 @customElement("color-converter-input")

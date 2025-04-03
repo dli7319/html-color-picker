@@ -12,9 +12,9 @@ export class ColorSelectionTypeBWheel extends LitElement {
     css`
       :host {
         display: flex;
-        flex: 1;
         flex-direction: column;
         width: 100%;
+        aspect-ratio: 1;
       }
 
       .color-grad {
@@ -34,6 +34,7 @@ export class ColorSelectionTypeBWheel extends LitElement {
         height: 1rem;
         transform: translate(-50%, -50%);
         pointer-events: none;
+        border-color: white;
       }
     `,
   ];
@@ -60,14 +61,12 @@ export class ColorSelectionTypeBWheel extends LitElement {
     const angle = Math.atan2(y, x) * (180 / Math.PI) + 90;
     const clampedAngle = (angle + 360) % 360;
 
-    const [, , lightness] = this.color.getHSL();
-
     this.setColor(
       new Color({
         type: ColorInputType.HSL,
         h: clampedAngle,
         s: 100.0 * clampedRadius,
-        l: lightness,
+        l: 50,
       })
     );
   }
@@ -83,11 +82,11 @@ export class ColorSelectionTypeBWheel extends LitElement {
   }
 
   render() {
-    const [hue, saturation, lightness] = this.color.getHSL();
+    const [hue, saturation] = this.color.getHSL();
     const colorGradStyle = `
             background-image: radial-gradient(
             circle at center,
-            hsl(0, 0%, ${lightness}%, 1) 0%,
+            hsl(0, 0%, 50%, 1) 0%,
             hsl(0, 100%, 0%, 0) 70%
           ),
           conic-gradient(
@@ -107,7 +106,6 @@ export class ColorSelectionTypeBWheel extends LitElement {
             top: ${50 + positionY * 100}%;
             left: ${50 + positionX * 100}%;
             background-color: #${this.color.getHex()};
-            border-color: ${lightness < 50 ? "white" : "black"};
         `;
     return html`
       ${bootstrap}

@@ -14,6 +14,9 @@ export class ColorSelectionTypeB extends LitElement {
       :host {
         display: flex;
         flex-direction: column;
+        width: 100%;
+        max-width: 20rem;
+        margin: 0 auto;
       }
     `,
   ];

@@ -9,6 +9,7 @@
   min-height: 10rem;
   min-width: 10rem;
   flex-grow: 1;
+  aspect-ratio: 16 / 9;
 }
 
 .color-grad {

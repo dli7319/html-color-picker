@@ -13,13 +13,13 @@ import {
   InputValues,
 } from "./ColorConverterInput";
 import { ColorConverterInputEvent } from "./events/ColorConverterInputEvent";
-import { parseHSLColor } from "./lib/ColorStringParsing";
+import { parseHexColor, parseHSLColor, parseHSVColor, parseRGB01Color, parseRGB255Color } from "./lib/ColorStringParsing";
 
 const typeToParseFunction = {
-  [InputType.HEX]: Color.parseHex,
-  [InputType.RGB255]: Color.parseRGB255,
-  [InputType.RGB01]: Color.parseRGB01,
-  [InputType.HSV]: Color.parseHSV,
+  [InputType.HEX]: parseHexColor,
+  [InputType.RGB255]: parseRGB255Color,
+  [InputType.RGB01]: parseRGB01Color,
+  [InputType.HSV]: parseHSVColor,
   [InputType.HSL]: parseHSLColor,
 };
 

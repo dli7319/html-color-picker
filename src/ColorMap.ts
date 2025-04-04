@@ -4,6 +4,7 @@ import { query } from "lit/decorators.js";
 import { Color, ColorInputType } from "./lib/Color";
 import { ColorPickerSetColorEvent } from "./events/ColorPickerSetColorEvent";
 import { clamp } from "./lib/utils/math";
+import { lerpColor } from "./lib/ColorLerp";
 
 export class ColorMap extends LitElement {
   static styles = [
@@ -78,7 +79,7 @@ export class ColorMap extends LitElement {
       g: colormapData[indexCeil][1],
       b: colormapData[indexCeil][2],
     });
-    return Color.lerp(colorFloor, colorCeil, ratio);
+    return lerpColor(colorFloor, colorCeil, ratio);
   }
 
   onMouseMove(event: MouseEvent) {

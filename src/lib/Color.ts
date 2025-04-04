@@ -1,15 +1,6 @@
 import colorConvert from "color-convert";
 
-import {
-  parseHexColor,
-  parseHSVColor,
-  parseRGB01Color,
-  parseRGB255Color,
-} from "./ColorStringParsing";
 import { clamp } from "./utils/math";
-import { ColorLerpMode, lerpColor } from "./ColorLerp";
-
-export { ColorLerpMode };
 
 export enum ColorInputType {
   RGB255 = "rgb255",
@@ -163,11 +154,4 @@ export class Color {
       b: arr[2],
     });
   }
-
-  static lerp = lerpColor;
-
-  static parseHex = parseHexColor;
-  static parseRGB255 = parseRGB255Color;
-  static parseRGB01 = parseRGB01Color;
-  static parseHSV = parseHSVColor;
 }

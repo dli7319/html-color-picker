@@ -1,13 +1,14 @@
 import { html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { Color, ColorLerpMode } from "./lib/Color";
+import { Color } from "./lib/Color";
 import { ColorGradient } from "./lib/ColorGradient";
 import { styles } from "./styles/ColorInterpolation.css";
 import { bootstrap } from "./styles/Bootstrap";
 import { ColorPickerSetColorEvent } from "./events/ColorPickerSetColorEvent";
 import { ColorPickerSetInterpolationActiveEvent } from "./events/ColorPickerSetInterpolationActiveEvent";
 import { ColorInterpolationGradient } from "./ColorInterpolationGradient";
+import { ColorLerpMode } from "./lib/ColorLerp";
 
 export enum ActiveColorSide {
   LEFT = "left",

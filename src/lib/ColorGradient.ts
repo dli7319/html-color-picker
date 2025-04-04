@@ -1,4 +1,5 @@
-import { Color, ColorInputType, ColorLerpMode } from "./Color";
+import { Color, ColorInputType } from "./Color";
+import { lerpColor, ColorLerpMode } from "./ColorLerp";
 
 export class ColorGradient {
   colors: Color[] = [];
@@ -63,7 +64,7 @@ export class ColorGradient {
 
     const t = (position - p0) / (p1 - p0);
 
-    return Color.lerp(c0, c1, t, (mode = mode));
+    return lerpColor(c0, c1, t, (mode = mode));
   }
 
   getBackgroundImageStyle(mode: ColorLerpMode = ColorLerpMode.RGB) {

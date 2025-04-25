@@ -84,19 +84,20 @@ export class ColorSelectionTypeBWheel extends LitElement {
   render() {
     const [hue, saturation] = this.color.getHSL();
     const colorGradStyle = `
-            background-image: radial-gradient(
+          background-image: radial-gradient(
             circle at center,
             hsl(0, 0%, 50%, 1) 0%,
             hsl(0, 100%, 0%, 0) 70%
           ),
           conic-gradient(
+            in hsl shorter hue,
             hsl(0, 100%, 50%),
             /* Red */ hsl(60, 100%, 50%),
             /* Yellow */ hsl(120, 100%, 50%),
             /* Lime */ hsl(180, 100%, 50%),
             /* Cyan */ hsl(240, 100%, 50%),
             /* Blue */ hsl(300, 100%, 50%),
-            /* Magenta */ hsl(360, 100%, 50%) /* Red (completes circle) */
+            /* Magenta */ hsl(360, 100%, 50%)
           );`;
     const radius = (0.5 * saturation) / 100;
     const angle = (3 * Math.PI) / 2 + hue * (Math.PI / 180);

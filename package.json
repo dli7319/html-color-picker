@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "HTML Color Picker",
   "main": "main.js",
+  "type": "module",
   "scripts": {
     "setup": "npm ci",
     "build": "rollup --config rollup.config.ts --configPlugin typescript --environment NODE_ENV:production",

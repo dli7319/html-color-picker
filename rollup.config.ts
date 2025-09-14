@@ -5,7 +5,6 @@ import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
 import litCss from 'rollup-plugin-lit-css';
 import terser from '@rollup/plugin-terser';
-// @ts-ignore
 import serve from 'rollup-plugin-serve';
 import livereload from 'rollup-plugin-livereload';
 

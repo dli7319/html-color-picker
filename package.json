@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/dli7319/html-color-picker#readme",
   "devDependencies": {
+    "@eslint/js": "^9.35.0",
     "@rollup/plugin-commonjs": "^28.0.6",
     "@rollup/plugin-node-resolve": "^16.0.1",
     "@rollup/plugin-terser": "^0.4.4",
@@ -30,6 +31,8 @@
     "@types/node": "^22.13.0",
     "@types/webpack": "^5.28.5",
     "color-convert": "^2.0.1",
+    "eslint": "^9.35.0",
+    "jiti": "^2.5.1",
     "lit": "^3.2.1",
     "rollup": "^4.50.1",
     "rollup-plugin-lit-css": "^6.0.0",
@@ -37,6 +40,7 @@
     "rollup-plugin-serve": "^3.0.0",
     "ts-node": "^10.9.2",
     "tslib": "^2.8.1",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.43.0"
   }
 }

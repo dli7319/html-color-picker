@@ -28,8 +28,13 @@ export interface ColorInput {
 export class Color {
   a: number = 1;
   input: ColorInput;
-  private conversionInput: String | Array<number>;
-  private colorConvertFunction: any;
+  private conversionInput: string | Array<number>;
+  private colorConvertFunction:
+    | typeof colorConvert.rgb
+    | typeof colorConvert.hex
+    | typeof colorConvert.hsv
+    | typeof colorConvert.hsl
+    | typeof colorConvert.lch;
 
   constructor(color: ColorInput = {}) {
     if (color.type == ColorInputType.RGB255) {

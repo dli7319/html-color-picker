@@ -21,8 +21,8 @@ function lerpRGB(color0: Color, color1: Color, t: number) {
 }
 
 function lerpLCH(color0: Color, color1: Color, t: number) {
-  let lch0 = color0.getLCH();
-  let lch1 = color1.getLCH();
+  const lch0 = color0.getLCH();
+  const lch1 = color1.getLCH();
   return new Color({
     type: ColorInputType.LCH,
     l: lerp(lch0[0], lch1[0], t),
@@ -66,8 +66,8 @@ function lerpHSLFlip(color0: Color, color1: Color, t: number) {
 }
 
 function lerpHSV(color0: Color, color1: Color, t: number) {
-  let hsv0 = color0.getHSV();
-  let hsv1 = color1.getHSV();
+  const hsv0 = color0.getHSV();
+  const hsv1 = color1.getHSV();
   return new Color({
     type: ColorInputType.HSV,
     h: lerp(hsv0[0], hsv1[0], t),

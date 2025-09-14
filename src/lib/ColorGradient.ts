@@ -24,7 +24,7 @@ export class ColorGradient {
   }
 
   setColorStop(position: number, color: Color) {
-    let index = this.positions.indexOf(position);
+    const index = this.positions.indexOf(position);
     if (index == -1) {
       this.addColorStop(position, color);
     } else {
@@ -64,7 +64,7 @@ export class ColorGradient {
 
     const t = (position - p0) / (p1 - p0);
 
-    return lerpColor(c0, c1, t, (mode = mode));
+    return lerpColor(c0, c1, t, mode);
   }
 
   getBackgroundImageStyle(mode: ColorLerpMode = ColorLerpMode.RGB) {

@@ -1,24 +1,17 @@
-import { css, html, LitElement } from "lit";
+import { html, LitElement } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import { bootstrap } from "./styles/Bootstrap";
+import { tailwindStyles } from "./styles/Tailwind";
 import "./colormaps/all";
 
 @customElement("color-maps")
 export class ColorMaps extends LitElement {
-  static styles = [
-    css`
-      ul {
-        padding: 0;
-      }
-    `,
-  ];
+  static styles = [tailwindStyles];
 
   render() {
     return html`
-      ${bootstrap}
-      <h5>Color Maps</h5>
-      <div class="table mb-0">
+      <h5 class="text-lg font-semibold text-gray-800 mb-2">Color Maps</h5>
+      <div class="flex flex-col gap-2">
         <slot></slot>
       </div>
     `;

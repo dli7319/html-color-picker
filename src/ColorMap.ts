@@ -1,29 +1,14 @@
-import { html, css, LitElement } from "lit";
+import { html, LitElement } from "lit";
 import { query } from "lit/decorators.js";
 
+import { tailwindStyles } from "./styles/Tailwind";
 import { Color, ColorInputType } from "./lib/Color";
 import { ColorPickerSetColorEvent } from "./events/ColorPickerSetColorEvent";
 import { clamp } from "./lib/utils/math";
 import { lerpColor } from "./lib/ColorLerp";
 
 export class ColorMap extends LitElement {
-  static styles = [
-    css`
-      tr {
-        display: flex;
-        width: 100%;
-      }
-
-      td {
-        flex: 1;
-      }
-
-      .gradient {
-        width: 100%;
-        height: 30px;
-      }
-    `,
-  ];
+  static styles = [tailwindStyles];
 
   @query("#colormap-div")
   private colorMapDiv!: HTMLDivElement;
@@ -102,16 +87,16 @@ export class ColorMap extends LitElement {
   }
 
   render() {
-    return html` <div>
-      <th>${this.getColorMapName()}</th>
-      <td>
+    return html`
+      <div class="flex flex-col gap-1">
+        <span class="text-xs font-semibold text-gray-700 text-center">${this.getColorMapName()}</span>
         <div
           style="background: ${this.toCss()}"
-          class="gradient"
+          class="w-full h-8 rounded shadow-inner cursor-crosshair"
           @mousedown=${this.onMouseDown.bind(this)}
           id="colormap-div"
         ></div>
-      </td>
-    </div>`;
+      </div>
+    `;
   }
 }

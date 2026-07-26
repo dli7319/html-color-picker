@@ -2,7 +2,6 @@ import { css, html, LitElement } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 
 import { Color, ColorInputType } from "./lib/Color";
-import { bootstrap } from "./styles/Bootstrap";
 import { ColorPickerSetColorEvent } from "./events/ColorPickerSetColorEvent";
 import "./ColorSelectionTypeBBarPointer";
 import { clamp } from "./lib/utils/math";
@@ -69,7 +68,6 @@ export class ColorSelectionTypeBBar extends LitElement {
     backgroundStyleArray.push(");");
     const backgroundStyle = backgroundStyleArray.join("\n");
     return html`
-      ${bootstrap}
       <div
         class="color-bar"
         @mousedown=${this.onMouseDown}

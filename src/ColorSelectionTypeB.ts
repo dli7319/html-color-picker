@@ -2,7 +2,6 @@ import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { Color } from "./lib/Color";
-import { bootstrap } from "./styles/Bootstrap";
 import "./ColorSelectionTypeBWheel";
 import "./ColorSelectionTypeBBar";
 
@@ -26,7 +25,6 @@ export class ColorSelectionTypeB extends LitElement {
 
   render() {
     return html`
-      ${bootstrap}
       <color-selection-type-b-wheel
         .color=${this.color}
       ></color-selection-type-b-wheel>

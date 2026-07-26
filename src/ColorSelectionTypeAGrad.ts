@@ -4,7 +4,6 @@ import { customElement, property, query } from "lit/decorators.js";
 import { clamp } from "./lib/utils/math";
 import { Color, ColorInputType } from "./lib/Color";
 import { styles } from "./styles/ColorSelectionTypeA.css";
-import { bootstrap } from "./styles/Bootstrap";
 import { ColorPickerSetColorEvent } from "./events/ColorPickerSetColorEvent";
 import "./ColorSelectionTypeABar";
 
@@ -14,6 +13,9 @@ export class ColorSelectionTypeAGrad extends LitElement {
     styles,
     css`
       :host {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
         flex: 1;
       }
     `,
@@ -47,7 +49,7 @@ export class ColorSelectionTypeAGrad extends LitElement {
           h: hue,
           s: newSaturation,
           v: newValue,
-        })
+        }),
       );
     }
   }
@@ -74,13 +76,12 @@ export class ColorSelectionTypeAGrad extends LitElement {
       }).getHex();
     const colorGradStyleBackground = `linear-gradient(to right, #FFF 0%, ${hueColorHex} 100%)`;
     const colorCircleStyle = `
-      top: calc(${(1.0 - value / 100) * 100}% - 0.5rem);
-      left: calc(${(saturation / 100) * 100}% - 0.5rem);
+      top: ${(1.0 - value / 100) * 100}%;
+      left: ${(saturation / 100) * 100}%;
       background-color: #${this.color.getHex()};
       border-color: ${value < 50 ? "white" : "black"};
     `;
     return html`
-      ${bootstrap}
       <div class="color-grad-container" id="color-grad-container">
         <div
           class="color-grad color-grad-1"

@@ -3,7 +3,7 @@ import { customElement, property, state } from "lit/decorators.js";
 import { createRef, ref, Ref } from "lit/directives/ref.js";
 
 import { styles } from "./styles/ImageSampling.css";
-import { bootstrap } from "./styles/Bootstrap";
+import { tailwindStyles } from "./styles/Tailwind";
 import { Color, ColorInputType } from "./lib/Color";
 import { Coordinates } from "./lib/Coordinates";
 import { ColorPickerSetColorEvent } from "./events/ColorPickerSetColorEvent";
@@ -29,7 +29,7 @@ const overlaySizeToRem = {
 
 @customElement("image-sampling")
 export class ImageSampling extends LitElement {
-  static styles = [styles];
+  static styles = [tailwindStyles, styles];
 
   @property({ attribute: false })
   coordinates: Coordinates = { x: 0, y: 0, width: 0, height: 0 };
@@ -127,15 +127,19 @@ export class ImageSampling extends LitElement {
       --circle-diameter: ${overlaySizeToRem[this.overlaySize]};
     `;
     return html`
-      ${bootstrap}
-      <h5>Image Sampling</h5>
-      <div>
-        <input class="form-control" type="file" @change=${this.loadImage} />
+      <h5 class="text-lg font-semibold text-gray-800 mb-2">Image Sampling</h5>
+      <div class="mb-3">
+        <input
+          class="block w-full text-xs text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm cursor-pointer focus:outline-none file:mr-3 file:py-1.5 file:px-3 file:border-0 file:text-xs file:font-medium file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
+          type="file"
+          @change=${this.loadImage}
+        />
       </div>
-      <div class="d-flex flex-row">
-        <div class="form-floating flex-grow-1">
+      <div class="flex gap-2 mb-2">
+        <div class="flex-1 border border-gray-300 rounded-md bg-white p-1 px-2.5 text-left focus-within:ring-2 focus-within:ring-blue-500">
+          <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider">Overlay Color</label>
           <select
-            class="form-select"
+            class="w-full text-xs font-medium text-gray-800 bg-transparent outline-none cursor-pointer"
             aria-label="Select Overlay Color"
             @change=${this.selectOverlayColor}
           >
@@ -158,11 +162,11 @@ export class ImageSampling extends LitElement {
               White
             </option>
           </select>
-          <label>Overlay Color</label>
         </div>
-        <div class="form-floating flex-grow-1">
+        <div class="flex-1 border border-gray-300 rounded-md bg-white p-1 px-2.5 text-left focus-within:ring-2 focus-within:ring-blue-500">
+          <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider">Overlay Size</label>
           <select
-            class="form-select"
+            class="w-full text-xs font-medium text-gray-800 bg-transparent outline-none cursor-pointer"
             aria-label="Select Overlay Size"
             @change=${this.selectOverlaySize}
           >
@@ -185,7 +189,6 @@ export class ImageSampling extends LitElement {
               Large
             </option>
           </select>
-          <label>Overlay Size</label>
         </div>
       </div>
       <div class="mt-1 image-preview-canvas-wrapper">

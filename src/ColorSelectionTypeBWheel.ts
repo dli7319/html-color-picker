@@ -2,7 +2,6 @@ import { css, html, LitElement } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 
 import { Color, ColorInputType } from "./lib/Color";
-import { bootstrap } from "./styles/Bootstrap";
 import { ColorPickerSetColorEvent } from "./events/ColorPickerSetColorEvent";
 
 // This is an HSL color wheel with a white center.
@@ -114,7 +113,6 @@ export class ColorSelectionTypeBWheel extends LitElement {
             }).getHex()};
         `;
     return html`
-      ${bootstrap}
       <div
         class="color-grad"
         id="color-grad"

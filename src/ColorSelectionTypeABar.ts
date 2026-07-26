@@ -4,7 +4,6 @@ import { customElement, property, query } from "lit/decorators.js";
 import { clamp } from "./lib/utils/math";
 import { Color, ColorInputType } from "./lib/Color";
 import { styles } from "./styles/ColorSelectionTypeA.css";
-import { bootstrap } from "./styles/Bootstrap";
 import { ColorPickerSetColorEvent } from "./events/ColorPickerSetColorEvent";
 import "./ColorSelectionTypeABarPointer";
 
@@ -56,7 +55,6 @@ export class ColorSelectionTypeABar extends LitElement {
   render() {
     const [hue] = this.color.getHSV();
     return html`
-      ${bootstrap}
       <div class="color-bar" @mousedown=${this.onMouseDown} id="color-bar">
         <color-selection-type-a-bar-pointer
           hue=${hue}

@@ -5,7 +5,7 @@ import { Color, ColorInputType } from "./lib/Color";
 import { Coordinates } from "./lib/Coordinates";
 import { ActiveColorSide, ColorInterpolation } from "./ColorInterpolation";
 import { styles } from "./styles/ColorPicker.css";
-import { bootstrap } from "./styles/Bootstrap";
+import { tailwindStyles } from "./styles/Tailwind";
 import { ColorPickerSetColorEvent } from "./events/ColorPickerSetColorEvent";
 import { ColorPickerSetCoordinatesEvent } from "./events/ColorPickerSetCoordinatesEvent";
 import { ColorPickerSetInterpolationActiveEvent } from "./events/ColorPickerSetInterpolationActiveEvent";
@@ -17,7 +17,7 @@ import "./OtherTools";
 
 @customElement("color-picker")
 export class ColorPicker extends LitElement {
-  static styles = [styles];
+  static styles = [tailwindStyles, styles];
 
   @state()
   color: Color = new Color({
@@ -58,7 +58,7 @@ export class ColorPicker extends LitElement {
         if (event instanceof ColorPickerSetColorEvent) {
           this.setColor(event.color);
         }
-      }
+      },
     );
     this.addEventListener(
       ColorPickerSetCoordinatesEvent.eventName,
@@ -66,7 +66,7 @@ export class ColorPicker extends LitElement {
         if (event instanceof ColorPickerSetCoordinatesEvent) {
           this.setCoordinates(event.coordinates);
         }
-      }
+      },
     );
     this.addEventListener(
       ColorPickerSetInterpolationActiveEvent.eventName,
@@ -74,7 +74,7 @@ export class ColorPicker extends LitElement {
         if (event instanceof ColorPickerSetInterpolationActiveEvent) {
           this.setInterpolationActive(event.active);
         }
-      }
+      },
     );
   }
 
@@ -115,7 +115,6 @@ export class ColorPicker extends LitElement {
   render() {
     this.style.background = "#" + this.color.getHex();
     this.updateChildren();
-    return html` ${bootstrap}
-      <slot class="d-flex flex-row flex-wrap main-container"></slot>`;
+    return html`<slot class="main-container"></slot>`;
   }
 }

@@ -1,7 +1,7 @@
 import { html, LitElement } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import { bootstrap } from "./styles/Bootstrap";
+import { tailwindStyles } from "./styles/Tailwind";
 import { Color } from "./lib/Color";
 import { Coordinates } from "./lib/Coordinates";
 import { styles } from "./styles/ColorConverter.css";
@@ -25,7 +25,7 @@ const typeToParseFunction = {
 
 @customElement("color-converter")
 export class ColorConverter extends LitElement {
-  static styles = [styles];
+  static styles = [tailwindStyles, styles];
 
   @property({ attribute: false })
   color: Color = new Color();
@@ -79,23 +79,15 @@ export class ColorConverter extends LitElement {
     ];
     this.updateChildren();
     return html`
-      ${bootstrap}
-      <h5>Color Converter</h5>
-      <table class="table mb-0 table-borderless">
-        <tbody>
-          <tr>
-            <th scope="row">Coordinates</th>
-            <td>
-              <p id="coordinates-container" class="mb-0">
-                (${floatCoordinatesRounded[0]}, ${floatCoordinatesRounded[1]})
-                <br />
-                (${intCoordinates[0]}, ${intCoordinates[1]})
-              </p>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <slot class="d-flex flex-column inputs-container"></slot>
+      <h5 class="text-lg font-semibold text-gray-800 mb-2">Color Converter</h5>
+      <div class="flex justify-between items-center px-4 py-2 bg-gray-100 rounded-md text-sm font-medium mb-3">
+        <span class="font-semibold text-gray-700">Coordinates</span>
+        <div id="coordinates-container" class="text-right text-gray-600 font-mono text-xs">
+          (${floatCoordinatesRounded[0]}, ${floatCoordinatesRounded[1]})<br />
+          (${intCoordinates[0]}, ${intCoordinates[1]})
+        </div>
+      </div>
+      <slot class="flex flex-col gap-2 inputs-container"></slot>
     `;
   }
 }

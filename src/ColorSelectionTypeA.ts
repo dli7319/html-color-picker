@@ -3,7 +3,6 @@ import { customElement, property } from "lit/decorators.js";
 
 import { Color } from "./lib/Color";
 import { styles } from "./styles/ColorSelectionTypeA.css";
-import { bootstrap } from "./styles/Bootstrap";
 import "./ColorSelectionTypeAGrad";
 import "./ColorSelectionTypeABar";
 
@@ -16,7 +15,6 @@ export class ColorSelectionTypeA extends LitElement {
 
   render() {
     return html`
-      ${bootstrap}
       <color-selection-type-a-grad
         .color=${this.color}
       ></color-selection-type-a-grad>

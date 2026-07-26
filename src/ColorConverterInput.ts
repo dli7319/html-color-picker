@@ -2,7 +2,7 @@ import { html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import "@shoelace-style/shoelace/dist/components/copy-button/copy-button.js";
 
-import { bootstrap } from "./styles/Bootstrap";
+import { tailwindStyles } from "./styles/Tailwind";
 import { Color } from "./lib/Color";
 import { ColorConverterInputEvent } from "./events/ColorConverterInputEvent";
 
@@ -56,6 +56,8 @@ const colorToString = {
 
 @customElement("color-converter-input")
 export class ColorConverterInput extends LitElement {
+  static styles = [tailwindStyles];
+
   @property()
   type: InputType = InputType.HEX;
   @property({ attribute: false })
@@ -77,20 +79,19 @@ export class ColorConverterInput extends LitElement {
       this.inputValues[inputTypeToInputValueKey[this.type]] ??
       colorToString[this.type](this.color);
     return html`
-      ${bootstrap}
-      <div class="input-group">
-        <div class="form-floating">
+      <div class="flex items-stretch border border-gray-300 rounded bg-white overflow-hidden text-left focus-within:ring-1 focus-within:ring-blue-500">
+        <div class="flex-1 px-2 py-0.5">
+          <label class="block text-[10px] font-semibold text-gray-500 uppercase tracking-wider">${inputTypeToLabel[this.type]}</label>
           <input
             type="text"
-            class="form-control"
+            class="w-full text-xs font-mono text-gray-800 outline-none bg-transparent"
             .value=${value}
             @input=${this.onValueChange}
           />
-          <label>${inputTypeToLabel[this.type]}</label>
         </div>
-        <span class="input-group-text">
+        <div class="flex items-center px-2 bg-gray-50 border-l border-gray-200">
           <sl-copy-button value=${value}></sl-copy-button>
-        </span>
+        </div>
       </div>
     `;
   }

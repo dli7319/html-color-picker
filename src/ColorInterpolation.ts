@@ -4,7 +4,7 @@ import { customElement, property } from "lit/decorators.js";
 import { Color } from "./lib/Color";
 import { ColorGradient } from "./lib/ColorGradient";
 import { styles } from "./styles/ColorInterpolation.css";
-import { bootstrap } from "./styles/Bootstrap";
+import { tailwindStyles } from "./styles/Tailwind";
 import { ColorPickerSetColorEvent } from "./events/ColorPickerSetColorEvent";
 import { ColorPickerSetInterpolationActiveEvent } from "./events/ColorPickerSetInterpolationActiveEvent";
 import { ColorInterpolationGradient } from "./ColorInterpolationGradient";
@@ -18,7 +18,7 @@ export enum ActiveColorSide {
 
 @customElement("color-interpolation")
 export class ColorInterpolation extends LitElement {
-  static styles = [styles];
+  static styles = [tailwindStyles, styles];
 
   @property()
   activeColor: ActiveColorSide = ActiveColorSide.NONE;
@@ -87,57 +87,40 @@ export class ColorInterpolation extends LitElement {
   render() {
     this.colorGradient = new ColorGradient(this.leftColor, this.rightColor);
     return html`
-      ${bootstrap}
-      <h5>Color Interpolation</h5>
-      <table class="table mb-0">
-        <tbody>
-          <tr>
-            <td>
-              <div
-                class="color-selection ${this.activeColor ===
-                ActiveColorSide.LEFT
-                  ? "active"
-                  : ""}"
-                @click=${this.setActiveColorLeft}
-                style="background: #${this.leftColor.getHex()}"
-              ></div>
-            </td>
-            <td>
-              <div
-                class="color-selection ${this.activeColor ===
-                ActiveColorSide.RIGHT
-                  ? "active"
-                  : ""}"
-                @click=${this.setActiveColorRight}
-                style="background: #${this.rightColor.getHex()}"
-              ></div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <table class="table mb-0">
-        <tbody>
-          ${Array.prototype.map.call(this.children, (child) => {
-            if (child instanceof ColorInterpolationGradient) {
-              const lerpMode =
-                ColorLerpMode[child.type as keyof typeof ColorLerpMode];
-              return html` <tr>
-                <th>${child.typeName || child.type}</th>
-                <td>
-                  <div
-                    class="gradient"
-                    style="background: ${this.colorGradient.getBackgroundImageStyle(
-                      lerpMode
-                    )}"
-                    data-mode=${lerpMode}
-                    @mousedown=${this.onMouseDown.bind(this)}
-                  ></div>
-                </td>
-              </tr>`;
-            }
-          })}
-        </tbody>
-      </table>
+      <h5 class="text-lg font-semibold text-gray-800 mb-2">Color Interpolation</h5>
+      <div class="flex justify-center gap-6 my-2">
+        <div
+          class="color-selection cursor-pointer ${this.activeColor === ActiveColorSide.LEFT ? 'active ring-2 ring-blue-600' : ''}"
+          @click=${this.setActiveColorLeft}
+          style="background: #${this.leftColor.getHex()}"
+        ></div>
+        <div
+          class="color-selection cursor-pointer ${this.activeColor === ActiveColorSide.RIGHT ? 'active ring-2 ring-blue-600' : ''}"
+          @click=${this.setActiveColorRight}
+          style="background: #${this.rightColor.getHex()}"
+        ></div>
+      </div>
+      <div class="flex flex-col gap-2 mt-3">
+        ${Array.prototype.map.call(this.children, (child) => {
+          if (child instanceof ColorInterpolationGradient) {
+            const lerpMode =
+              ColorLerpMode[child.type as keyof typeof ColorLerpMode];
+            return html`
+              <div class="flex items-center gap-3">
+                <span class="w-12 text-left font-bold text-xs text-gray-700">${child.typeName || child.type}</span>
+                <div
+                  class="gradient flex-1 rounded overflow-hidden cursor-crosshair h-6 shadow-inner"
+                  style="background: ${this.colorGradient.getBackgroundImageStyle(
+                    lerpMode
+                  )}"
+                  data-mode=${lerpMode}
+                  @mousedown=${this.onMouseDown.bind(this)}
+                ></div>
+              </div>
+            `;
+          }
+        })}
+      </div>
     `;
   }
 }

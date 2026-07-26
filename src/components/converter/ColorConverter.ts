@@ -37,7 +37,7 @@ export class ColorConverter extends LitElement {
 
   constructor() {
     super();
-    this.addEventListener(ColorConverterInputEvent.type, (event) => {
+    this.addEventListener(ColorConverterInputEvent.eventName, (event) => {
       if (event instanceof ColorConverterInputEvent) {
         const { inputType, value } = event;
         const parsedColor = typeToParseFunction[inputType](value);

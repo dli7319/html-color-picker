@@ -83,7 +83,7 @@ export class ColorPicker extends LitElement {
     this.color = newColor;
     if (this.interpolationActive === ActiveColorSide.LEFT) {
       this.interpolationLeft = newColor;
-    } else if (this.interpolationActive == ActiveColorSide.RIGHT) {
+    } else if (this.interpolationActive === ActiveColorSide.RIGHT) {
       this.interpolationRight = newColor;
     }
   }

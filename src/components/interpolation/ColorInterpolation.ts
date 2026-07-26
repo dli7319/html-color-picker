@@ -77,7 +77,7 @@ export class ColorInterpolation extends LitElement {
 
   setActiveColorLeft() {
     this.setActiveColor(
-      this.activeColor == ActiveColorSide.LEFT
+      this.activeColor === ActiveColorSide.LEFT
         ? ActiveColorSide.NONE
         : ActiveColorSide.LEFT
     );
@@ -85,7 +85,7 @@ export class ColorInterpolation extends LitElement {
 
   setActiveColorRight() {
     this.setActiveColor(
-      this.activeColor == ActiveColorSide.RIGHT
+      this.activeColor === ActiveColorSide.RIGHT
         ? ActiveColorSide.NONE
         : ActiveColorSide.RIGHT
     );

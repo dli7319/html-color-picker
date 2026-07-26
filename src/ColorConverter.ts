@@ -44,7 +44,6 @@ export class ColorConverter extends LitElement {
         if (parsedColor != null) {
           this.setColor(parsedColor);
           this.inputValues = {
-            ...this.inputValues,
             [inputTypeToInputValueKey[inputType]]: value,
           };
         }

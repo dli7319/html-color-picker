@@ -1,14 +1,14 @@
 import { html, LitElement } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 
-import { clamp } from "./lib/utils/math";
-import { Color, ColorInputType } from "./lib/Color";
-import { styles } from "./styles/ColorSelectionTypeA.css";
-import { ColorPickerSetColorEvent } from "./events/ColorPickerSetColorEvent";
-import "./ColorSelectionTypeABarPointer";
+import { clamp } from "../../lib/utils/math";
+import { Color, ColorInputType } from "../../lib/Color";
+import { styles } from "../../styles/ColorSelectionTypeA.css";
+import { ColorPickerSetColorEvent } from "../../events/ColorPickerSetColorEvent";
+import "./ColorBarPointer";
 
-@customElement("color-selection-type-a-bar")
-export class ColorSelectionTypeABar extends LitElement {
+@customElement("color-selection-hsv-bar")
+export class ColorSelectionHsvBar extends LitElement {
   static styles = [styles];
 
   @property({ attribute: false })
@@ -51,11 +51,20 @@ export class ColorSelectionTypeABar extends LitElement {
 
   render() {
     const [hue] = this.color.getHSV();
+    const hueColorHex =
+      "#" +
+      new Color({
+        type: ColorInputType.HSV,
+        h: hue,
+        s: 100,
+        v: 100,
+      }).getHex();
     return html`
       <div class="color-bar" @mousedown=${this.onMouseDown} id="color-bar">
-        <color-selection-type-a-bar-pointer
-          hue=${hue}
-        ></color-selection-type-a-bar-pointer>
+        <color-bar-pointer
+          .position=${(hue / 360) * 100}
+          .color=${hueColorHex}
+        ></color-bar-pointer>
       </div>
     `;
   }

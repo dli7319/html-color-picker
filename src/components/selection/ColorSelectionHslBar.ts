@@ -1,13 +1,13 @@
 import { css, html, LitElement } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 
-import { Color, ColorInputType } from "./lib/Color";
-import { ColorPickerSetColorEvent } from "./events/ColorPickerSetColorEvent";
-import "./ColorSelectionTypeBBarPointer";
-import { clamp } from "./lib/utils/math";
+import { Color, ColorInputType } from "../../lib/Color";
+import { ColorPickerSetColorEvent } from "../../events/ColorPickerSetColorEvent";
+import { clamp } from "../../lib/utils/math";
+import "./ColorBarPointer";
 
-@customElement("color-selection-type-b-bar")
-export class ColorSelectionTypeBBar extends LitElement {
+@customElement("color-selection-hsl-bar")
+export class ColorSelectionHslBar extends LitElement {
   static styles = css`
     .color-bar {
       position: relative;
@@ -54,12 +54,12 @@ export class ColorSelectionTypeBBar extends LitElement {
   };
 
   render() {
-    const [hue, saturation] = this.color.getHSL();
+    const [hue, saturation, lightness] = this.color.getHSL();
+    const hueColorHex = "#" + this.color.getHex();
     const backgroundStyleArray = ["background: linear-gradient(", "to right,"];
     for (let i = 0; i <= 100; i++) {
-      const lightness = i;
       backgroundStyleArray.push(
-        `hsl(${hue}deg, ${saturation}%, ${lightness}%) ${i}%` +
+        `hsl(${hue}deg, ${saturation}%, ${i}%) ${i}%` +
           (i < 100 ? "," : ""),
       );
     }
@@ -72,9 +72,10 @@ export class ColorSelectionTypeBBar extends LitElement {
         id="color-bar"
         style=${backgroundStyle}
       >
-        <color-selection-type-b-bar-pointer
-          .color=${this.color}
-        ></color-selection-type-b-bar-pointer>
+        <color-bar-pointer
+          .position=${lightness}
+          .color=${hueColorHex}
+        ></color-bar-pointer>
       </div>
     `;
   }

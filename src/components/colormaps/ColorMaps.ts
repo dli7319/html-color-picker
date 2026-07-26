@@ -1,10 +1,10 @@
 import { html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { tailwindStyles } from "./styles/Tailwind";
-import { Color } from "./lib/Color";
+import { tailwindStyles } from "../../styles/Tailwind";
+import { Color } from "../../lib/Color";
 import { ColorMap } from "./ColorMap";
-import "./colormaps/all";
+import "../../colormaps/all";
 
 @customElement("color-maps")
 export class ColorMaps extends LitElement {

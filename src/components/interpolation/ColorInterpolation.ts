@@ -1,16 +1,16 @@
 import { html, LitElement } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import { Color } from "./lib/Color";
-import { ColorGradient } from "./lib/ColorGradient";
-import { styles } from "./styles/ColorInterpolation.css";
-import { tailwindStyles } from "./styles/Tailwind";
-import { ColorPickerSetColorEvent } from "./events/ColorPickerSetColorEvent";
-import { ColorPickerSetInterpolationActiveEvent } from "./events/ColorPickerSetInterpolationActiveEvent";
+import { Color } from "../../lib/Color";
+import { ColorGradient } from "../../lib/ColorGradient";
+import { styles } from "../../styles/ColorInterpolation.css";
+import { tailwindStyles } from "../../styles/Tailwind";
+import { ColorPickerSetColorEvent } from "../../events/ColorPickerSetColorEvent";
+import { ColorPickerSetInterpolationActiveEvent } from "../../events/ColorPickerSetInterpolationActiveEvent";
 import { ColorInterpolationGradient } from "./ColorInterpolationGradient";
-import { ColorLerpMode } from "./lib/ColorLerp";
-import { clamp } from "./lib/utils/math";
-import "./ColorBarPointer";
+import { ColorLerpMode } from "../../lib/ColorLerp";
+import { clamp } from "../../lib/utils/math";
+import "../selection/ColorBarPointer";
 
 export enum ActiveColorSide {
   LEFT = "left",

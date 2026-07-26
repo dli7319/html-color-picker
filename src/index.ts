@@ -1,1 +1,1 @@
-import "./ColorPicker";
+import "./components/ColorPicker";

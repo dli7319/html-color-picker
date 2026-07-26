@@ -1,14 +1,14 @@
 import { css, html, LitElement } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 
-import { clamp } from "./lib/utils/math";
-import { Color, ColorInputType } from "./lib/Color";
-import { styles } from "./styles/ColorSelectionTypeA.css";
-import { ColorPickerSetColorEvent } from "./events/ColorPickerSetColorEvent";
-import "./ColorSelectionTypeABar";
+import { clamp } from "../../lib/utils/math";
+import { Color, ColorInputType } from "../../lib/Color";
+import { styles } from "../../styles/ColorSelectionTypeA.css";
+import { ColorPickerSetColorEvent } from "../../events/ColorPickerSetColorEvent";
+import "./ColorSelectionHsvBar";
 
-@customElement("color-selection-type-a-grad")
-export class ColorSelectionTypeAGrad extends LitElement {
+@customElement("color-selection-hsv-grad")
+export class ColorSelectionHsvGrad extends LitElement {
   static styles = [
     styles,
     css`

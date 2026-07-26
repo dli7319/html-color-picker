@@ -1,12 +1,12 @@
 import { html, LitElement } from "lit";
 import { property, query } from "lit/decorators.js";
 
-import { tailwindStyles } from "./styles/Tailwind";
-import { Color, ColorInputType } from "./lib/Color";
-import { ColorPickerSetColorEvent } from "./events/ColorPickerSetColorEvent";
-import { clamp } from "./lib/utils/math";
-import { lerpColor } from "./lib/ColorLerp";
-import "./ColorBarPointer";
+import { tailwindStyles } from "../../styles/Tailwind";
+import { Color, ColorInputType } from "../../lib/Color";
+import { ColorPickerSetColorEvent } from "../../events/ColorPickerSetColorEvent";
+import { clamp } from "../../lib/utils/math";
+import { lerpColor } from "../../lib/ColorLerp";
+import "../selection/ColorBarPointer";
 
 export class ColorMap extends LitElement {
   static styles = [tailwindStyles];

@@ -1,4 +1,4 @@
-import { ActiveColorSide } from "../ColorInterpolation";
+import { ActiveColorSide } from "../components/interpolation/ColorInterpolation";
 
 export class ColorPickerSetInterpolationActiveEvent extends Event {
   static readonly eventName = "set-interpolation-active";

@@ -2,9 +2,9 @@ import { html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import "@shoelace-style/shoelace/dist/components/copy-button/copy-button.js";
 
-import { tailwindStyles } from "./styles/Tailwind";
-import { Color } from "./lib/Color";
-import { ColorConverterInputEvent } from "./events/ColorConverterInputEvent";
+import { tailwindStyles } from "../../styles/Tailwind";
+import { Color } from "../../lib/Color";
+import { ColorConverterInputEvent } from "../../events/ColorConverterInputEvent";
 
 export interface InputValues {
   hexValue?: string;

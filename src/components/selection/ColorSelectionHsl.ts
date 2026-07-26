@@ -1,13 +1,13 @@
 import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { Color } from "./lib/Color";
-import "./ColorSelectionTypeBWheel";
-import "./ColorSelectionTypeBBar";
+import { Color } from "../../lib/Color";
+import "./ColorSelectionHslWheel";
+import "./ColorSelectionHslBar";
 
 // This is an HSL color wheel with a white center.
-@customElement("color-selection-type-b")
-export class ColorSelectionTypeB extends LitElement {
+@customElement("color-selection-hsl")
+export class ColorSelectionHsl extends LitElement {
   static styles = [
     css`
       :host {
@@ -25,12 +25,12 @@ export class ColorSelectionTypeB extends LitElement {
 
   render() {
     return html`
-      <color-selection-type-b-wheel
+      <color-selection-hsl-wheel
         .color=${this.color}
-      ></color-selection-type-b-wheel>
-      <color-selection-type-b-bar
+      ></color-selection-hsl-wheel>
+      <color-selection-hsl-bar
         .color=${this.color}
-      ></color-selection-type-b-bar>
+      ></color-selection-hsl-bar>
     `;
   }
 }

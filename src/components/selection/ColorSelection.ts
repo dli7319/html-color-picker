@@ -1,10 +1,10 @@
 import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { Color } from "./lib/Color";
-import { tailwindStyles } from "./styles/Tailwind";
-import "./ColorSelectionTypeA";
-import "./ColorSelectionTypeB";
+import { Color } from "../../lib/Color";
+import { tailwindStyles } from "../../styles/Tailwind";
+import "./ColorSelectionHsv";
+import "./ColorSelectionHsl";
 
 enum ColorSelectionType {
   HSV = "HSV",
@@ -32,15 +32,15 @@ export class ColorSelection extends LitElement {
 
   getColorSelectionHtml() {
     if (this.colorSelectionType === ColorSelectionType.HSV) {
-      return html`<color-selection-type-a
+      return html`<color-selection-hsv
         class="w-full flex-1 flex flex-col"
         .color=${this.color}
-      ></color-selection-type-a>`;
+      ></color-selection-hsv>`;
     } else {
-      return html`<color-selection-type-b
+      return html`<color-selection-hsl
         class="w-full flex-1 flex flex-col my-0 mx-auto"
         .color=${this.color}
-      ></color-selection-type-b>`;
+      ></color-selection-hsl>`;
     }
   }
 

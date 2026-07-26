@@ -1,12 +1,12 @@
 import { css, html, LitElement } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 
-import { Color, ColorInputType } from "./lib/Color";
-import { ColorPickerSetColorEvent } from "./events/ColorPickerSetColorEvent";
+import { Color, ColorInputType } from "../../lib/Color";
+import { ColorPickerSetColorEvent } from "../../events/ColorPickerSetColorEvent";
 
 // This is an HSL color wheel with a white center.
-@customElement("color-selection-type-b-wheel")
-export class ColorSelectionTypeBWheel extends LitElement {
+@customElement("color-selection-hsl-wheel")
+export class ColorSelectionHslWheel extends LitElement {
   static styles = [
     css`
       :host {

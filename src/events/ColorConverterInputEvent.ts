@@ -1,4 +1,4 @@
-import { InputType } from "../ColorConverterInput";
+import { InputType } from "../components/converter/ColorConverterInput";
 
 export class ColorConverterInputEvent extends Event {
   static readonly type = "color-converter-input";

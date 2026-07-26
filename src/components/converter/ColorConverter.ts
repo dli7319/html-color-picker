@@ -1,19 +1,19 @@
 import { html, LitElement } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import { tailwindStyles } from "./styles/Tailwind";
-import { Color } from "./lib/Color";
-import { Coordinates } from "./lib/Coordinates";
-import { styles } from "./styles/ColorConverter.css";
-import { ColorPickerSetColorEvent } from "./events/ColorPickerSetColorEvent";
+import { tailwindStyles } from "../../styles/Tailwind";
+import { Color } from "../../lib/Color";
+import { Coordinates } from "../../lib/Coordinates";
+import { styles } from "../../styles/ColorConverter.css";
+import { ColorPickerSetColorEvent } from "../../events/ColorPickerSetColorEvent";
 import {
   ColorConverterInput,
   InputType,
   inputTypeToInputValueKey,
   InputValues,
 } from "./ColorConverterInput";
-import { ColorConverterInputEvent } from "./events/ColorConverterInputEvent";
-import { parseHexColor, parseHSLColor, parseHSVColor, parseRGB01Color, parseRGB255Color } from "./lib/ColorStringParsing";
+import { ColorConverterInputEvent } from "../../events/ColorConverterInputEvent";
+import { parseHexColor, parseHSLColor, parseHSVColor, parseRGB01Color, parseRGB255Color } from "../../lib/ColorStringParsing";
 
 const typeToParseFunction = {
   [InputType.HEX]: parseHexColor,

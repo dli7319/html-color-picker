@@ -2,12 +2,12 @@ import { html, LitElement } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { createRef, ref, Ref } from "lit/directives/ref.js";
 
-import { styles } from "./styles/ImageSampling.css";
-import { tailwindStyles } from "./styles/Tailwind";
-import { Color, ColorInputType } from "./lib/Color";
-import { Coordinates } from "./lib/Coordinates";
-import { ColorPickerSetColorEvent } from "./events/ColorPickerSetColorEvent";
-import { ColorPickerSetCoordinatesEvent } from "./events/ColorPickerSetCoordinatesEvent";
+import { styles } from "../../styles/ImageSampling.css";
+import { tailwindStyles } from "../../styles/Tailwind";
+import { Color, ColorInputType } from "../../lib/Color";
+import { Coordinates } from "../../lib/Coordinates";
+import { ColorPickerSetColorEvent } from "../../events/ColorPickerSetColorEvent";
+import { ColorPickerSetCoordinatesEvent } from "../../events/ColorPickerSetCoordinatesEvent";
 
 export enum OverlayColor {
   Transparent = "transparent",

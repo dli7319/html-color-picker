@@ -1,20 +1,20 @@
 import { html, LitElement } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
-import { Color, ColorInputType } from "./lib/Color";
-import { Coordinates } from "./lib/Coordinates";
-import { ActiveColorSide, ColorInterpolation } from "./ColorInterpolation";
-import { styles } from "./styles/ColorPicker.css";
-import { tailwindStyles } from "./styles/Tailwind";
-import { ColorPickerSetColorEvent } from "./events/ColorPickerSetColorEvent";
-import { ColorPickerSetCoordinatesEvent } from "./events/ColorPickerSetCoordinatesEvent";
-import { ColorPickerSetInterpolationActiveEvent } from "./events/ColorPickerSetInterpolationActiveEvent";
-import { ColorSelection } from "./ColorSelection";
-import { ColorConverter } from "./ColorConverter";
-import { ImageSampling } from "./ImageSampling";
-import { ColorMaps } from "./ColorMaps";
-import "./ColorMaps";
-import "./OtherTools";
+import { Color, ColorInputType } from "../lib/Color";
+import { Coordinates } from "../lib/Coordinates";
+import { ActiveColorSide, ColorInterpolation } from "./interpolation/ColorInterpolation";
+import { styles } from "../styles/ColorPicker.css";
+import { tailwindStyles } from "../styles/Tailwind";
+import { ColorPickerSetColorEvent } from "../events/ColorPickerSetColorEvent";
+import { ColorPickerSetCoordinatesEvent } from "../events/ColorPickerSetCoordinatesEvent";
+import { ColorPickerSetInterpolationActiveEvent } from "../events/ColorPickerSetInterpolationActiveEvent";
+import { ColorSelection } from "./selection/ColorSelection";
+import { ColorConverter } from "./converter/ColorConverter";
+import { ImageSampling } from "./tools/ImageSampling";
+import { ColorMaps } from "./colormaps/ColorMaps";
+import "./colormaps/ColorMaps";
+import "./tools/OtherTools";
 
 @customElement("color-picker")
 export class ColorPicker extends LitElement {

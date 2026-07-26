@@ -1,4 +1,4 @@
-import * as colorConvert from "color-convert";
+import colorConvert from "color-convert";
 
 import { clamp } from "./utils/math";
 

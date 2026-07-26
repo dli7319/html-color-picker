@@ -7,7 +7,6 @@ import terser from "@rollup/plugin-terser";
 import serve from "rollup-plugin-serve";
 import livereload from "rollup-plugin-livereload";
 import postcss from "postcss";
-// @ts-expect-error - @tailwindcss/postcss has no ambient types
 import tailwindcss from "@tailwindcss/postcss";
 
 const isProduction = process.env.NODE_ENV === "production";
@@ -22,7 +21,7 @@ const config: RollupOptions = {
   plugins: [
     resolve(),
     commonjs(),
-    typescript({ tsconfig: "./tsconfig.json", outputToFilesystem: true }),
+    typescript({ tsconfig: "./tsconfig.json", outputToFilesystem: false }),
     litCss({
       transform: async (css, { filePath }) => {
         const result = await postcss([tailwindcss()]).process(css, {

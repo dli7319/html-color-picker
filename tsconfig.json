@@ -13,7 +13,7 @@
     "strict": true, // Enable all strict type checking options
     "forceConsistentCasingInFileNames": true, // Disallow inconsistently-cased references to the same file.
     "module": "esnext", // Specify module code generation
-    "moduleResolution": "node", // Resolve modules using Node.js style
+    "moduleResolution": "bundler", // Resolve modules using bundler style (required by TypeScript 7)
     "isolatedModules": true, // Unconditionally emit imports for unresolved files
     "resolveJsonModule": true, // Include modules imported with .json extension
     "jsx": "react", // Support JSX in .tsx files
@@ -21,6 +21,8 @@
     "noUnusedLocals": true, // Report errors on unused locals
     "noUnusedParameters": true, // Report errors on unused parameters
     "incremental": true, // Enable incremental compilation by reading/writing information from prior compilations to a file on disk
+    "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo",
+    "outDir": "dist",
     "noFallthroughCasesInSwitch": true, // Report errors for fallthrough cases in switch statement
     "experimentalDecorators": true,
     "types": ["node"]

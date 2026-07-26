@@ -3,7 +3,11 @@ import { customElement, property } from "lit/decorators.js";
 
 import { tailwindStyles } from "../../styles/Tailwind";
 import { Color } from "../../lib/Color";
-import { turboColorMapData, turboColorMapName } from "../../colormap-data/turbo";
+import {
+  turboColorMapData,
+  turboColorMapName,
+} from "../../colormap-data/turbo";
+import "./ColorMap";
 
 @customElement("color-maps")
 export class ColorMaps extends LitElement {

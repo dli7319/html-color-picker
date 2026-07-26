@@ -11,19 +11,13 @@ export enum ColorInputType {
   LCH = "lch",
 }
 
-export interface ColorInput {
-  type?: ColorInputType;
-  r?: number;
-  g?: number;
-  b?: number;
-  a?: number;
-  hex?: string;
-  h?: number;
-  s?: number;
-  v?: number;
-  l?: number;
-  c?: number;
-}
+export type ColorInput =
+  | { type: ColorInputType.RGB255; r: number; g: number; b: number }
+  | { type: ColorInputType.RGB01; r: number; g: number; b: number }
+  | { type: ColorInputType.HEX; hex: string }
+  | { type: ColorInputType.HSV; h: number; s: number; v: number }
+  | { type: ColorInputType.HSL; h: number; s: number; l: number }
+  | { type: ColorInputType.LCH; l: number; c: number; h: number };
 
 type ColorModel = "rgb" | "hex" | "hsv" | "hsl" | "lch";
 
@@ -54,30 +48,37 @@ export class Color {
   input: ColorInput;
   private conversionInput: string | [number, number, number];
 
-  constructor(color: ColorInput = {}) {
+  constructor(
+    color: ColorInput = {
+      type: ColorInputType.RGB255,
+      r: 0,
+      g: 0,
+      b: 0,
+    },
+  ) {
     if (color.type === ColorInputType.RGB255) {
       this.conversionInput = [
-        clamp(color.r ?? 0, 0, 255),
-        clamp(color.g ?? 0, 0, 255),
-        clamp(color.b ?? 0, 0, 255),
+        clamp(color.r, 0, 255),
+        clamp(color.g, 0, 255),
+        clamp(color.b, 0, 255),
       ];
     } else if (color.type === ColorInputType.RGB01) {
       this.conversionInput = [
-        clamp(Math.round((color.r ?? 0) * 255), 0, 255),
-        clamp(Math.round((color.g ?? 0) * 255), 0, 255),
-        clamp(Math.round((color.b ?? 0) * 255), 0, 255),
+        clamp(Math.round(color.r * 255), 0, 255),
+        clamp(Math.round(color.g * 255), 0, 255),
+        clamp(Math.round(color.b * 255), 0, 255),
       ];
     } else if (color.type === ColorInputType.HEX) {
-      this.conversionInput = color.hex ?? "#000000";
+      this.conversionInput = color.hex;
     } else if (color.type === ColorInputType.HSV) {
-      this.conversionInput = [color.h ?? 0, color.s ?? 0, color.v ?? 0];
+      this.conversionInput = [color.h, color.s, color.v];
     } else if (color.type === ColorInputType.HSL) {
-      this.conversionInput = [color.h ?? 0, color.s ?? 0, color.l ?? 0];
+      this.conversionInput = [color.h, color.s, color.l];
     } else if (color.type === ColorInputType.LCH) {
-      this.conversionInput = [color.l ?? 0, color.c ?? 0, color.h ?? 0];
+      this.conversionInput = [color.l, color.c, color.h];
     } else {
-      // Assume black color by default.
-      color = { type: ColorInputType.RGB255, ...color };
+      // Safety fallback — unreachable with valid union types.
+      color = { type: ColorInputType.RGB255, r: 0, g: 0, b: 0 };
       this.conversionInput = [0, 0, 0];
     }
     this.input = color;
@@ -102,14 +103,15 @@ export class Color {
   }
 
   getRGB255(): [number, number, number] {
-    if (this.input.type === ColorInputType.RGB255) {
-      return [this.input.r ?? 0, this.input.g ?? 0, this.input.b ?? 0];
+    const input = this.input;
+    if (input.type === ColorInputType.RGB255) {
+      return [input.r, input.g, input.b];
     }
-    if (this.input.type === ColorInputType.RGB01) {
+    if (input.type === ColorInputType.RGB01) {
       return [
-        Math.round((this.input.r ?? 0) * 255),
-        Math.round((this.input.g ?? 0) * 255),
-        Math.round((this.input.b ?? 0) * 255),
+        Math.round(input.r * 255),
+        Math.round(input.g * 255),
+        Math.round(input.b * 255),
       ];
     }
     return convertColor<[number, number, number]>(
@@ -120,53 +122,46 @@ export class Color {
   }
 
   getRGB01(): [number, number, number] {
-    if (this.input.type === ColorInputType.RGB255) {
-      return [
-        (this.input.r ?? 0) / 255,
-        (this.input.g ?? 0) / 255,
-        (this.input.b ?? 0) / 255,
-      ];
+    const input = this.input;
+    if (input.type === ColorInputType.RGB255) {
+      return [input.r / 255, input.g / 255, input.b / 255];
     }
-    if (this.input.type === ColorInputType.RGB01) {
-      return [this.input.r ?? 0, this.input.g ?? 0, this.input.b ?? 0];
+    if (input.type === ColorInputType.RGB01) {
+      return [input.r, input.g, input.b];
     }
     return this.getRGB255().map((x) => x / 255) as [number, number, number];
   }
 
   getHex(): string {
-    if (this.input.type === ColorInputType.HEX) {
-      return this.input.hex ?? "";
+    const input = this.input;
+    if (input.type === ColorInputType.HEX) {
+      return input.hex;
     }
     return convertColor<string>(this.model, "hex", this.conversionInput);
   }
 
   getHSV(raw: boolean = true): number[] {
-    if (this.input.type === ColorInputType.HSV) {
-      const output = [this.input.h ?? 0, this.input.s ?? 0, this.input.v ?? 0];
+    const input = this.input;
+    if (input.type === ColorInputType.HSV) {
+      const output = [input.h, input.s, input.v];
       return raw ? output : output.map((x) => Math.round(x));
     }
     return convertColor<number[]>(this.model, "hsv", this.conversionInput, raw);
   }
 
   getHSL(raw: boolean = true): number[] {
-    if (this.input.type === ColorInputType.HSL) {
-      const hslArray = [
-        this.input.h ?? 0,
-        this.input.s ?? 0,
-        this.input.l ?? 0,
-      ];
+    const input = this.input;
+    if (input.type === ColorInputType.HSL) {
+      const hslArray = [input.h, input.s, input.l];
       return raw ? hslArray : hslArray.map((x) => Math.round(x));
     }
     return convertColor<number[]>(this.model, "hsl", this.conversionInput, raw);
   }
 
   getLCH(raw: boolean = true): number[] {
-    if (this.input.type === ColorInputType.LCH) {
-      const lchArray = [
-        this.input.l ?? 0,
-        this.input.c ?? 0,
-        this.input.h ?? 0,
-      ];
+    const input = this.input;
+    if (input.type === ColorInputType.LCH) {
+      const lchArray = [input.l, input.c, input.h];
       return raw ? lchArray : lchArray.map((x) => Math.round(x));
     }
     return convertColor<number[]>(this.model, "lch", this.conversionInput, raw);

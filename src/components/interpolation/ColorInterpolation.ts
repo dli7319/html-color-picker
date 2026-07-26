@@ -7,8 +7,12 @@ import { styles } from "../../styles/ColorInterpolation.css";
 import { tailwindStyles } from "../../styles/Tailwind";
 import { ColorPickerSetColorEvent } from "../../events/ColorPickerSetColorEvent";
 import { ColorPickerSetInterpolationActiveEvent } from "../../events/ColorPickerSetInterpolationActiveEvent";
-import { ColorInterpolationGradient } from "./ColorInterpolationGradient";
 import { ColorLerpMode } from "../../lib/ColorLerp";
+
+interface GradientDef {
+  type: string;
+  typeName?: string;
+}
 import { clamp } from "../../lib/utils/math";
 import { DragController } from "../../controllers/DragController";
 import "../selection/ColorBarPointer";
@@ -26,14 +30,22 @@ export class ColorInterpolation extends LitElement {
   @property()
   activeColor: ActiveColorSide = ActiveColorSide.NONE;
   @property({ attribute: false })
-  leftColor: Color = new Color({});
+  leftColor: Color = new Color();
   @property({ attribute: false })
-  rightColor: Color = new Color({});
+  rightColor: Color = new Color();
 
   @state()
   activeLerpMode: string | null = null;
   @state()
   activeRatio: number = 0.5;
+
+  @property({ attribute: false })
+  gradients: GradientDef[] = [
+    { type: "RGB" },
+    { type: "HSL" },
+    { typeName: "HSL*", type: "HSL_FLIP" },
+    { type: "LCH" },
+  ];
 
   colorGradient: ColorGradient = new ColorGradient();
 
@@ -108,10 +120,9 @@ export class ColorInterpolation extends LitElement {
         ></div>
       </div>
       <div class="flex flex-col gap-2 mt-3">
-        ${Array.prototype.map.call(this.children, (child) => {
-          if (child instanceof ColorInterpolationGradient) {
+        ${this.gradients.map((gradient) => {
             const lerpMode =
-              ColorLerpMode[child.type as keyof typeof ColorLerpMode];
+              ColorLerpMode[gradient.type as keyof typeof ColorLerpMode];
             const isActive = this.activeLerpMode === lerpMode;
             const pointerColor = isActive
               ? "#" +
@@ -125,7 +136,7 @@ export class ColorInterpolation extends LitElement {
 
             return html`
               <div class="flex items-center gap-3">
-                <span class="w-12 text-left font-bold text-xs text-gray-700">${child.typeName || child.type}</span>
+                <span class="w-12 text-left font-bold text-xs text-gray-700">${gradient.typeName || gradient.type}</span>
                 <div
                   class="gradient flex-1 rounded relative overflow-visible cursor-crosshair h-6 shadow-inner"
                   style="background: ${this.colorGradient.getBackgroundImageStyle(
@@ -143,7 +154,6 @@ export class ColorInterpolation extends LitElement {
                 </div>
               </div>
             `;
-          }
         })}
       </div>
     `;

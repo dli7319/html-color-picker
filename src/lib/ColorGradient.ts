@@ -39,7 +39,7 @@ export class ColorGradient {
 
   getColorAt(position: number, mode: ColorLerpMode): Color {
     if (this.colors.length === 0) {
-      return new Color({});
+      return new Color();
     }
     if (this.colors.length === 1) {
       return this.colors[0];

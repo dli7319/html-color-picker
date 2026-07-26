@@ -1,5 +1,5 @@
 import { html, LitElement } from "lit";
-import { property, query } from "lit/decorators.js";
+import { customElement, property, query } from "lit/decorators.js";
 
 import { tailwindStyles } from "../../styles/Tailwind";
 import { Color, ColorInputType } from "../../lib/Color";
@@ -9,31 +9,28 @@ import { lerpColor } from "../../lib/ColorLerp";
 import { DragController } from "../../controllers/DragController";
 import "../selection/ColorBarPointer";
 
+@customElement("color-map")
 export class ColorMap extends LitElement {
   static styles = [tailwindStyles];
 
   @property({ attribute: false })
   color: Color = new Color();
 
+  @property({ attribute: false })
+  data: number[][] = [[0, 0, 0]];
+
+  @property()
+  name: string = "Color Map";
+
   @query("#colormap-div")
   private colorMapDiv!: HTMLDivElement;
-
-  getColorMapData(): number[][] {
-    // This method should be overridden by subclasses to provide the actual color map data.
-    return [[0, 0, 0]];
-  }
-
-  getColorMapName() {
-    // This method should be overridden by subclasses to provide the actual color map name.
-    return "Color Map";
-  }
 
   setColor(color: Color) {
     this.dispatchEvent(new ColorPickerSetColorEvent(color));
   }
 
   toCss() {
-    const colormapData = this.getColorMapData();
+    const colormapData = this.data;
     const rgba_strings = [];
     for (let i = 0; i < 256; i++) {
       rgba_strings.push(
@@ -46,7 +43,7 @@ export class ColorMap extends LitElement {
   }
 
   getColorAt(x: number) {
-    const colormapData = this.getColorMapData();
+    const colormapData = this.data;
     const indexFloor = Math.floor(
       clamp(x * colormapData.length, 0, colormapData.length - 1)
     );
@@ -71,7 +68,7 @@ export class ColorMap extends LitElement {
 
   findClosestColormapPoint(targetColor: Color) {
     const targetRgb = targetColor.getRGB255();
-    const data = this.getColorMapData();
+    const data = this.data;
     let minDistance = Infinity;
     let closestIndex = 0;
 
@@ -116,7 +113,7 @@ export class ColorMap extends LitElement {
 
     return html`
       <div class="flex flex-col gap-1">
-        <span class="text-xs font-semibold text-gray-700 text-center">${this.getColorMapName()}</span>
+        <span class="text-xs font-semibold text-gray-700 text-center">${this.name}</span>
         <div
           style="background: ${this.toCss()}"
           class="w-full h-8 rounded relative cursor-crosshair"

@@ -44,14 +44,11 @@ export class ColorSelectionTypeBWheel extends LitElement {
   @query("#color-grad")
   private colorGrad!: HTMLDivElement;
 
-  private onMouseMoveBound = this.onMouseMove.bind(this);
-  private onMouseUpBound = this.onMouseUp.bind(this);
-
   setColor(color: Color) {
     this.dispatchEvent(new ColorPickerSetColorEvent(color));
   }
 
-  onMouseMove(event: MouseEvent) {
+  onMouseMove = (event: MouseEvent) => {
     const rect = this.colorGrad.getBoundingClientRect();
     const x = event.clientX - rect.left - rect.width / 2;
     const y = event.clientY - rect.top - rect.height / 2;
@@ -68,17 +65,17 @@ export class ColorSelectionTypeBWheel extends LitElement {
         l: 50,
       })
     );
-  }
+  };
 
-  onMouseDown() {
-    document.addEventListener("mousemove", this.onMouseMoveBound);
-    document.addEventListener("mouseup", this.onMouseUpBound);
-  }
+  onMouseDown = () => {
+    document.addEventListener("mousemove", this.onMouseMove);
+    document.addEventListener("mouseup", this.onMouseUp);
+  };
 
-  onMouseUp() {
-    document.removeEventListener("mousemove", this.onMouseMoveBound);
-    document.removeEventListener("mouseup", this.onMouseUpBound);
-  }
+  onMouseUp = () => {
+    document.removeEventListener("mousemove", this.onMouseMove);
+    document.removeEventListener("mouseup", this.onMouseUp);
+  };
 
   render() {
     const [hue, saturation] = this.color.getHSL();

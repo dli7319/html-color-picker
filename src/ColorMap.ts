@@ -17,9 +17,6 @@ export class ColorMap extends LitElement {
   @query("#colormap-div")
   private colorMapDiv!: HTMLDivElement;
 
-  private onMouseMoveBound = this.onMouseMove.bind(this);
-  private onMouseUpBound = this.onMouseUp.bind(this);
-
   getColorMapData(): number[][] {
     // This method should be overridden by subclasses to provide the actual color map data.
     return [[0, 0, 0]];
@@ -100,28 +97,28 @@ export class ColorMap extends LitElement {
     };
   }
 
-  onMouseMove(event: MouseEvent) {
+  onMouseMove = (event: MouseEvent) => {
     if (event.buttons == 1) {
       const rect = this.colorMapDiv.getBoundingClientRect();
       const x = clamp((event.clientX - rect.left) / rect.width, 0, 1);
       const newColor = this.getColorAt(x);
       this.setColor(newColor);
     }
-  }
+  };
 
-  onMouseDown(event: MouseEvent) {
+  onMouseDown = (event: MouseEvent) => {
     const rect = this.colorMapDiv.getBoundingClientRect();
     const x = clamp((event.clientX - rect.left) / rect.width, 0, 1);
     const newColor = this.getColorAt(x);
     this.setColor(newColor);
-    document.addEventListener("mousemove", this.onMouseMoveBound);
-    document.addEventListener("mouseup", this.onMouseUpBound);
-  }
+    document.addEventListener("mousemove", this.onMouseMove);
+    document.addEventListener("mouseup", this.onMouseUp);
+  };
 
-  onMouseUp() {
-    document.removeEventListener("mousemove", this.onMouseMoveBound);
-    document.removeEventListener("mouseup", this.onMouseUpBound);
-  }
+  onMouseUp = () => {
+    document.removeEventListener("mousemove", this.onMouseMove);
+    document.removeEventListener("mouseup", this.onMouseUp);
+  };
 
   render() {
     const match = this.findClosestColormapPoint(this.color);
@@ -133,7 +130,7 @@ export class ColorMap extends LitElement {
         <div
           style="background: ${this.toCss()}"
           class="w-full h-8 rounded relative cursor-crosshair"
-          @mousedown=${this.onMouseDown.bind(this)}
+          @mousedown=${this.onMouseDown}
           id="colormap-div"
         >
           ${isVeryClose

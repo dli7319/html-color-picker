@@ -24,14 +24,11 @@ export class ColorSelectionTypeBBar extends LitElement {
   @query("#color-bar")
   colorBar!: HTMLDivElement;
 
-  private onMouseMoveBound = this.onMouseMove.bind(this);
-  private onMouseUpBound = this.onMouseUp.bind(this);
-
   setColor(color: Color) {
     this.dispatchEvent(new ColorPickerSetColorEvent(color));
   }
 
-  onMouseMove(e: MouseEvent) {
+  onMouseMove = (e: MouseEvent) => {
     const [hue, saturation] = this.color.getHSL();
     const rect = this.colorBar.getBoundingClientRect();
     const x = clamp((e.clientX - rect.left) / rect.width, 0, 1);
@@ -42,19 +39,19 @@ export class ColorSelectionTypeBBar extends LitElement {
         h: hue,
         s: saturation,
         l: newLightness,
-      })
+      }),
     );
-  }
+  };
 
-  onMouseDown() {
-    document.addEventListener("mousemove", this.onMouseMoveBound);
-    document.addEventListener("mouseup", this.onMouseUpBound);
-  }
+  onMouseDown = () => {
+    document.addEventListener("mousemove", this.onMouseMove);
+    document.addEventListener("mouseup", this.onMouseUp);
+  };
 
-  onMouseUp() {
-    document.removeEventListener("mousemove", this.onMouseMoveBound);
-    document.removeEventListener("mouseup", this.onMouseUpBound);
-  }
+  onMouseUp = () => {
+    document.removeEventListener("mousemove", this.onMouseMove);
+    document.removeEventListener("mouseup", this.onMouseUp);
+  };
 
   render() {
     const [hue, saturation] = this.color.getHSL();
@@ -63,7 +60,7 @@ export class ColorSelectionTypeBBar extends LitElement {
       const lightness = i;
       backgroundStyleArray.push(
         `hsl(${hue}deg, ${saturation}%, ${lightness}%) ${i}%` +
-          (i < 100 ? "," : "")
+          (i < 100 ? "," : ""),
       );
     }
     backgroundStyleArray.push(");");

@@ -17,14 +17,11 @@ export class ColorSelectionTypeABar extends LitElement {
   @query("#color-bar")
   colorBar!: HTMLDivElement;
 
-  private onMouseMoveBound = this.onMouseMove.bind(this);
-  private onMouseUpBound = this.onMouseUp.bind(this);
-
   setColor(color: Color) {
     this.dispatchEvent(new ColorPickerSetColorEvent(color));
   }
 
-  onMouseMove(e: MouseEvent) {
+  onMouseMove = (e: MouseEvent) => {
     const [, saturation, value] = this.color.getHSV();
     const mouseDown = e.buttons == 1;
     if (mouseDown) {
@@ -40,17 +37,17 @@ export class ColorSelectionTypeABar extends LitElement {
         })
       );
     }
-  }
+  };
 
-  onMouseDown() {
-    document.addEventListener("mousemove", this.onMouseMoveBound);
-    document.addEventListener("mouseup", this.onMouseUpBound);
-  }
+  onMouseDown = () => {
+    document.addEventListener("mousemove", this.onMouseMove);
+    document.addEventListener("mouseup", this.onMouseUp);
+  };
 
-  onMouseUp() {
-    document.removeEventListener("mousemove", this.onMouseMoveBound);
-    document.removeEventListener("mouseup", this.onMouseUpBound);
-  }
+  onMouseUp = () => {
+    document.removeEventListener("mousemove", this.onMouseMove);
+    document.removeEventListener("mouseup", this.onMouseUp);
+  };
 
   render() {
     const [hue] = this.color.getHSV();

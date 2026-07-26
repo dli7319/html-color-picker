@@ -36,8 +36,6 @@ export class ColorInterpolation extends LitElement {
 
   colorGradient: ColorGradient = new ColorGradient();
 
-  private onMouseMoveBound = this.onMouseMove.bind(this);
-  private onMouseUpBound = this.onMouseUp.bind(this);
   private selectedGolorGradientDiv: HTMLDivElement | null = null;
 
   setColor(color: Color) {
@@ -64,7 +62,7 @@ export class ColorInterpolation extends LitElement {
     );
   }
 
-  onMouseMove(event: MouseEvent) {
+  onMouseMove = (event: MouseEvent) => {
     if (this.selectedGolorGradientDiv instanceof HTMLDivElement) {
       const mode =
         this.selectedGolorGradientDiv.getAttribute("data-mode") || "";
@@ -77,9 +75,9 @@ export class ColorInterpolation extends LitElement {
       this.setActiveColor(ActiveColorSide.NONE);
       this.setColor(newColor);
     }
-  }
+  };
 
-  onMouseDown(event: MouseEvent) {
+  onMouseDown = (event: MouseEvent) => {
     this.selectedGolorGradientDiv = event.currentTarget as HTMLDivElement;
     const mode = this.selectedGolorGradientDiv.getAttribute("data-mode") || "";
     const rect = this.selectedGolorGradientDiv.getBoundingClientRect();
@@ -90,15 +88,15 @@ export class ColorInterpolation extends LitElement {
     this.activeLerpMode = mode;
     this.setActiveColor(ActiveColorSide.NONE);
     this.setColor(newColor);
-    document.addEventListener("mousemove", this.onMouseMoveBound);
-    document.addEventListener("mouseup", this.onMouseUpBound);
-  }
+    document.addEventListener("mousemove", this.onMouseMove);
+    document.addEventListener("mouseup", this.onMouseUp);
+  };
 
-  onMouseUp() {
-    document.removeEventListener("mousemove", this.onMouseMoveBound);
-    document.removeEventListener("mouseup", this.onMouseUpBound);
+  onMouseUp = () => {
+    document.removeEventListener("mousemove", this.onMouseMove);
+    document.removeEventListener("mouseup", this.onMouseUp);
     this.selectedGolorGradientDiv = null;
-  }
+  };
 
   render() {
     this.colorGradient = new ColorGradient(this.leftColor, this.rightColor);
@@ -141,7 +139,7 @@ export class ColorInterpolation extends LitElement {
                     lerpMode
                   )}"
                   data-mode=${lerpMode}
-                  @mousedown=${this.onMouseDown.bind(this)}
+                  @mousedown=${this.onMouseDown}
                 >
                   ${isActive
                     ? html`<color-bar-pointer

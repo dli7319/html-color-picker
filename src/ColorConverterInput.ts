@@ -79,9 +79,9 @@ export class ColorConverterInput extends LitElement {
       this.inputValues[inputTypeToInputValueKey[this.type]] ??
       colorToString[this.type](this.color);
     return html`
-      <div class="flex items-stretch border border-gray-300 rounded bg-white overflow-hidden text-left focus-within:ring-1 focus-within:ring-blue-500">
-        <div class="flex-1 px-2 py-0.5">
-          <label class="block text-[10px] font-semibold text-gray-500 uppercase tracking-wider">${inputTypeToLabel[this.type]}</label>
+      <div class="flex items-stretch rounded-lg bg-white/50 backdrop-blur-md overflow-hidden text-left">
+        <div class="flex-1 px-2 py-1">
+          <label class="block text-[10px] font-semibold text-gray-600 uppercase tracking-wider">${inputTypeToLabel[this.type]}</label>
           <input
             type="text"
             class="w-full text-xs font-mono text-gray-800 outline-none bg-transparent"
@@ -89,7 +89,7 @@ export class ColorConverterInput extends LitElement {
             @input=${this.onValueChange}
           />
         </div>
-        <div class="flex items-center px-2 bg-gray-50 border-l border-gray-200">
+        <div class="flex items-center px-2 bg-white/30">
           <sl-copy-button value=${value}></sl-copy-button>
         </div>
       </div>

@@ -49,13 +49,13 @@ export class ColorSelection extends LitElement {
     return html`
       <h5 class="text-lg font-semibold text-gray-800 mb-2">Color Selection</h5>
       <div
-        class="inline-flex rounded-md bg-slate-600 p-0.5 mb-3 w-full max-w-xs mx-auto shadow-sm"
+        class="inline-flex rounded-lg bg-slate-800 p-1 mb-3 w-full max-w-xs mx-auto"
       >
         <button
           type="button"
-          class="flex-1 py-1.5 px-3 text-xs font-medium rounded transition-colors ${isHsv
-            ? "bg-slate-800 text-white shadow"
-            : "text-slate-200 hover:text-white"}"
+          class="flex-1 py-1.5 px-3 text-xs font-semibold rounded-md transition-all ${isHsv
+            ? "bg-white text-slate-900 shadow-xs"
+            : "text-slate-300 hover:text-white"}"
           @click=${() => {
             this.colorSelectionType = ColorSelectionType.HSV;
           }}
@@ -64,9 +64,9 @@ export class ColorSelection extends LitElement {
         </button>
         <button
           type="button"
-          class="flex-1 py-1.5 px-3 text-xs font-medium rounded transition-colors ${!isHsv
-            ? "bg-slate-800 text-white shadow"
-            : "text-slate-200 hover:text-white"}"
+          class="flex-1 py-1.5 px-3 text-xs font-semibold rounded-md transition-all ${!isHsv
+            ? "bg-white text-slate-900 shadow-xs"
+            : "text-slate-300 hover:text-white"}"
           @click=${() => {
             this.colorSelectionType = ColorSelectionType.HSL_WHEEL;
           }}

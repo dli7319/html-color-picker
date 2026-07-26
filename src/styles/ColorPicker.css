@@ -12,8 +12,10 @@
 }
 
 ::slotted(*) {
-  border-radius: 1rem;
-  background: #eee;
+  border-radius: 1.25rem;
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
   padding: 1rem;
   text-align: center;
   flex: 1 1 28%;

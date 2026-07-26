@@ -80,7 +80,7 @@ export class ColorConverter extends LitElement {
     this.updateChildren();
     return html`
       <h5 class="text-lg font-semibold text-gray-800 mb-2">Color Converter</h5>
-      <div class="flex justify-between items-center px-4 py-2 bg-gray-100 rounded-md text-sm font-medium mb-3">
+      <div class="flex justify-between items-center px-4 py-2 bg-white/40 backdrop-blur-md rounded-lg text-sm font-medium mb-3">
         <span class="font-semibold text-gray-700">Coordinates</span>
         <div id="coordinates-container" class="text-right text-gray-600 font-mono text-xs">
           (${floatCoordinatesRounded[0]}, ${floatCoordinatesRounded[1]})<br />

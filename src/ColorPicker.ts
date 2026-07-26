@@ -22,9 +22,9 @@ export class ColorPicker extends LitElement {
   @state()
   color: Color = new Color({
     type: ColorInputType.RGB255,
-    r: 255,
-    g: 255,
-    b: 255,
+    r: 71,
+    g: 85,
+    b: 105,
   });
   @state()
   coordinates: Coordinates = {

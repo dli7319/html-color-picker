@@ -130,14 +130,14 @@ export class ImageSampling extends LitElement {
       <h5 class="text-lg font-semibold text-gray-800 mb-2">Image Sampling</h5>
       <div class="mb-3">
         <input
-          class="block w-full text-xs text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm cursor-pointer focus:outline-none file:mr-3 file:py-1.5 file:px-3 file:border-0 file:text-xs file:font-medium file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
+          class="block w-full text-xs text-gray-800 bg-white/50 backdrop-blur-md rounded-lg cursor-pointer focus:outline-none file:mr-3 file:py-1.5 file:px-3 file:border-0 file:text-xs file:font-semibold file:bg-white/80 file:text-gray-800 hover:file:bg-white"
           type="file"
           @change=${this.loadImage}
         />
       </div>
       <div class="flex gap-2 mb-2">
-        <div class="flex-1 border border-gray-300 rounded-md bg-white p-1 px-2.5 text-left focus-within:ring-2 focus-within:ring-blue-500">
-          <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider">Overlay Color</label>
+        <div class="flex-1 rounded-lg bg-white/50 backdrop-blur-md p-1 px-2.5 text-left">
+          <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider">Overlay Color</label>
           <select
             class="w-full text-xs font-medium text-gray-800 bg-transparent outline-none cursor-pointer"
             aria-label="Select Overlay Color"
@@ -163,8 +163,8 @@ export class ImageSampling extends LitElement {
             </option>
           </select>
         </div>
-        <div class="flex-1 border border-gray-300 rounded-md bg-white p-1 px-2.5 text-left focus-within:ring-2 focus-within:ring-blue-500">
-          <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider">Overlay Size</label>
+        <div class="flex-1 rounded-lg bg-white/50 backdrop-blur-md p-1 px-2.5 text-left">
+          <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider">Overlay Size</label>
           <select
             class="w-full text-xs font-medium text-gray-800 bg-transparent outline-none cursor-pointer"
             aria-label="Select Overlay Size"

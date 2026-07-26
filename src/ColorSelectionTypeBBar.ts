@@ -10,6 +10,7 @@ import { clamp } from "./lib/utils/math";
 export class ColorSelectionTypeBBar extends LitElement {
   static styles = css`
     .color-bar {
+      position: relative;
       width: 100%;
       height: 1.5rem;
       margin-top: 0.5rem;

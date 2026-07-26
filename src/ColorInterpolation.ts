@@ -1,5 +1,5 @@
 import { html, LitElement } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 
 import { Color } from "./lib/Color";
 import { ColorGradient } from "./lib/ColorGradient";
@@ -9,6 +9,8 @@ import { ColorPickerSetColorEvent } from "./events/ColorPickerSetColorEvent";
 import { ColorPickerSetInterpolationActiveEvent } from "./events/ColorPickerSetInterpolationActiveEvent";
 import { ColorInterpolationGradient } from "./ColorInterpolationGradient";
 import { ColorLerpMode } from "./lib/ColorLerp";
+import { clamp } from "./lib/utils/math";
+import "./ColorBarPointer";
 
 export enum ActiveColorSide {
   LEFT = "left",
@@ -26,6 +28,11 @@ export class ColorInterpolation extends LitElement {
   leftColor: Color = new Color({});
   @property({ attribute: false })
   rightColor: Color = new Color({});
+
+  @state()
+  activeLerpMode: string | null = null;
+  @state()
+  activeRatio: number = 0.5;
 
   colorGradient: ColorGradient = new ColorGradient();
 
@@ -62,11 +69,11 @@ export class ColorInterpolation extends LitElement {
       const mode =
         this.selectedGolorGradientDiv.getAttribute("data-mode") || "";
       const rect = this.selectedGolorGradientDiv.getBoundingClientRect();
-      const x = (event.clientX - rect.left) / rect.width;
-      const newColor = this.colorGradient.getColorAt(
-        x,
-        ColorLerpMode[mode.toUpperCase() as keyof typeof ColorLerpMode]
-      );
+      const x = clamp((event.clientX - rect.left) / rect.width, 0, 1);
+      const lerpEnum = ColorLerpMode[mode.toUpperCase() as keyof typeof ColorLerpMode];
+      const newColor = this.colorGradient.getColorAt(x, lerpEnum);
+      this.activeRatio = x;
+      this.activeLerpMode = mode;
       this.setActiveColor(ActiveColorSide.NONE);
       this.setColor(newColor);
     }
@@ -74,6 +81,15 @@ export class ColorInterpolation extends LitElement {
 
   onMouseDown(event: MouseEvent) {
     this.selectedGolorGradientDiv = event.currentTarget as HTMLDivElement;
+    const mode = this.selectedGolorGradientDiv.getAttribute("data-mode") || "";
+    const rect = this.selectedGolorGradientDiv.getBoundingClientRect();
+    const x = clamp((event.clientX - rect.left) / rect.width, 0, 1);
+    const lerpEnum = ColorLerpMode[mode.toUpperCase() as keyof typeof ColorLerpMode];
+    const newColor = this.colorGradient.getColorAt(x, lerpEnum);
+    this.activeRatio = x;
+    this.activeLerpMode = mode;
+    this.setActiveColor(ActiveColorSide.NONE);
+    this.setColor(newColor);
     document.addEventListener("mousemove", this.onMouseMoveBound);
     document.addEventListener("mouseup", this.onMouseUpBound);
   }
@@ -105,17 +121,35 @@ export class ColorInterpolation extends LitElement {
           if (child instanceof ColorInterpolationGradient) {
             const lerpMode =
               ColorLerpMode[child.type as keyof typeof ColorLerpMode];
+            const isActive = this.activeLerpMode === lerpMode;
+            const pointerColor = isActive
+              ? "#" +
+                this.colorGradient
+                  .getColorAt(
+                    this.activeRatio,
+                    ColorLerpMode[lerpMode.toUpperCase() as keyof typeof ColorLerpMode]
+                  )
+                  .getHex()
+              : "#ffffff";
+
             return html`
               <div class="flex items-center gap-3">
                 <span class="w-12 text-left font-bold text-xs text-gray-700">${child.typeName || child.type}</span>
                 <div
-                  class="gradient flex-1 rounded overflow-hidden cursor-crosshair h-6 shadow-inner"
+                  class="gradient flex-1 rounded relative overflow-visible cursor-crosshair h-6 shadow-inner"
                   style="background: ${this.colorGradient.getBackgroundImageStyle(
                     lerpMode
                   )}"
                   data-mode=${lerpMode}
                   @mousedown=${this.onMouseDown.bind(this)}
-                ></div>
+                >
+                  ${isActive
+                    ? html`<color-bar-pointer
+                        .position=${this.activeRatio * 100}
+                        .color=${pointerColor}
+                      ></color-bar-pointer>`
+                    : ""}
+                </div>
               </div>
             `;
           }

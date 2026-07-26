@@ -12,6 +12,7 @@ import { ColorPickerSetInterpolationActiveEvent } from "./events/ColorPickerSetI
 import { ColorSelection } from "./ColorSelection";
 import { ColorConverter } from "./ColorConverter";
 import { ImageSampling } from "./ImageSampling";
+import { ColorMaps } from "./ColorMaps";
 import "./ColorMaps";
 import "./OtherTools";
 
@@ -108,6 +109,8 @@ export class ColorPicker extends LitElement {
         child.leftColor = this.interpolationLeft;
         child.rightColor = this.interpolationRight;
         child.activeColor = this.interpolationActive;
+      } else if (child instanceof ColorMaps) {
+        child.color = this.color;
       }
     });
   }

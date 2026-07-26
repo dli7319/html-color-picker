@@ -5,6 +5,7 @@ import { clamp } from "../../lib/utils/math";
 import { Color, ColorInputType } from "../../lib/Color";
 import { styles } from "../../styles/ColorSelectionTypeA.css";
 import { ColorPickerSetColorEvent } from "../../events/ColorPickerSetColorEvent";
+import { DragController } from "../../controllers/DragController";
 import "./ColorSelectionHsvBar";
 
 @customElement("color-selection-hsv-grad")
@@ -27,14 +28,9 @@ export class ColorSelectionHsvGrad extends LitElement {
   @query("#color-grad-container")
   colorGradContainer!: HTMLDivElement;
 
-  setColor(color: Color) {
-    this.dispatchEvent(new ColorPickerSetColorEvent(color));
-  }
-
-  onMouseMove = (e: MouseEvent) => {
-    const [hue] = this.color.getHSV();
-    const mouseDown = e.buttons == 1;
-    if (mouseDown) {
+  private drag = new DragController(this, {
+    onDrag: (e: MouseEvent) => {
+      const [hue] = this.color.getHSV();
       const rect = this.colorGradContainer.getBoundingClientRect();
       const x = clamp((e.clientX - rect.left) / rect.width, 0, 1);
       const y = clamp((e.clientY - rect.top) / rect.height, 0, 1);
@@ -48,18 +44,12 @@ export class ColorSelectionHsvGrad extends LitElement {
           v: newValue,
         }),
       );
-    }
-  };
+    },
+  });
 
-  onMouseDown = () => {
-    document.addEventListener("mousemove", this.onMouseMove);
-    document.addEventListener("mouseup", this.onMouseUp);
-  };
-
-  onMouseUp = () => {
-    document.removeEventListener("mousemove", this.onMouseMove);
-    document.removeEventListener("mouseup", this.onMouseUp);
-  };
+  setColor(color: Color) {
+    this.dispatchEvent(new ColorPickerSetColorEvent(color));
+  }
 
   render() {
     const [hue, saturation, value] = this.color.getHSV();
@@ -86,10 +76,11 @@ export class ColorSelectionHsvGrad extends LitElement {
         ></div>
         <div
           class="color-grad color-grad-2"
-          @mousedown=${this.onMouseDown}
+          @mousedown=${this.drag.handleMouseDown}
         ></div>
         <div class="color-grad-circle" style=${colorCircleStyle}></div>
       </div>
     `;
   }
 }
+

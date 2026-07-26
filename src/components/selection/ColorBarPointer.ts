@@ -35,8 +35,11 @@ export class ColorBarPointer extends LitElement {
   @property({ type: String })
   color: string = "#ffffff";
 
-  render() {
+  updated() {
     this.style.left = `${this.position}%`;
+  }
+
+  render() {
     return html`
       <div
         class="color-bar-pointer-capsule"

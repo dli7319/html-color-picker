@@ -10,6 +10,7 @@ import { ColorPickerSetInterpolationActiveEvent } from "../../events/ColorPicker
 import { ColorInterpolationGradient } from "./ColorInterpolationGradient";
 import { ColorLerpMode } from "../../lib/ColorLerp";
 import { clamp } from "../../lib/utils/math";
+import { DragController } from "../../controllers/DragController";
 import "../selection/ColorBarPointer";
 
 export enum ActiveColorSide {
@@ -36,7 +37,35 @@ export class ColorInterpolation extends LitElement {
 
   colorGradient: ColorGradient = new ColorGradient();
 
-  private selectedGolorGradientDiv: HTMLDivElement | null = null;
+  private selectedGradientDiv: HTMLDivElement | null = null;
+
+  private processDrag = (e: MouseEvent) => {
+    if (this.selectedGradientDiv) {
+      const mode =
+        this.selectedGradientDiv.getAttribute("data-mode") || "";
+      const rect = this.selectedGradientDiv.getBoundingClientRect();
+      const x = clamp((e.clientX - rect.left) / rect.width, 0, 1);
+      const lerpEnum = ColorLerpMode[mode.toUpperCase() as keyof typeof ColorLerpMode];
+      const newColor = this.colorGradient.getColorAt(x, lerpEnum);
+      this.activeRatio = x;
+      this.activeLerpMode = mode;
+      this.setActiveColor(ActiveColorSide.NONE);
+      this.setColor(newColor);
+    }
+  };
+
+  private drag = new DragController(this, {
+    onDragStart: (e: MouseEvent) => {
+      this.selectedGradientDiv = e.currentTarget as HTMLDivElement;
+      this.processDrag(e);
+    },
+    onDrag: (e: MouseEvent) => {
+      this.processDrag(e);
+    },
+    onDragEnd: () => {
+      this.selectedGradientDiv = null;
+    },
+  });
 
   setColor(color: Color) {
     this.dispatchEvent(new ColorPickerSetColorEvent(color));
@@ -61,42 +90,6 @@ export class ColorInterpolation extends LitElement {
         : ActiveColorSide.RIGHT
     );
   }
-
-  onMouseMove = (event: MouseEvent) => {
-    if (this.selectedGolorGradientDiv instanceof HTMLDivElement) {
-      const mode =
-        this.selectedGolorGradientDiv.getAttribute("data-mode") || "";
-      const rect = this.selectedGolorGradientDiv.getBoundingClientRect();
-      const x = clamp((event.clientX - rect.left) / rect.width, 0, 1);
-      const lerpEnum = ColorLerpMode[mode.toUpperCase() as keyof typeof ColorLerpMode];
-      const newColor = this.colorGradient.getColorAt(x, lerpEnum);
-      this.activeRatio = x;
-      this.activeLerpMode = mode;
-      this.setActiveColor(ActiveColorSide.NONE);
-      this.setColor(newColor);
-    }
-  };
-
-  onMouseDown = (event: MouseEvent) => {
-    this.selectedGolorGradientDiv = event.currentTarget as HTMLDivElement;
-    const mode = this.selectedGolorGradientDiv.getAttribute("data-mode") || "";
-    const rect = this.selectedGolorGradientDiv.getBoundingClientRect();
-    const x = clamp((event.clientX - rect.left) / rect.width, 0, 1);
-    const lerpEnum = ColorLerpMode[mode.toUpperCase() as keyof typeof ColorLerpMode];
-    const newColor = this.colorGradient.getColorAt(x, lerpEnum);
-    this.activeRatio = x;
-    this.activeLerpMode = mode;
-    this.setActiveColor(ActiveColorSide.NONE);
-    this.setColor(newColor);
-    document.addEventListener("mousemove", this.onMouseMove);
-    document.addEventListener("mouseup", this.onMouseUp);
-  };
-
-  onMouseUp = () => {
-    document.removeEventListener("mousemove", this.onMouseMove);
-    document.removeEventListener("mouseup", this.onMouseUp);
-    this.selectedGolorGradientDiv = null;
-  };
 
   render() {
     this.colorGradient = new ColorGradient(this.leftColor, this.rightColor);
@@ -139,7 +132,7 @@ export class ColorInterpolation extends LitElement {
                     lerpMode
                   )}"
                   data-mode=${lerpMode}
-                  @mousedown=${this.onMouseDown}
+                  @mousedown=${this.drag.handleMouseDown}
                 >
                   ${isActive
                     ? html`<color-bar-pointer

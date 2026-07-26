@@ -3,6 +3,7 @@ import { customElement, property, query } from "lit/decorators.js";
 
 import { Color, ColorInputType } from "../../lib/Color";
 import { ColorPickerSetColorEvent } from "../../events/ColorPickerSetColorEvent";
+import { DragController } from "../../controllers/DragController";
 
 // This is an HSL color wheel with a white center.
 @customElement("color-selection-hsl-wheel")
@@ -44,38 +45,30 @@ export class ColorSelectionHslWheel extends LitElement {
   @query("#color-grad")
   private colorGrad!: HTMLDivElement;
 
+  private drag = new DragController(this, {
+    onDrag: (e: MouseEvent) => {
+      const rect = this.colorGrad.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      const radius = Math.sqrt(x * x + y * y) / (rect.width / 2);
+      const clampedRadius = Math.min(radius, 1);
+      const angle = Math.atan2(y, x) * (180 / Math.PI) + 90;
+      const clampedAngle = (angle + 360) % 360;
+
+      this.setColor(
+        new Color({
+          type: ColorInputType.HSL,
+          h: clampedAngle,
+          s: 100.0 * clampedRadius,
+          l: 50,
+        })
+      );
+    },
+  });
+
   setColor(color: Color) {
     this.dispatchEvent(new ColorPickerSetColorEvent(color));
   }
-
-  onMouseMove = (event: MouseEvent) => {
-    const rect = this.colorGrad.getBoundingClientRect();
-    const x = event.clientX - rect.left - rect.width / 2;
-    const y = event.clientY - rect.top - rect.height / 2;
-    const radius = Math.sqrt(x * x + y * y) / (rect.width / 2);
-    const clampedRadius = Math.min(radius, 1);
-    const angle = Math.atan2(y, x) * (180 / Math.PI) + 90;
-    const clampedAngle = (angle + 360) % 360;
-
-    this.setColor(
-      new Color({
-        type: ColorInputType.HSL,
-        h: clampedAngle,
-        s: 100.0 * clampedRadius,
-        l: 50,
-      })
-    );
-  };
-
-  onMouseDown = () => {
-    document.addEventListener("mousemove", this.onMouseMove);
-    document.addEventListener("mouseup", this.onMouseUp);
-  };
-
-  onMouseUp = () => {
-    document.removeEventListener("mousemove", this.onMouseMove);
-    document.removeEventListener("mouseup", this.onMouseUp);
-  };
 
   render() {
     const [hue, saturation] = this.color.getHSL();
@@ -114,10 +107,11 @@ export class ColorSelectionHslWheel extends LitElement {
         class="color-grad"
         id="color-grad"
         style=${colorGradStyle}
-        @mousedown=${this.onMouseDown}
+        @mousedown=${this.drag.handleMouseDown}
       >
         <div class="color-grad-circle" style=${colorCircleStyle}></div>
       </div>
     `;
   }
 }
+

@@ -115,9 +115,12 @@ export class ColorPicker extends LitElement {
     });
   }
 
-  render() {
+  updated() {
     this.style.background = "#" + this.color.getHex();
     this.updateChildren();
+  }
+
+  render() {
     return html`<slot class="main-container"></slot>`;
   }
 }

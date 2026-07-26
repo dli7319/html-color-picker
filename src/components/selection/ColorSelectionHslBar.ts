@@ -4,6 +4,7 @@ import { customElement, property, query } from "lit/decorators.js";
 import { Color, ColorInputType } from "../../lib/Color";
 import { ColorPickerSetColorEvent } from "../../events/ColorPickerSetColorEvent";
 import { clamp } from "../../lib/utils/math";
+import { DragController } from "../../controllers/DragController";
 import "./ColorBarPointer";
 
 @customElement("color-selection-hsl-bar")
@@ -24,34 +25,26 @@ export class ColorSelectionHslBar extends LitElement {
   @query("#color-bar")
   colorBar!: HTMLDivElement;
 
+  private drag = new DragController(this, {
+    onDrag: (e: MouseEvent) => {
+      const [hue, saturation] = this.color.getHSL();
+      const rect = this.colorBar.getBoundingClientRect();
+      const x = clamp((e.clientX - rect.left) / rect.width, 0, 1);
+      const newLightness = x * 100;
+      this.setColor(
+        new Color({
+          type: ColorInputType.HSL,
+          h: hue,
+          s: saturation,
+          l: newLightness,
+        }),
+      );
+    },
+  });
+
   setColor(color: Color) {
     this.dispatchEvent(new ColorPickerSetColorEvent(color));
   }
-
-  onMouseMove = (e: MouseEvent) => {
-    const [hue, saturation] = this.color.getHSL();
-    const rect = this.colorBar.getBoundingClientRect();
-    const x = clamp((e.clientX - rect.left) / rect.width, 0, 1);
-    const newLightness = x * 100;
-    this.setColor(
-      new Color({
-        type: ColorInputType.HSL,
-        h: hue,
-        s: saturation,
-        l: newLightness,
-      }),
-    );
-  };
-
-  onMouseDown = () => {
-    document.addEventListener("mousemove", this.onMouseMove);
-    document.addEventListener("mouseup", this.onMouseUp);
-  };
-
-  onMouseUp = () => {
-    document.removeEventListener("mousemove", this.onMouseMove);
-    document.removeEventListener("mouseup", this.onMouseUp);
-  };
 
   render() {
     const [hue, saturation, lightness] = this.color.getHSL();
@@ -68,7 +61,7 @@ export class ColorSelectionHslBar extends LitElement {
     return html`
       <div
         class="color-bar"
-        @mousedown=${this.onMouseDown}
+        @mousedown=${this.drag.handleMouseDown}
         id="color-bar"
         style=${backgroundStyle}
       >
@@ -80,3 +73,4 @@ export class ColorSelectionHslBar extends LitElement {
     `;
   }
 }
+

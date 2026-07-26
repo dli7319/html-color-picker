@@ -6,6 +6,8 @@ const rgb01Regex =
   /^([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+\s*([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+\s*([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)$/;
 const hsvRegex =
   /^([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+\s*([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+\s*([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)$/;
+const hslRegex =
+  /^([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+\s*([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+\s*([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)$/;
 
 export function parseHexColor(value: string) {
   const match = hexRegex.exec(value);
@@ -63,7 +65,7 @@ export function parseHSVColor(value: string) {
 }
 
 export function parseHSLColor(value: string) {
-  const match = hsvRegex.exec(value);
+  const match = hslRegex.exec(value);
   if (match && match.length == 4) {
     const h = parseFloat(match[1]);
     const s = parseFloat(match[2]);
@@ -73,7 +75,7 @@ export function parseHSLColor(value: string) {
         type: ColorInputType.HSL,
         h: parseFloat(match[1]),
         s: parseFloat(match[2]),
-        v: parseFloat(match[3]),
+        l: parseFloat(match[3]),
       });
     }
   }

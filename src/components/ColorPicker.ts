@@ -116,7 +116,7 @@ export class ColorPicker extends LitElement {
   }
 
   updated() {
-    this.style.background = "#" + this.color.getHex();
+    document.body.style.background = "#" + this.color.getHex();
     this.updateChildren();
   }
 

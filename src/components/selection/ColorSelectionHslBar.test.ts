@@ -1,11 +1,12 @@
 import { describe, it, expect } from "vitest";
 import { Color, ColorInputType } from "../../lib/Color";
 import "./ColorSelectionHslBar";
+import type { ColorSelectionHslBar } from "./ColorSelectionHslBar";
 
-function createElement(
-  color?: Color,
-): HTMLElement & { color: Color; updateComplete: Promise<void> } {
-  const el = document.createElement("color-selection-hsl-bar") as any;
+function createElement(color?: Color): ColorSelectionHslBar {
+  const el = document.createElement(
+    "color-selection-hsl-bar",
+  ) as ColorSelectionHslBar;
   if (color) {
     el.color = color;
   }
@@ -46,7 +47,9 @@ describe("ColorSelectionHslBar", () => {
     const el = createElement(color);
     await el.updateComplete;
 
-    const pointer = el.shadowRoot!.querySelector("color-bar-pointer") as any;
+    const pointer = el.shadowRoot!.querySelector(
+      "color-bar-pointer",
+    ) as unknown as { position: number };
     expect(pointer.position).toBe(75);
   });
 
@@ -55,7 +58,9 @@ describe("ColorSelectionHslBar", () => {
     const el = createElement(color);
     await el.updateComplete;
 
-    const pointer = el.shadowRoot!.querySelector("color-bar-pointer") as any;
+    const pointer = el.shadowRoot!.querySelector(
+      "color-bar-pointer",
+    ) as unknown as { color: string };
     expect(pointer.color).toBe("#" + color.getHex());
   });
 
@@ -67,7 +72,9 @@ describe("ColorSelectionHslBar", () => {
     el.color = color;
     await el.updateComplete;
 
-    const pointer = el.shadowRoot!.querySelector("color-bar-pointer") as any;
+    const pointer = el.shadowRoot!.querySelector(
+      "color-bar-pointer",
+    ) as unknown as { position: number; color: string };
     expect(pointer.position).toBe(25);
     expect(pointer.color).toBe("#" + color.getHex());
   });

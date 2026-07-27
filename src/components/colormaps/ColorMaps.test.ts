@@ -6,6 +6,8 @@ import {
 } from "../../colormap-data/turbo";
 import "./ColorMaps";
 import "./ColorMap";
+import type { ColorMaps } from "./ColorMaps";
+import type { ColorMap } from "./ColorMap";
 
 // ---------------------------------------------------------------------------
 // ColorMaps (<color-maps>)
@@ -74,22 +76,22 @@ describe("ColorMaps", () => {
   // -----------------------------------------------------------------------
   describe("colormap data propagation", () => {
     it("passes the turbo colormap name to <color-map>", async () => {
-      const el = document.createElement("color-maps") as any;
+      const el = document.createElement("color-maps") as ColorMaps;
       document.body.appendChild(el);
       await el.updateComplete;
 
-      const colorMap = el.shadowRoot!.querySelector("color-map") as any;
+      const colorMap = el.shadowRoot!.querySelector("color-map") as ColorMap;
       expect(colorMap.name).toBe(turboColorMapName);
 
       document.body.removeChild(el);
     });
 
     it("passes the turbo colormap data to <color-map>", async () => {
-      const el = document.createElement("color-maps") as any;
+      const el = document.createElement("color-maps") as ColorMaps;
       document.body.appendChild(el);
       await el.updateComplete;
 
-      const colorMap = el.shadowRoot!.querySelector("color-map") as any;
+      const colorMap = el.shadowRoot!.querySelector("color-map") as ColorMap;
       expect(colorMap.data).toBe(turboColorMapData);
       expect(colorMap.data).toEqual(turboColorMapData);
 
@@ -102,11 +104,11 @@ describe("ColorMaps", () => {
   // -----------------------------------------------------------------------
   describe("color property propagation", () => {
     it("passes the default color to <color-map>", async () => {
-      const el = document.createElement("color-maps") as any;
+      const el = document.createElement("color-maps") as ColorMaps;
       document.body.appendChild(el);
       await el.updateComplete;
 
-      const colorMap = el.shadowRoot!.querySelector("color-map") as any;
+      const colorMap = el.shadowRoot!.querySelector("color-map") as ColorMap;
       expect(colorMap.color).toBe(el.color);
       expect(colorMap.color).toEqual(new Color());
 
@@ -114,7 +116,7 @@ describe("ColorMaps", () => {
     });
 
     it("forwards an updated color to <color-map>", async () => {
-      const el = document.createElement("color-maps") as any;
+      const el = document.createElement("color-maps") as ColorMaps;
       document.body.appendChild(el);
       await el.updateComplete;
 
@@ -127,18 +129,18 @@ describe("ColorMaps", () => {
       el.color = blue;
       await el.updateComplete;
 
-      const colorMap = el.shadowRoot!.querySelector("color-map") as any;
+      const colorMap = el.shadowRoot!.querySelector("color-map") as ColorMap;
       expect(colorMap.color).toBe(blue);
 
       document.body.removeChild(el);
     });
 
     it("the <color-map> shares the same color object reference as the host", async () => {
-      const el = document.createElement("color-maps") as any;
+      const el = document.createElement("color-maps") as ColorMaps;
       document.body.appendChild(el);
       await el.updateComplete;
 
-      const colorMap = el.shadowRoot!.querySelector("color-map") as any;
+      const colorMap = el.shadowRoot!.querySelector("color-map") as ColorMap;
       expect(colorMap.color).toBe(el.color);
 
       document.body.removeChild(el);
@@ -150,7 +152,7 @@ describe("ColorMaps", () => {
   // -----------------------------------------------------------------------
   describe("default color", () => {
     it("has a default color of black (new Color())", async () => {
-      const el = document.createElement("color-maps") as any;
+      const el = document.createElement("color-maps") as ColorMaps;
       document.body.appendChild(el);
       await el.updateComplete;
       expect(el.color).toEqual(new Color());

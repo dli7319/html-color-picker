@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { Color, ColorInputType } from "../lib/Color";
+import { describe, it, expect, beforeEach } from "vitest";
+import { Color } from "../lib/Color";
 import { Coordinates } from "../lib/Coordinates";
 import { ActiveColorSide } from "./interpolation/ColorInterpolation";
 import { ColorPickerSetColorEvent } from "../events/ColorPickerSetColorEvent";

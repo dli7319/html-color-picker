@@ -135,8 +135,8 @@ export class ColorHistory extends LitElement {
                     (color, i) => html`
                       <div
                         class="history-swatch ${
-                        this.activeIndex === i ? "active" : ""
-                      }"
+                          this.activeIndex === i ? "active" : ""
+                        }"
                         style="background: ${color.toCSS()}"
                         @click=${() => this.selectSwatch(i, color)}
                         title="#${color.getHex().toUpperCase()}"

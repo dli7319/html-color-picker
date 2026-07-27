@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { Color, ColorInputType } from "./Color";
-import { PaletteRule, PaletteMode, generatePalette } from "./PaletteGenerator";
+import { PaletteMode, generatePalette } from "./PaletteGenerator";
 
 // ---------------------------------------------------------------------------
 // Deterministic mock: Math.random() always returns 0.5

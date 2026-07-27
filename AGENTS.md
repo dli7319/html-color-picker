@@ -85,6 +85,18 @@ dist/
 - **Strict TypeScript** — `strict: true` with `noFallthroughCasesInSwitch` and `forceConsistentCasingInFileNames`.
 - **Tests** use `// @vitest-environment node` for pure logic tests (no DOM needed) and default jsdom for component tests.
 
+## Pre-Commit Checklist
+
+Before making any git commit, run the full quality pipeline and verify it passes:
+
+```bash
+npm test              # all 607 tests must pass
+npm run lint          # zero eslint errors
+npm run format        # prettier formatting
+```
+
+**Always run all three before committing.** Commits must not introduce lint errors, formatting regressions, or test failures.
+
 ## CI/CD
 
 - GitHub Actions workflow at `.github/workflows/webpack.yml` — deploys to GitHub Pages on push to `master`.

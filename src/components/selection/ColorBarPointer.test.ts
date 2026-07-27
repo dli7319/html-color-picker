@@ -33,7 +33,7 @@ describe("ColorBarPointer", () => {
   // -----------------------------------------------------------------------
   describe("default properties", () => {
     it("has a default position of 0", async () => {
-      const el = document.createElement("color-bar-pointer") as any;
+      const el = document.createElement("color-bar-pointer") as ColorBarPointer;
       document.body.appendChild(el);
       await el.updateComplete;
       expect(el.position).toBe(0);
@@ -41,7 +41,7 @@ describe("ColorBarPointer", () => {
     });
 
     it('has a default color of "#ffffff"', async () => {
-      const el = document.createElement("color-bar-pointer") as any;
+      const el = document.createElement("color-bar-pointer") as ColorBarPointer;
       document.body.appendChild(el);
       await el.updateComplete;
       expect(el.color).toBe("#ffffff");
@@ -54,7 +54,7 @@ describe("ColorBarPointer", () => {
   // -----------------------------------------------------------------------
   describe("position property", () => {
     it("updates the host left style when position is set", async () => {
-      const el = document.createElement("color-bar-pointer") as any;
+      const el = document.createElement("color-bar-pointer") as ColorBarPointer;
       document.body.appendChild(el);
       await el.updateComplete;
 
@@ -66,7 +66,7 @@ describe("ColorBarPointer", () => {
     });
 
     it("can be set to 0", async () => {
-      const el = document.createElement("color-bar-pointer") as any;
+      const el = document.createElement("color-bar-pointer") as ColorBarPointer;
       el.position = 0;
       document.body.appendChild(el);
       await el.updateComplete;
@@ -76,7 +76,7 @@ describe("ColorBarPointer", () => {
     });
 
     it("can be set to 100", async () => {
-      const el = document.createElement("color-bar-pointer") as any;
+      const el = document.createElement("color-bar-pointer") as ColorBarPointer;
       el.position = 100;
       document.body.appendChild(el);
       await el.updateComplete;
@@ -91,7 +91,7 @@ describe("ColorBarPointer", () => {
   // -----------------------------------------------------------------------
   describe("color property", () => {
     it("updates the capsule background-color when color is set", async () => {
-      const el = document.createElement("color-bar-pointer") as any;
+      const el = document.createElement("color-bar-pointer") as ColorBarPointer;
       document.body.appendChild(el);
       await el.updateComplete;
 
@@ -106,7 +106,7 @@ describe("ColorBarPointer", () => {
     });
 
     it("accepts different color values", async () => {
-      const el = document.createElement("color-bar-pointer") as any;
+      const el = document.createElement("color-bar-pointer") as ColorBarPointer;
       document.body.appendChild(el);
       await el.updateComplete;
 
@@ -126,7 +126,7 @@ describe("ColorBarPointer", () => {
   // -----------------------------------------------------------------------
   describe("rendering", () => {
     it("renders a div with class color-bar-pointer-capsule in shadow DOM", async () => {
-      const el = document.createElement("color-bar-pointer") as any;
+      const el = document.createElement("color-bar-pointer") as ColorBarPointer;
       document.body.appendChild(el);
       await el.updateComplete;
 
@@ -139,7 +139,7 @@ describe("ColorBarPointer", () => {
     });
 
     it("renders exactly one capsule element", async () => {
-      const el = document.createElement("color-bar-pointer") as any;
+      const el = document.createElement("color-bar-pointer") as ColorBarPointer;
       document.body.appendChild(el);
       await el.updateComplete;
 

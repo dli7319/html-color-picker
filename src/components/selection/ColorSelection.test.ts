@@ -1,5 +1,8 @@
 import { vi, describe, it, expect } from "vitest";
 import { Color, ColorInputType } from "../../lib/Color";
+import { ColorSelection } from "./ColorSelection";
+import { ColorSelectionHsv } from "./ColorSelectionHsv";
+import { ColorSelectionHsl } from "./ColorSelectionHsl";
 
 // ---------------------------------------------------------------------------
 // Mock CSS imports — these are hoisted before all import statements
@@ -55,7 +58,7 @@ describe("ColorSelection", () => {
   // -----------------------------------------------------------------------
   describe("default state", () => {
     it("default colorSelectionType is HSV", async () => {
-      const el = document.createElement("color-selection") as any;
+      const el = document.createElement("color-selection") as ColorSelection;
       document.body.appendChild(el);
       await el.updateComplete;
       expect(el.colorSelectionType).toBe("HSV");
@@ -63,7 +66,7 @@ describe("ColorSelection", () => {
     });
 
     it("renders <color-selection-hsv> by default", async () => {
-      const el = document.createElement("color-selection") as any;
+      const el = document.createElement("color-selection") as ColorSelection;
       document.body.appendChild(el);
       await el.updateComplete;
       const hsv = el.shadowRoot!.querySelector("color-selection-hsv");
@@ -72,7 +75,7 @@ describe("ColorSelection", () => {
     });
 
     it("does not render <color-selection-hsl> by default", async () => {
-      const el = document.createElement("color-selection") as any;
+      const el = document.createElement("color-selection") as ColorSelection;
       document.body.appendChild(el);
       await el.updateComplete;
       const hsl = el.shadowRoot!.querySelector("color-selection-hsl");
@@ -86,7 +89,7 @@ describe("ColorSelection", () => {
   // -----------------------------------------------------------------------
   describe("tab buttons", () => {
     it('renders an "HSV" button', async () => {
-      const el = document.createElement("color-selection") as any;
+      const el = document.createElement("color-selection") as ColorSelection;
       document.body.appendChild(el);
       await el.updateComplete;
       const buttons = el.shadowRoot!.querySelectorAll("button");
@@ -98,7 +101,7 @@ describe("ColorSelection", () => {
     });
 
     it('renders an "HSL Wheel" button', async () => {
-      const el = document.createElement("color-selection") as any;
+      const el = document.createElement("color-selection") as ColorSelection;
       document.body.appendChild(el);
       await el.updateComplete;
       const buttons = el.shadowRoot!.querySelectorAll("button");
@@ -110,7 +113,7 @@ describe("ColorSelection", () => {
     });
 
     it("renders exactly two buttons", async () => {
-      const el = document.createElement("color-selection") as any;
+      const el = document.createElement("color-selection") as ColorSelection;
       document.body.appendChild(el);
       await el.updateComplete;
       const buttons = el.shadowRoot!.querySelectorAll("button");
@@ -124,7 +127,7 @@ describe("ColorSelection", () => {
   // -----------------------------------------------------------------------
   describe('clicking "HSL Wheel"', () => {
     it("switches colorSelectionType to HSL_WHEEL", async () => {
-      const el = document.createElement("color-selection") as any;
+      const el = document.createElement("color-selection") as ColorSelection;
       document.body.appendChild(el);
       await el.updateComplete;
 
@@ -140,7 +143,7 @@ describe("ColorSelection", () => {
     });
 
     it("renders <color-selection-hsl> and removes <color-selection-hsv>", async () => {
-      const el = document.createElement("color-selection") as any;
+      const el = document.createElement("color-selection") as ColorSelection;
       document.body.appendChild(el);
       await el.updateComplete;
 
@@ -164,7 +167,7 @@ describe("ColorSelection", () => {
   // -----------------------------------------------------------------------
   describe('clicking "HSV" after switching to HSL', () => {
     it("switches colorSelectionType back to HSV", async () => {
-      const el = document.createElement("color-selection") as any;
+      const el = document.createElement("color-selection") as ColorSelection;
       document.body.appendChild(el);
       await el.updateComplete;
 
@@ -188,7 +191,7 @@ describe("ColorSelection", () => {
     });
 
     it("renders <color-selection-hsv> and removes <color-selection-hsl>", async () => {
-      const el = document.createElement("color-selection") as any;
+      const el = document.createElement("color-selection") as ColorSelection;
       document.body.appendChild(el);
       await el.updateComplete;
 
@@ -220,7 +223,7 @@ describe("ColorSelection", () => {
   // -----------------------------------------------------------------------
   describe("button classes", () => {
     it("HSV button has white background class when active (default)", async () => {
-      const el = document.createElement("color-selection") as any;
+      const el = document.createElement("color-selection") as ColorSelection;
       document.body.appendChild(el);
       await el.updateComplete;
 
@@ -233,7 +236,7 @@ describe("ColorSelection", () => {
     });
 
     it("HSV button has slate-300 text class when inactive (HSL active)", async () => {
-      const el = document.createElement("color-selection") as any;
+      const el = document.createElement("color-selection") as ColorSelection;
       document.body.appendChild(el);
       await el.updateComplete;
 
@@ -252,7 +255,7 @@ describe("ColorSelection", () => {
     });
 
     it("HSL Wheel button has slate-300 text class when inactive (HSV active)", async () => {
-      const el = document.createElement("color-selection") as any;
+      const el = document.createElement("color-selection") as ColorSelection;
       document.body.appendChild(el);
       await el.updateComplete;
 
@@ -265,7 +268,7 @@ describe("ColorSelection", () => {
     });
 
     it("HSL Wheel button has white background class when active", async () => {
-      const el = document.createElement("color-selection") as any;
+      const el = document.createElement("color-selection") as ColorSelection;
       document.body.appendChild(el);
       await el.updateComplete;
 
@@ -286,18 +289,20 @@ describe("ColorSelection", () => {
   // -----------------------------------------------------------------------
   describe("color property propagation", () => {
     it("passes the default color to <color-selection-hsv>", async () => {
-      const el = document.createElement("color-selection") as any;
+      const el = document.createElement("color-selection") as ColorSelection;
       document.body.appendChild(el);
       await el.updateComplete;
 
-      const hsv = el.shadowRoot!.querySelector("color-selection-hsv") as any;
+      const hsv = el.shadowRoot!.querySelector(
+        "color-selection-hsv",
+      ) as ColorSelectionHsv;
       expect(hsv.color).toBe(el.color);
       expect(hsv.color).toEqual(new Color());
       document.body.removeChild(el);
     });
 
     it("forwards an updated color to <color-selection-hsv>", async () => {
-      const el = document.createElement("color-selection") as any;
+      const el = document.createElement("color-selection") as ColorSelection;
       document.body.appendChild(el);
       await el.updateComplete;
 
@@ -305,13 +310,15 @@ describe("ColorSelection", () => {
       el.color = red;
       await el.updateComplete;
 
-      const hsv = el.shadowRoot!.querySelector("color-selection-hsv") as any;
+      const hsv = el.shadowRoot!.querySelector(
+        "color-selection-hsv",
+      ) as ColorSelectionHsv;
       expect(hsv.color).toBe(red);
       document.body.removeChild(el);
     });
 
     it("forwards an updated color to <color-selection-hsl> when switching modes", async () => {
-      const el = document.createElement("color-selection") as any;
+      const el = document.createElement("color-selection") as ColorSelection;
       document.body.appendChild(el);
       await el.updateComplete;
 
@@ -327,7 +334,9 @@ describe("ColorSelection", () => {
       hslBtn.click();
       await el.updateComplete;
 
-      const hsl = el.shadowRoot!.querySelector("color-selection-hsl") as any;
+      const hsl = el.shadowRoot!.querySelector(
+        "color-selection-hsl",
+      ) as ColorSelectionHsl;
       expect(hsl.color).toBe(blue);
       document.body.removeChild(el);
     });

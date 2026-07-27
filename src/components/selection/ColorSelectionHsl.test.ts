@@ -1,6 +1,9 @@
 import { describe, it, expect } from "vitest";
 import { Color, ColorInputType } from "../../lib/Color";
 import "./ColorSelectionHsl";
+import type { ColorSelectionHsl } from "./ColorSelectionHsl";
+import type { ColorSelectionHslBar } from "./ColorSelectionHslBar";
+import type { ColorSelectionHslWheel } from "./ColorSelectionHslWheel";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -76,13 +79,15 @@ describe("ColorSelectionHsl", () => {
   // -----------------------------------------------------------------------
   describe("color property passthrough", () => {
     it("passes the default color to <color-selection-hsl-wheel>", async () => {
-      const el = document.createElement("color-selection-hsl") as any;
+      const el = document.createElement(
+        "color-selection-hsl",
+      ) as ColorSelectionHsl;
       document.body.appendChild(el);
       await el.updateComplete;
 
       const wheel = el.shadowRoot!.querySelector(
         "color-selection-hsl-wheel",
-      ) as any;
+      ) as ColorSelectionHslWheel;
       expect(wheel.color).toBe(el.color);
       expect(wheel.color).toEqual(new Color());
 
@@ -90,13 +95,15 @@ describe("ColorSelectionHsl", () => {
     });
 
     it("passes the default color to <color-selection-hsl-bar>", async () => {
-      const el = document.createElement("color-selection-hsl") as any;
+      const el = document.createElement(
+        "color-selection-hsl",
+      ) as ColorSelectionHsl;
       document.body.appendChild(el);
       await el.updateComplete;
 
       const bar = el.shadowRoot!.querySelector(
         "color-selection-hsl-bar",
-      ) as any;
+      ) as ColorSelectionHslBar;
       expect(bar.color).toBe(el.color);
       expect(bar.color).toEqual(new Color());
 
@@ -104,7 +111,9 @@ describe("ColorSelectionHsl", () => {
     });
 
     it("forwards an updated color to both children", async () => {
-      const el = document.createElement("color-selection-hsl") as any;
+      const el = document.createElement(
+        "color-selection-hsl",
+      ) as ColorSelectionHsl;
       document.body.appendChild(el);
       await el.updateComplete;
 
@@ -114,10 +123,10 @@ describe("ColorSelectionHsl", () => {
 
       const wheel = el.shadowRoot!.querySelector(
         "color-selection-hsl-wheel",
-      ) as any;
+      ) as ColorSelectionHslWheel;
       const bar = el.shadowRoot!.querySelector(
         "color-selection-hsl-bar",
-      ) as any;
+      ) as ColorSelectionHslBar;
 
       expect(wheel.color).toBe(blueHsl);
       expect(bar.color).toBe(blueHsl);
@@ -126,16 +135,18 @@ describe("ColorSelectionHsl", () => {
     });
 
     it("both children share the same color object reference", async () => {
-      const el = document.createElement("color-selection-hsl") as any;
+      const el = document.createElement(
+        "color-selection-hsl",
+      ) as ColorSelectionHsl;
       document.body.appendChild(el);
       await el.updateComplete;
 
       const wheel = el.shadowRoot!.querySelector(
         "color-selection-hsl-wheel",
-      ) as any;
+      ) as ColorSelectionHslWheel;
       const bar = el.shadowRoot!.querySelector(
         "color-selection-hsl-bar",
-      ) as any;
+      ) as ColorSelectionHslBar;
 
       expect(wheel.color).toBe(bar.color);
 
@@ -148,7 +159,9 @@ describe("ColorSelectionHsl", () => {
   // -----------------------------------------------------------------------
   describe("default color", () => {
     it("has a default color of black (new Color())", async () => {
-      const el = document.createElement("color-selection-hsl") as any;
+      const el = document.createElement(
+        "color-selection-hsl",
+      ) as ColorSelectionHsl;
       document.body.appendChild(el);
       await el.updateComplete;
       expect(el.color).toEqual(new Color());
@@ -156,7 +169,9 @@ describe("ColorSelectionHsl", () => {
     });
 
     it("can be set to a different Color value", async () => {
-      const el = document.createElement("color-selection-hsl") as any;
+      const el = document.createElement(
+        "color-selection-hsl",
+      ) as ColorSelectionHsl;
       document.body.appendChild(el);
       await el.updateComplete;
 

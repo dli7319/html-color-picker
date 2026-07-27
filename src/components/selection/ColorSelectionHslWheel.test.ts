@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { Color, ColorInputType } from "../../lib/Color";
 import "./ColorSelectionHslWheel";
+import type { ColorSelectionHslWheel } from "./ColorSelectionHslWheel";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -51,7 +52,9 @@ describe("ColorSelectionHslWheel", () => {
   // -----------------------------------------------------------------------
   describe("gradient rendering", () => {
     it("renders .color-grad div with radial-gradient and conic-gradient", async () => {
-      const el = document.createElement("color-selection-hsl-wheel") as any;
+      const el = document.createElement(
+        "color-selection-hsl-wheel",
+      ) as ColorSelectionHslWheel;
       document.body.appendChild(el);
       await el.updateComplete;
 
@@ -76,10 +79,10 @@ describe("ColorSelectionHslWheel", () => {
       // Read static styles directly from the registered class constructor
       const ColorSelectionHslWheelClass = customElements.get(
         "color-selection-hsl-wheel",
-      ) as any;
-      const stylesArray: any[] = ColorSelectionHslWheelClass.styles;
+      ) as typeof ColorSelectionHslWheel;
+      const stylesArray = ColorSelectionHslWheelClass.styles;
       const cssText = Array.isArray(stylesArray)
-        ? stylesArray.map((s: any) => s.toString?.() ?? "").join(" ")
+        ? stylesArray.map((s) => s.toString?.() ?? "").join(" ")
         : String(stylesArray);
       expect(cssText).toContain("aspect-ratio: 1");
       expect(cssText).toContain("border-radius: 100%");
@@ -91,7 +94,9 @@ describe("ColorSelectionHslWheel", () => {
   // -----------------------------------------------------------------------
   describe("circle position", () => {
     it("positions the circle at center when saturation is 0", async () => {
-      const el = document.createElement("color-selection-hsl-wheel") as any;
+      const el = document.createElement(
+        "color-selection-hsl-wheel",
+      ) as ColorSelectionHslWheel;
       document.body.appendChild(el);
       await el.updateComplete;
 
@@ -109,7 +114,9 @@ describe("ColorSelectionHslWheel", () => {
     });
 
     it("positions the circle at the top edge for hue=0 sat=100", async () => {
-      const el = document.createElement("color-selection-hsl-wheel") as any;
+      const el = document.createElement(
+        "color-selection-hsl-wheel",
+      ) as ColorSelectionHslWheel;
       document.body.appendChild(el);
       await el.updateComplete;
 
@@ -129,7 +136,9 @@ describe("ColorSelectionHslWheel", () => {
     });
 
     it("positions the circle at the right edge for hue=90 sat=100", async () => {
-      const el = document.createElement("color-selection-hsl-wheel") as any;
+      const el = document.createElement(
+        "color-selection-hsl-wheel",
+      ) as ColorSelectionHslWheel;
       document.body.appendChild(el);
       await el.updateComplete;
 
@@ -149,7 +158,9 @@ describe("ColorSelectionHslWheel", () => {
     });
 
     it("positions the circle at the bottom edge for hue=180 sat=100", async () => {
-      const el = document.createElement("color-selection-hsl-wheel") as any;
+      const el = document.createElement(
+        "color-selection-hsl-wheel",
+      ) as ColorSelectionHslWheel;
       document.body.appendChild(el);
       await el.updateComplete;
 
@@ -169,7 +180,9 @@ describe("ColorSelectionHslWheel", () => {
     });
 
     it("positions the circle at the left edge for hue=270 sat=100", async () => {
-      const el = document.createElement("color-selection-hsl-wheel") as any;
+      const el = document.createElement(
+        "color-selection-hsl-wheel",
+      ) as ColorSelectionHslWheel;
       document.body.appendChild(el);
       await el.updateComplete;
 
@@ -189,7 +202,9 @@ describe("ColorSelectionHslWheel", () => {
     });
 
     it("positions the circle at half-radius for saturation=50", async () => {
-      const el = document.createElement("color-selection-hsl-wheel") as any;
+      const el = document.createElement(
+        "color-selection-hsl-wheel",
+      ) as ColorSelectionHslWheel;
       document.body.appendChild(el);
       await el.updateComplete;
 
@@ -215,7 +230,9 @@ describe("ColorSelectionHslWheel", () => {
   // -----------------------------------------------------------------------
   describe("color updates", () => {
     it("moves the circle when color changes from one HSL value to another", async () => {
-      const el = document.createElement("color-selection-hsl-wheel") as any;
+      const el = document.createElement(
+        "color-selection-hsl-wheel",
+      ) as ColorSelectionHslWheel;
       document.body.appendChild(el);
       await el.updateComplete;
 
@@ -247,7 +264,9 @@ describe("ColorSelectionHslWheel", () => {
     });
 
     it("retains a centered circle when hue changes but saturation stays 0", async () => {
-      const el = document.createElement("color-selection-hsl-wheel") as any;
+      const el = document.createElement(
+        "color-selection-hsl-wheel",
+      ) as ColorSelectionHslWheel;
       document.body.appendChild(el);
       await el.updateComplete;
 
@@ -275,7 +294,9 @@ describe("ColorSelectionHslWheel", () => {
   // -----------------------------------------------------------------------
   describe("circle background-color", () => {
     it("uses the hex of the current color at lightness=50", async () => {
-      const el = document.createElement("color-selection-hsl-wheel") as any;
+      const el = document.createElement(
+        "color-selection-hsl-wheel",
+      ) as ColorSelectionHslWheel;
       document.body.appendChild(el);
       await el.updateComplete;
 
@@ -300,7 +321,9 @@ describe("ColorSelectionHslWheel", () => {
     });
 
     it("changes background-color when a different hue is selected", async () => {
-      const el = document.createElement("color-selection-hsl-wheel") as any;
+      const el = document.createElement(
+        "color-selection-hsl-wheel",
+      ) as ColorSelectionHslWheel;
       document.body.appendChild(el);
       await el.updateComplete;
 
@@ -338,7 +361,9 @@ describe("ColorSelectionHslWheel", () => {
     });
 
     it("uses the hex of color at l=50 regardless of actual color lightness", async () => {
-      const el = document.createElement("color-selection-hsl-wheel") as any;
+      const el = document.createElement(
+        "color-selection-hsl-wheel",
+      ) as ColorSelectionHslWheel;
       document.body.appendChild(el);
       await el.updateComplete;
 
@@ -368,7 +393,9 @@ describe("ColorSelectionHslWheel", () => {
   // -----------------------------------------------------------------------
   describe("DOM structure", () => {
     it("renders exactly one .color-grad and one .color-grad-circle", async () => {
-      const el = document.createElement("color-selection-hsl-wheel") as any;
+      const el = document.createElement(
+        "color-selection-hsl-wheel",
+      ) as ColorSelectionHslWheel;
       document.body.appendChild(el);
       await el.updateComplete;
 
@@ -381,7 +408,9 @@ describe("ColorSelectionHslWheel", () => {
     });
 
     it("has the color-grad-circle inside the color-grad div", async () => {
-      const el = document.createElement("color-selection-hsl-wheel") as any;
+      const el = document.createElement(
+        "color-selection-hsl-wheel",
+      ) as ColorSelectionHslWheel;
       document.body.appendChild(el);
       await el.updateComplete;
 
@@ -393,7 +422,9 @@ describe("ColorSelectionHslWheel", () => {
     });
 
     it("renders a shadowRoot", async () => {
-      const el = document.createElement("color-selection-hsl-wheel") as any;
+      const el = document.createElement(
+        "color-selection-hsl-wheel",
+      ) as ColorSelectionHslWheel;
       document.body.appendChild(el);
       await el.updateComplete;
       expect(el.shadowRoot).toBeTruthy();

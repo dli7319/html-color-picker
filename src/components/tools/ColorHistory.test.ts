@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { css } from "lit";
+import { css, LitElement } from "lit";
 import { Color, ColorInputType } from "../../lib/Color";
 import { ColorPickerCommitColorEvent } from "../../events/ColorPickerCommitColorEvent";
 import { ColorPickerSetColorEvent } from "../../events/ColorPickerSetColorEvent";
@@ -41,7 +41,7 @@ function hexColor(hex: string): Color {
  */
 function setupInPicker() {
   const picker = document.createElement("color-picker");
-  const el = document.createElement(TAG) as any;
+  const el = document.createElement(TAG) as LitElement;
   const trigger = document.createElement("div");
   picker.appendChild(trigger);
   picker.appendChild(el);
@@ -53,7 +53,7 @@ function setupInPicker() {
  * Create a `<color-history>` element without any `<color-picker>` ancestor.
  */
 function setupAlone() {
-  const el = document.createElement(TAG) as any;
+  const el = document.createElement(TAG) as LitElement;
   document.body.appendChild(el);
   return { el };
 }
@@ -143,7 +143,7 @@ describe("ColorHistory", () => {
   // 6. Persist history to localStorage
   // ---------------------------------------------------------------
   it("persists history to localStorage on commit-color event", () => {
-    const { el, trigger } = setupInPicker();
+    const { trigger } = setupInPicker();
     const red = rgb(255, 0, 0);
 
     trigger.dispatchEvent(new ColorPickerCommitColorEvent(red));

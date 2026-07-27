@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { Color, ColorInputType } from "../../lib/Color";
 import "./ColorMap";
+import type { ColorMap } from "./ColorMap";
+import type { ColorBarPointer } from "../selection/ColorBarPointer";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -42,7 +44,7 @@ describe("ColorMap", () => {
   // -----------------------------------------------------------------------
   describe("default data", () => {
     it("default data is [[0, 0, 0]] (single black entry)", () => {
-      const el = document.createElement("color-map") as any;
+      const el = document.createElement("color-map") as ColorMap;
       expect(el.data).toEqual([[0, 0, 0]]);
     });
   });
@@ -52,7 +54,7 @@ describe("ColorMap", () => {
   // -----------------------------------------------------------------------
   describe("toCss()", () => {
     it("returns a linear-gradient(to right, ...) string with 256 stops", () => {
-      const el = document.createElement("color-map") as any;
+      const el = document.createElement("color-map") as ColorMap;
       el.data = gradient256;
       const css = el.toCss();
       expect(css).toMatch(/^linear-gradient\(to right,/);
@@ -63,7 +65,7 @@ describe("ColorMap", () => {
     });
 
     it("stops have increasing percentages from 0% to 100%", () => {
-      const el = document.createElement("color-map") as any;
+      const el = document.createElement("color-map") as ColorMap;
       el.data = gradient256;
       const css = el.toCss();
       expect(css).toContain("0%");
@@ -76,14 +78,14 @@ describe("ColorMap", () => {
   // -----------------------------------------------------------------------
   describe("getColorAt() endpoints", () => {
     it("getColorAt(0) returns the first color in the data", () => {
-      const el = document.createElement("color-map") as any;
+      const el = document.createElement("color-map") as ColorMap;
       el.data = gradient256;
       const c = el.getColorAt(0);
       expect(c.getRGB01()).toEqual([0, 0, 0]);
     });
 
     it("getColorAt(1) returns the last color in the data", () => {
-      const el = document.createElement("color-map") as any;
+      const el = document.createElement("color-map") as ColorMap;
       el.data = gradient256;
       const c = el.getColorAt(1);
       expect(c.getRGB01()).toEqual([1, 1, 1]);
@@ -98,7 +100,7 @@ describe("ColorMap", () => {
       // With 3 entries: [[0,0,0], [0.5,0.5,0.5], [1,1,1]]
       // getColorAt(0.5): x*3 = 1.5, floor=1, ceil=2, ratio=0.5
       // lerp between data[1]=(0.5,0.5,0.5) and data[2]=(1,1,1) at t=0.5 => (0.75, 0.75, 0.75)
-      const el = document.createElement("color-map") as any;
+      const el = document.createElement("color-map") as ColorMap;
       el.data = [
         [0, 0, 0],
         [0.5, 0.5, 0.5],
@@ -112,7 +114,7 @@ describe("ColorMap", () => {
       // With 2 entries: [[0,0,0], [1,1,1]]
       // getColorAt(0.25): x*2 = 0.5, floor=0, ceil=1, ratio=0.5
       // lerp between data[0]=(0,0,0) and data[1]=(1,1,1) at t=0.5 => (0.5, 0.5, 0.5)
-      const el = document.createElement("color-map") as any;
+      const el = document.createElement("color-map") as ColorMap;
       el.data = [
         [0, 0, 0],
         [1, 1, 1],
@@ -127,7 +129,7 @@ describe("ColorMap", () => {
   // -----------------------------------------------------------------------
   describe("findClosestColormapPoint exact match", () => {
     it("finds exact match at index 0", () => {
-      const el = document.createElement("color-map") as any;
+      const el = document.createElement("color-map") as ColorMap;
       el.data = [
         [0, 0, 0],
         [0.5, 0, 0],
@@ -140,7 +142,7 @@ describe("ColorMap", () => {
     });
 
     it("finds exact match at the last index", () => {
-      const el = document.createElement("color-map") as any;
+      const el = document.createElement("color-map") as ColorMap;
       el.data = [
         [0, 0, 0],
         [0.5, 0, 0],
@@ -153,7 +155,7 @@ describe("ColorMap", () => {
     });
 
     it("finds exact match at a middle index", () => {
-      const el = document.createElement("color-map") as any;
+      const el = document.createElement("color-map") as ColorMap;
       el.data = [
         [0, 0, 0],
         [0.5, 0, 0],
@@ -168,7 +170,7 @@ describe("ColorMap", () => {
     });
 
     it("returns ratio 0 for single-entry data", () => {
-      const el = document.createElement("color-map") as any;
+      const el = document.createElement("color-map") as ColorMap;
       el.data = [[0, 0, 0]];
       const result = el.findClosestColormapPoint(rgb(0, 0, 0));
       expect(result.index).toBe(0);
@@ -182,7 +184,7 @@ describe("ColorMap", () => {
   // -----------------------------------------------------------------------
   describe("findClosestColormapPoint high distance", () => {
     it("returns a distance > 200 for white against a black-to-mid-gray gradient", () => {
-      const el = document.createElement("color-map") as any;
+      const el = document.createElement("color-map") as ColorMap;
       // data: [[0,0,0], [0.5,0.5,0.5]]
       // target white (255,255,255): closest is data[1] ~ (128,128,128)
       // distance = sqrt((255-128)^2 * 3) = sqrt(48387) ~ 219.97
@@ -196,7 +198,7 @@ describe("ColorMap", () => {
     });
 
     it("returns a larger distance for a farther color than a closer one", () => {
-      const el = document.createElement("color-map") as any;
+      const el = document.createElement("color-map") as ColorMap;
       el.data = [
         [0, 0, 0],
         [0.5, 0.5, 0.5],
@@ -214,7 +216,7 @@ describe("ColorMap", () => {
   // -----------------------------------------------------------------------
   describe("rendering gradient bar", () => {
     it("renders a div with the gradient background", async () => {
-      const el = document.createElement("color-map") as any;
+      const el = document.createElement("color-map") as ColorMap;
       el.data = gradient256;
       document.body.appendChild(el);
       await el.updateComplete;
@@ -231,7 +233,7 @@ describe("ColorMap", () => {
     });
 
     it("renders the name text in a span", async () => {
-      const el = document.createElement("color-map") as any;
+      const el = document.createElement("color-map") as ColorMap;
       el.data = gradient256;
       el.name = "Test Map";
       document.body.appendChild(el);
@@ -250,7 +252,7 @@ describe("ColorMap", () => {
   // -----------------------------------------------------------------------
   describe("color-bar-pointer display", () => {
     it("shows <color-bar-pointer> when color exactly matches a data point (distance 0)", async () => {
-      const el = document.createElement("color-map") as any;
+      const el = document.createElement("color-map") as ColorMap;
       el.data = gradient256;
       el.color = rgb(0, 0, 0); // Exactly matches gradient256[0] => distance 0
       document.body.appendChild(el);
@@ -263,13 +265,15 @@ describe("ColorMap", () => {
     });
 
     it("sets pointer position based on match ratio", async () => {
-      const el = document.createElement("color-map") as any;
+      const el = document.createElement("color-map") as ColorMap;
       el.data = gradient256;
       el.color = rgb(0, 0, 0); // match at index 0, ratio 0
       document.body.appendChild(el);
       await el.updateComplete;
 
-      const pointer = el.shadowRoot!.querySelector("color-bar-pointer") as any;
+      const pointer = el.shadowRoot!.querySelector(
+        "color-bar-pointer",
+      ) as ColorBarPointer;
       expect(pointer).not.toBeNull();
       expect(pointer.position).toBe(0);
 
@@ -277,7 +281,7 @@ describe("ColorMap", () => {
     });
 
     it("does not show <color-bar-pointer> when color is far from all data points", async () => {
-      const el = document.createElement("color-map") as any;
+      const el = document.createElement("color-map") as ColorMap;
       // data is black -> white gradient; pure red has distance ~208 from closest point
       el.data = gradient256;
       el.color = rgb(255, 0, 0);

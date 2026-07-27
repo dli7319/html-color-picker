@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import "./OtherTools";
+import { OtherTools } from "./OtherTools";
 
 // ---------------------------------------------------------------------------
 // OtherTools (<other-tools>)
@@ -27,7 +28,7 @@ describe("OtherTools", () => {
     it("renders an h5 heading", async () => {
       const el = document.createElement("other-tools");
       document.body.appendChild(el);
-      await (el as any).updateComplete;
+      await (el as OtherTools).updateComplete;
 
       const heading = el.shadowRoot!.querySelector("h5");
       expect(heading).not.toBeNull();
@@ -39,7 +40,7 @@ describe("OtherTools", () => {
     it("renders a list container (ul)", async () => {
       const el = document.createElement("other-tools");
       document.body.appendChild(el);
-      await (el as any).updateComplete;
+      await (el as OtherTools).updateComplete;
 
       const list = el.shadowRoot!.querySelector("ul");
       expect(list).not.toBeNull();
@@ -69,7 +70,7 @@ describe("OtherTools", () => {
       link2.target = "_self";
       el.appendChild(link2);
 
-      await (el as any).updateComplete;
+      await (el as OtherTools).updateComplete;
 
       const items = el.shadowRoot!.querySelectorAll("li");
       // Two anchor children → two list items
@@ -112,7 +113,7 @@ describe("OtherTools", () => {
       span.textContent = "Also not a link";
       el.appendChild(span);
 
-      await (el as any).updateComplete;
+      await (el as OtherTools).updateComplete;
 
       // Only the anchor should produce a list item
       const items = el.shadowRoot!.querySelectorAll("li");
@@ -126,7 +127,7 @@ describe("OtherTools", () => {
       const el = document.createElement("other-tools");
       document.body.appendChild(el);
 
-      await (el as any).updateComplete;
+      await (el as OtherTools).updateComplete;
 
       const items = el.shadowRoot!.querySelectorAll("li");
       expect(items.length).toBe(0);

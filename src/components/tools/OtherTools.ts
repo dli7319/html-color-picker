@@ -17,8 +17,9 @@ export class OtherTools extends LitElement {
               <a
                 class="text-blue-600 hover:text-blue-800 hover:underline font-medium"
                 href="${child.href}"
-                target="${child.target || '_blank'}"
-              >${child.textContent}</a>
+                target="${child.target || "_blank"}"
+                >${child.textContent}</a
+              >
             </li>`;
           }
         })}

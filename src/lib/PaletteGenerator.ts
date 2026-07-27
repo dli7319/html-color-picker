@@ -105,8 +105,15 @@ function randomHSLColor(hue: number, config: PaletteConfig): Color {
   return new Color({ type: ColorInputType.HSL, h, s, l });
 }
 
-function tonalColor(hue: number, saturation: number, index: number, count: number): Color {
-  const lightness = TONAL_MIN_LIGHTNESS + ((count - 1 - index) / (count - 1)) * TONAL_LIGHTNESS_RANGE;
+function tonalColor(
+  hue: number,
+  saturation: number,
+  index: number,
+  count: number,
+): Color {
+  const lightness =
+    TONAL_MIN_LIGHTNESS +
+    ((count - 1 - index) / (count - 1)) * TONAL_LIGHTNESS_RANGE;
   return new Color({
     type: ColorInputType.HSL,
     h: wrapHue(hue + randomInRange(-TONAL_HUE_JITTER, TONAL_HUE_JITTER)),
@@ -133,7 +140,8 @@ export function generatePalette(
   const cfg = { ...DEFAULT_CONFIG, ...config };
   const rule = pickRule(cfg.mode);
   const anchor = anchorFromLocked(locked, existingColors);
-  const offsets = cfg.mode === PaletteMode.TONAL ? [0, 0, 0, 0, 0] : hueOffsetsForRule(rule);
+  const offsets =
+    cfg.mode === PaletteMode.TONAL ? [0, 0, 0, 0, 0] : hueOffsetsForRule(rule);
 
   // Derive base hue from locked anchor so unlocked colors complement it
   const baseHue = anchor

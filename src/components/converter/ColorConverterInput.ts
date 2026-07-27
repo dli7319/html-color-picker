@@ -48,10 +48,8 @@ const colorToString = {
       .slice(0, 3)
       .map((x) => x.toFixed(3))
       .toString(),
-  [InputType.HSV]: (color: Color) =>
-    color.getHSV(false).slice(0, 3).toString(),
-  [InputType.HSL]: (color: Color) =>
-    color.getHSL(false).slice(0, 3).toString(),
+  [InputType.HSV]: (color: Color) => color.getHSV(false).slice(0, 3).toString(),
+  [InputType.HSL]: (color: Color) => color.getHSL(false).slice(0, 3).toString(),
 };
 
 @customElement("color-converter-input")
@@ -69,8 +67,8 @@ export class ColorConverterInput extends LitElement {
     this.dispatchEvent(
       new ColorConverterInputEvent(
         this.type,
-        (event.target as HTMLInputElement).value
-      )
+        (event.target as HTMLInputElement).value,
+      ),
     );
   }
 
@@ -79,9 +77,14 @@ export class ColorConverterInput extends LitElement {
       this.inputValues[inputTypeToInputValueKey[this.type]] ??
       colorToString[this.type](this.color);
     return html`
-      <div class="flex items-stretch rounded-lg bg-white/50 backdrop-blur-md overflow-hidden text-left">
+      <div
+        class="flex items-stretch rounded-lg bg-white/50 backdrop-blur-md overflow-hidden text-left"
+      >
         <div class="flex-1 px-2 py-1">
-          <label class="block text-[10px] font-semibold text-gray-600 uppercase tracking-wider">${inputTypeToLabel[this.type]}</label>
+          <label
+            class="block text-[10px] font-semibold text-gray-600 uppercase tracking-wider"
+            >${inputTypeToLabel[this.type]}</label
+          >
           <input
             type="text"
             class="w-full text-xs font-mono text-gray-800 outline-none bg-transparent"

@@ -125,9 +125,7 @@ export class ColorPalette extends LitElement {
 
   private regenerateSwatch(index: number, e: Event) {
     e.stopPropagation();
-    const newColor = generatePalette(
-      { count: 1, mode: this.paletteMode },
-    )[0];
+    const newColor = generatePalette({ count: 1, mode: this.paletteMode })[0];
     this.colors[index] = newColor;
     this.colors = [...this.colors];
     this.dispatchEvent(new ColorPickerSetColorEvent(newColor));
@@ -157,11 +155,15 @@ export class ColorPalette extends LitElement {
     if (count === this.paletteCount) return;
     this.paletteCount = count;
     if (count > this.colors.length) {
-      const extra = generatePalette(
-        { count: count - this.colors.length, mode: this.paletteMode },
-      );
+      const extra = generatePalette({
+        count: count - this.colors.length,
+        mode: this.paletteMode,
+      });
       this.colors = [...this.colors, ...extra];
-      this.locked = [...this.locked, ...Array(count - this.locked.length).fill(false)];
+      this.locked = [
+        ...this.locked,
+        ...Array(count - this.locked.length).fill(false),
+      ];
     } else {
       this.colors = this.colors.slice(0, count);
       this.locked = this.locked.slice(0, count);
@@ -269,12 +271,15 @@ export class ColorPalette extends LitElement {
         <div class="palette-contrast mb-2">
           <span class="palette-contrast-label">Count</span>
           <div class="palette-contrast-group">
-            ${Array.from({ length: MAX_COUNT - MIN_COUNT + 1 }, (_, i) => i + MIN_COUNT).map(
+            ${Array.from(
+              { length: MAX_COUNT - MIN_COUNT + 1 },
+              (_, i) => i + MIN_COUNT,
+            ).map(
               (n) => html`
                 <button
-                  class="palette-contrast-btn ${this.paletteCount === n
-                    ? "active"
-                    : ""}"
+                  class="palette-contrast-btn ${
+                    this.paletteCount === n ? "active" : ""
+                  }"
                   @click=${() => this.setCount(n)}
                 >
                   ${n}
@@ -287,36 +292,33 @@ export class ColorPalette extends LitElement {
           <span class="palette-contrast-label">Mode</span>
           <div class="palette-contrast-group">
             <button
-              class="palette-contrast-btn ${this.paletteMode === PaletteMode.ANY
-                ? "active"
-                : ""}"
+              class="palette-contrast-btn ${
+                this.paletteMode === PaletteMode.ANY ? "active" : ""
+              }"
               @click=${() => this.setMode(PaletteMode.ANY)}
             >
               Any
             </button>
             <button
-              class="palette-contrast-btn ${this.paletteMode ===
-              PaletteMode.TONAL
-                ? "active"
-                : ""}"
+              class="palette-contrast-btn ${
+                this.paletteMode === PaletteMode.TONAL ? "active" : ""
+              }"
               @click=${() => this.setMode(PaletteMode.TONAL)}
             >
               Tonal
             </button>
             <button
-              class="palette-contrast-btn ${this.paletteMode ===
-              PaletteMode.ANALOGOUS
-                ? "active"
-                : ""}"
+              class="palette-contrast-btn ${
+                this.paletteMode === PaletteMode.ANALOGOUS ? "active" : ""
+              }"
               @click=${() => this.setMode(PaletteMode.ANALOGOUS)}
             >
               Analogous
             </button>
             <button
-              class="palette-contrast-btn ${this.paletteMode ===
-              PaletteMode.VIVID
-                ? "active"
-                : ""}"
+              class="palette-contrast-btn ${
+                this.paletteMode === PaletteMode.VIVID ? "active" : ""
+              }"
               @click=${() => this.setMode(PaletteMode.VIVID)}
             >
               Vivid
@@ -334,12 +336,11 @@ export class ColorPalette extends LitElement {
           ${this.colors.map(
             (color, i) => html`
               <div
-                class="palette-swatch ${this.activeIndex === i
-                  ? "active"
-                  : ""} ${this.dragIndex === i ? "dragging" : ""} ${this
-                  .dragOverIndex === i
-                  ? "drag-over"
-                  : ""}"
+                class="palette-swatch ${
+                  this.activeIndex === i ? "active" : ""
+                } ${this.dragIndex === i ? "dragging" : ""} ${
+                  this.dragOverIndex === i ? "drag-over" : ""
+                }"
                 style="background: ${color.toCSS()}"
                 draggable="true"
                 @click=${() => this.selectSwatch(i)}
@@ -359,28 +360,33 @@ export class ColorPalette extends LitElement {
                       >${this.locked[i] ? "lock" : "lock_open"}</span
                     >
                   </button>
-                  ${this.activeIndex === i
-                    ? html`
-                        <button
-                          class="palette-action-btn"
-                          @click=${(e: Event) => { e.stopPropagation(); this.copyColor(color); }}
-                          title="Copy hex"
-                        >
-                          <span class="material-symbols-outlined"
-                            >content_copy</span
+                  ${
+                    this.activeIndex === i
+                      ? html`
+                          <button
+                            class="palette-action-btn"
+                            @click=${(e: Event) => {
+                            e.stopPropagation();
+                            this.copyColor(color);
+                          }}
+                            title="Copy hex"
                           >
-                        </button>
-                        <button
-                          class="palette-action-btn"
-                          @click=${(e: Event) => this.regenerateSwatch(i, e)}
-                          title="Regenerate this color"
-                        >
-                          <span class="material-symbols-outlined"
-                            >refresh</span
+                            <span class="material-symbols-outlined"
+                              >content_copy</span
+                            >
+                          </button>
+                          <button
+                            class="palette-action-btn"
+                            @click=${(e: Event) => this.regenerateSwatch(i, e)}
+                            title="Regenerate this color"
                           >
-                        </button>
-                      `
-                    : ""}
+                            <span class="material-symbols-outlined"
+                              >refresh</span
+                            >
+                          </button>
+                        `
+                      : ""
+                  }
                 </div>
                 <div class="palette-swatch-hex">
                   #${color.getHex().toUpperCase()}

@@ -103,7 +103,7 @@ export class ImageSampling extends LitElement {
             r: imageData.data[0],
             g: imageData.data[1],
             b: imageData.data[2],
-          })
+          }),
         );
         this.setCoordinates({
           x: x,
@@ -144,8 +144,13 @@ export class ImageSampling extends LitElement {
         />
       </div>
       <div class="flex gap-2 mb-2">
-        <div class="flex-1 rounded-lg bg-white/50 backdrop-blur-md p-1 px-2.5 text-left">
-          <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider">Overlay Color</label>
+        <div
+          class="flex-1 rounded-lg bg-white/50 backdrop-blur-md p-1 px-2.5 text-left"
+        >
+          <label
+            class="block text-xs font-semibold text-gray-600 uppercase tracking-wider"
+            >Overlay Color</label
+          >
           <select
             class="w-full text-xs font-medium text-gray-800 bg-transparent outline-none cursor-pointer"
             aria-label="Select Overlay Color"
@@ -171,8 +176,13 @@ export class ImageSampling extends LitElement {
             </option>
           </select>
         </div>
-        <div class="flex-1 rounded-lg bg-white/50 backdrop-blur-md p-1 px-2.5 text-left">
-          <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider">Overlay Size</label>
+        <div
+          class="flex-1 rounded-lg bg-white/50 backdrop-blur-md p-1 px-2.5 text-left"
+        >
+          <label
+            class="block text-xs font-semibold text-gray-600 uppercase tracking-wider"
+            >Overlay Size</label
+          >
           <select
             class="w-full text-xs font-medium text-gray-800 bg-transparent outline-none cursor-pointer"
             aria-label="Select Overlay Size"

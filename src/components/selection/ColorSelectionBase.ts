@@ -22,6 +22,8 @@ export class ColorSelectionBase extends LitElement {
   }
 
   commitColor() {
-    this.dispatchEvent(new ColorPickerCommitColorEvent(this.lastCommittedColor));
+    this.dispatchEvent(
+      new ColorPickerCommitColorEvent(this.lastCommittedColor),
+    );
   }
 }

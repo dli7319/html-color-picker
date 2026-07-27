@@ -47,10 +47,8 @@ function lerpHSL(
   const hsl1 = color1.getHSL();
   const longArc = Math.abs(hsl0[0] - hsl1[0]) > 180;
   const shouldFlip = flip ? !longArc : longArc;
-  const hsl0Updated =
-    hsl0[0] + 360 * Number(shouldFlip && hsl0[0] < hsl1[0]);
-  const hsl1Updated =
-    hsl1[0] + 360 * Number(shouldFlip && hsl1[0] < hsl0[0]);
+  const hsl0Updated = hsl0[0] + 360 * Number(shouldFlip && hsl0[0] < hsl1[0]);
+  const hsl1Updated = hsl1[0] + 360 * Number(shouldFlip && hsl1[0] < hsl0[0]);
   const intermediateHue = lerp(hsl0Updated, hsl1Updated, t);
   return new Color({
     type: ColorInputType.HSL,

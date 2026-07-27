@@ -28,9 +28,7 @@ export class ColorSelectionHsl extends LitElement {
       <color-selection-hsl-wheel
         .color=${this.color}
       ></color-selection-hsl-wheel>
-      <color-selection-hsl-bar
-        .color=${this.color}
-      ></color-selection-hsl-bar>
+      <color-selection-hsl-bar .color=${this.color}></color-selection-hsl-bar>
     `;
   }
 }

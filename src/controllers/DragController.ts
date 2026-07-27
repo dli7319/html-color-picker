@@ -24,7 +24,10 @@ export interface DragControllerOptions {
  * ```
  */
 export class DragController implements ReactiveController {
-  constructor(host: ReactiveControllerHost, private options: DragControllerOptions) {
+  constructor(
+    host: ReactiveControllerHost,
+    private options: DragControllerOptions,
+  ) {
     host.addController(this);
   }
 

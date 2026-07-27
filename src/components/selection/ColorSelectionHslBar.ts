@@ -48,8 +48,7 @@ export class ColorSelectionHslBar extends ColorSelectionBase {
     const backgroundStyleArray = ["background: linear-gradient(", "to right,"];
     for (let i = 0; i <= 100; i++) {
       backgroundStyleArray.push(
-        `hsl(${hue}deg, ${saturation}%, ${i}%) ${i}%` +
-          (i < 100 ? "," : ""),
+        `hsl(${hue}deg, ${saturation}%, ${i}%) ${i}%` + (i < 100 ? "," : ""),
       );
     }
     backgroundStyleArray.push(");");

@@ -58,7 +58,7 @@ export class ColorSelectionHslWheel extends ColorSelectionBase {
           h: clampedAngle,
           s: 100.0 * clampedRadius,
           l: 50,
-        })
+        }),
       );
     },
     onDragEnd: () => {

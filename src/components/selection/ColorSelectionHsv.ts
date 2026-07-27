@@ -15,12 +15,8 @@ export class ColorSelectionHsv extends LitElement {
 
   render() {
     return html`
-      <color-selection-hsv-grad
-        .color=${this.color}
-      ></color-selection-hsv-grad>
-      <color-selection-hsv-bar
-        .color=${this.color}
-      ></color-selection-hsv-bar>
+      <color-selection-hsv-grad .color=${this.color}></color-selection-hsv-grad>
+      <color-selection-hsv-bar .color=${this.color}></color-selection-hsv-bar>
     `;
   }
 }

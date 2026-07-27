@@ -37,7 +37,9 @@ export class ColorMap extends LitElement {
   }
 
   commitColor() {
-    this.dispatchEvent(new ColorPickerCommitColorEvent(this.lastCommittedColor));
+    this.dispatchEvent(
+      new ColorPickerCommitColorEvent(this.lastCommittedColor),
+    );
   }
 
   toCss() {
@@ -46,8 +48,8 @@ export class ColorMap extends LitElement {
     for (let i = 0; i < 256; i++) {
       rgba_strings.push(
         `rgba(${Math.round(colormapData[i][0] * 255)}, ${Math.round(
-          colormapData[i][1] * 255
-        )}, ${Math.round(colormapData[i][2] * 255)}, 255) ${(100 * i) / 255}%`
+          colormapData[i][1] * 255,
+        )}, ${Math.round(colormapData[i][2] * 255)}, 255) ${(100 * i) / 255}%`,
       );
     }
     return `linear-gradient(to right, ${rgba_strings.join(", ")})`;
@@ -56,10 +58,10 @@ export class ColorMap extends LitElement {
   getColorAt(x: number) {
     const colormapData = this.data;
     const indexFloor = Math.floor(
-      clamp(x * colormapData.length, 0, colormapData.length - 1)
+      clamp(x * colormapData.length, 0, colormapData.length - 1),
     );
     const indexCeil = Math.ceil(
-      clamp(x * colormapData.length, 0, colormapData.length - 1)
+      clamp(x * colormapData.length, 0, colormapData.length - 1),
     );
     const ratio = x * colormapData.length - indexFloor;
     const colorFloor = new Color({
@@ -127,19 +129,23 @@ export class ColorMap extends LitElement {
 
     return html`
       <div class="flex flex-col gap-1">
-        <span class="text-xs font-semibold text-gray-700 text-center">${this.name}</span>
+        <span class="text-xs font-semibold text-gray-700 text-center"
+          >${this.name}</span
+        >
         <div
           style="background: ${this.toCss()}"
           class="w-full h-8 rounded relative cursor-crosshair"
           @mousedown=${this.drag.handleMouseDown}
           id="colormap-div"
         >
-          ${isVeryClose
-            ? html`<color-bar-pointer
-                .position=${match.ratio * 100}
-                .color=${"#" + this.color.getHex()}
-              ></color-bar-pointer>`
-            : ""}
+          ${
+            isVeryClose
+              ? html`<color-bar-pointer
+                  .position=${match.ratio * 100}
+                  .color=${"#" + this.color.getHex()}
+                ></color-bar-pointer>`
+              : ""
+          }
         </div>
       </div>
     `;

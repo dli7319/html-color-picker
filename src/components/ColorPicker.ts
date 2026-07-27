@@ -3,7 +3,10 @@ import { customElement, property, state } from "lit/decorators.js";
 
 import { Color, ColorInputType } from "../lib/Color";
 import { Coordinates } from "../lib/Coordinates";
-import { ActiveColorSide, ColorInterpolation } from "./interpolation/ColorInterpolation";
+import {
+  ActiveColorSide,
+  ColorInterpolation,
+} from "./interpolation/ColorInterpolation";
 import { styles } from "../styles/ColorPicker.css";
 import { tailwindStyles } from "../styles/Tailwind";
 import { ColorPickerSetColorEvent } from "../events/ColorPickerSetColorEvent";

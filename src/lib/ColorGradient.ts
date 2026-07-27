@@ -17,7 +17,7 @@ export class ColorGradient {
       r: 1,
       g: 1,
       b: 1,
-    })
+    }),
   ) {
     this.addColorStop(0, leftColor);
     this.addColorStop(1, rightColor);

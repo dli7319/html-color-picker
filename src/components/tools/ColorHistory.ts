@@ -60,10 +60,7 @@ export class ColorHistory extends LitElement {
     const incomingHex = event.color.getHex();
 
     // Deduplicate: skip if same hex as the most recent entry
-    if (
-      this.history.length > 0 &&
-      this.history[0].getHex() === incomingHex
-    ) {
+    if (this.history.length > 0 && this.history[0].getHex() === incomingHex) {
       return;
     }
 
@@ -116,35 +113,39 @@ export class ColorHistory extends LitElement {
         <div class="history-header">
           <h5 class="text-lg font-semibold text-gray-800">Color History</h5>
         </div>
-        ${this.history.length > 0
-          ? html`
-              <button
-                class="history-clear-btn"
-                @click=${this.clearHistory}
-                title="Clear history"
-              >
-                Clear
-              </button>
-            `
-          : ""}
-        ${this.history.length === 0
-          ? html`<p class="history-empty">No colors yet</p>`
-          : html`
-              <div class="history-swatches">
-                ${this.history.map(
+        ${
+          this.history.length > 0
+            ? html`
+                <button
+                  class="history-clear-btn"
+                  @click=${this.clearHistory}
+                  title="Clear history"
+                >
+                  Clear
+                </button>
+              `
+            : ""
+        }
+        ${
+          this.history.length === 0
+            ? html`<p class="history-empty">No colors yet</p>`
+            : html`
+                <div class="history-swatches">
+                  ${this.history.map(
                   (color, i) => html`
                     <div
-                      class="history-swatch ${this.activeIndex === i
-                        ? "active"
-                        : ""}"
+                      class="history-swatch ${
+                        this.activeIndex === i ? "active" : ""
+                      }"
                       style="background: ${color.toCSS()}"
                       @click=${() => this.selectSwatch(i, color)}
                       title="#${color.getHex().toUpperCase()}"
                     ></div>
                   `,
                 )}
-              </div>
-            `}
+                </div>
+              `
+        }
       </div>
     `;
   }

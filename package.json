@@ -8,6 +8,9 @@
     "setup": "npm ci",
     "build": "rollup --config rollup.config.ts --configPlugin typescript --environment NODE_ENV:production",
     "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src/",
+    "format": "prettier --write \"src/**/*.ts\" \"*.ts\"",
     "dev": "rollup --config rollup.config.ts --configPlugin typescript --watch --environment NODE_ENV:development"
   },
   "repository": {
@@ -38,6 +41,7 @@
     "jiti": "^2.7.0",
     "jsdom": "^29.1.1",
     "postcss": "^8.5.23",
+    "prettier": "^3.9.6",
     "rollup": "^4.62.3",
     "rollup-plugin-lit-css": "^6.0.1",
     "rollup-plugin-livereload": "^2.0.5",

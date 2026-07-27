@@ -14,7 +14,13 @@ import {
   InputValues,
 } from "./ColorConverterInput";
 import { ColorConverterInputEvent } from "../../events/ColorConverterInputEvent";
-import { parseHexColor, parseHSLColor, parseHSVColor, parseRGB01Color, parseRGB255Color } from "../../lib/ColorStringParsing";
+import {
+  parseHexColor,
+  parseHSLColor,
+  parseHSVColor,
+  parseRGB01Color,
+  parseRGB255Color,
+} from "../../lib/ColorStringParsing";
 import { forEachMatchingChild } from "../../lib/utils/dom";
 
 const typeToParseFunction = {
@@ -87,9 +93,14 @@ export class ColorConverter extends LitElement {
     ];
     return html`
       <h5 class="text-lg font-semibold text-gray-800 mb-2">Color Converter</h5>
-      <div class="flex justify-between items-center px-4 py-2 bg-white/40 backdrop-blur-md rounded-lg text-sm font-medium mb-3">
+      <div
+        class="flex justify-between items-center px-4 py-2 bg-white/40 backdrop-blur-md rounded-lg text-sm font-medium mb-3"
+      >
         <span class="font-semibold text-gray-700">Coordinates</span>
-        <div id="coordinates-container" class="text-right text-gray-600 font-mono text-xs">
+        <div
+          id="coordinates-container"
+          class="text-right text-gray-600 font-mono text-xs"
+        >
           (${floatCoordinatesRounded[0]}, ${floatCoordinatesRounded[1]})<br />
           (${intCoordinates[0]}, ${intCoordinates[1]})
         </div>

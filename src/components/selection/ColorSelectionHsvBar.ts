@@ -27,7 +27,7 @@ export class ColorSelectionHsvBar extends ColorSelectionBase {
           h: newHue,
           s: saturation,
           v: value,
-        })
+        }),
       );
     },
     onDragEnd: () => {
@@ -46,7 +46,11 @@ export class ColorSelectionHsvBar extends ColorSelectionBase {
         v: 100,
       }).getHex();
     return html`
-      <div class="color-bar" @mousedown=${this.drag.handleMouseDown} id="color-bar">
+      <div
+        class="color-bar"
+        @mousedown=${this.drag.handleMouseDown}
+        id="color-bar"
+      >
         <color-bar-pointer
           .position=${(hue / 360) * 100}
           .color=${hueColorHex}

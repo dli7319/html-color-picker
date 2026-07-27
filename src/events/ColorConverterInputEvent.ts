@@ -6,7 +6,10 @@ export class ColorConverterInputEvent extends Event {
   value: string;
 
   constructor(inputType: InputType, value: string) {
-    super(ColorConverterInputEvent.eventName, { bubbles: true, composed: true });
+    super(ColorConverterInputEvent.eventName, {
+      bubbles: true,
+      composed: true,
+    });
     this.inputType = inputType;
     this.value = value;
   }

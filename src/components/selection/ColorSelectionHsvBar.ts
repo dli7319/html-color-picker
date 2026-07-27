@@ -1,25 +1,19 @@
-import { html, LitElement } from "lit";
-import { customElement, property, query } from "lit/decorators.js";
+import { html } from "lit";
+import { customElement, query } from "lit/decorators.js";
 
 import { clamp } from "../../lib/utils/math";
 import { Color, ColorInputType } from "../../lib/Color";
 import { styles } from "../../styles/ColorSelectionTypeA.css";
-import { ColorPickerSetColorEvent } from "../../events/ColorPickerSetColorEvent";
-import { ColorPickerCommitColorEvent } from "../../events/ColorPickerCommitColorEvent";
+import { ColorSelectionBase } from "./ColorSelectionBase";
 import { DragController } from "../../controllers/DragController";
 import "./ColorBarPointer";
 
 @customElement("color-selection-hsv-bar")
-export class ColorSelectionHsvBar extends LitElement {
+export class ColorSelectionHsvBar extends ColorSelectionBase {
   static styles = [styles];
-
-  @property({ attribute: false })
-  color: Color = new Color();
 
   @query("#color-bar")
   colorBar!: HTMLDivElement;
-
-  private lastCommittedColor: Color = this.color;
 
   private drag = new DragController(this, {
     onDrag: (e: MouseEvent) => {
@@ -41,15 +35,6 @@ export class ColorSelectionHsvBar extends LitElement {
     },
   });
 
-  setColor(color: Color) {
-    this.lastCommittedColor = color;
-    this.dispatchEvent(new ColorPickerSetColorEvent(color));
-  }
-
-  commitColor() {
-    this.dispatchEvent(new ColorPickerCommitColorEvent(this.lastCommittedColor));
-  }
-
   render() {
     const [hue] = this.color.getHSV();
     const hueColorHex =
@@ -70,4 +55,3 @@ export class ColorSelectionHsvBar extends LitElement {
     `;
   }
 }
-

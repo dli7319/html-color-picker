@@ -31,31 +31,26 @@ function lerpLCH(color0: Color, color1: Color, t: number) {
   });
 }
 
-function lerpHSL(color0: Color, color1: Color, t: number) {
+/**
+ * Lerp between two colors in HSL space.
+ *
+ * When `flip` is false (default), the interpolation takes the shorter arc
+ * around the hue circle. When `flip` is true, it takes the longer arc.
+ */
+function lerpHSL(
+  color0: Color,
+  color1: Color,
+  t: number,
+  flip: boolean = false,
+) {
   const hsl0 = color0.getHSL();
   const hsl1 = color1.getHSL();
-  const flipHueDirection = Math.abs(hsl0[0] - hsl1[0]) > 180;
+  const longArc = Math.abs(hsl0[0] - hsl1[0]) > 180;
+  const shouldFlip = flip ? !longArc : longArc;
   const hsl0Updated =
-    hsl0[0] + 360 * Number(flipHueDirection && hsl0[0] < hsl1[0]);
+    hsl0[0] + 360 * Number(shouldFlip && hsl0[0] < hsl1[0]);
   const hsl1Updated =
-    hsl1[0] + 360 * Number(flipHueDirection && hsl1[0] < hsl0[0]);
-  const intermediateHue = lerp(hsl0Updated, hsl1Updated, t);
-  return new Color({
-    type: ColorInputType.HSL,
-    h: intermediateHue,
-    s: lerp(hsl0[1], hsl1[1], t),
-    l: lerp(hsl0[2], hsl1[2], t),
-  });
-}
-
-function lerpHSLFlip(color0: Color, color1: Color, t: number) {
-  const hsl0 = color0.getHSL();
-  const hsl1 = color1.getHSL();
-  const flipHueDirection = Math.abs(hsl0[0] - hsl1[0]) > 180;
-  const hsl0Updated =
-    hsl0[0] + 360 * Number(!flipHueDirection && hsl0[0] < hsl1[0]);
-  const hsl1Updated =
-    hsl1[0] + 360 * Number(!flipHueDirection && hsl1[0] < hsl0[0]);
+    hsl1[0] + 360 * Number(shouldFlip && hsl1[0] < hsl0[0]);
   const intermediateHue = lerp(hsl0Updated, hsl1Updated, t);
   return new Color({
     type: ColorInputType.HSL,
@@ -79,8 +74,10 @@ function lerpHSV(color0: Color, color1: Color, t: number) {
 const LerpModeToFunction = {
   [ColorLerpMode.RGB]: lerpRGB,
   [ColorLerpMode.HSV]: lerpHSV,
-  [ColorLerpMode.HSL]: lerpHSL,
-  [ColorLerpMode.HSL_FLIP]: lerpHSLFlip,
+  [ColorLerpMode.HSL]: (c0: Color, c1: Color, t: number) =>
+    lerpHSL(c0, c1, t, false),
+  [ColorLerpMode.HSL_FLIP]: (c0: Color, c1: Color, t: number) =>
+    lerpHSL(c0, c1, t, true),
   [ColorLerpMode.LCH]: lerpLCH,
 };
 
@@ -88,7 +85,7 @@ export function lerpColor(
   color0: Color,
   color1: Color,
   t: number,
-  mode: ColorLerpMode = ColorLerpMode.RGB
+  mode: ColorLerpMode = ColorLerpMode.RGB,
 ) {
   return LerpModeToFunction[mode](color0, color1, t);
 }

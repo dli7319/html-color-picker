@@ -1,14 +1,13 @@
-import { css, html, LitElement } from "lit";
-import { customElement, property, query } from "lit/decorators.js";
+import { css, html } from "lit";
+import { customElement, query } from "lit/decorators.js";
 
 import { Color, ColorInputType } from "../../lib/Color";
-import { ColorPickerSetColorEvent } from "../../events/ColorPickerSetColorEvent";
-import { ColorPickerCommitColorEvent } from "../../events/ColorPickerCommitColorEvent";
+import { ColorSelectionBase } from "./ColorSelectionBase";
 import { DragController } from "../../controllers/DragController";
 
 // This is an HSL color wheel with a white center.
 @customElement("color-selection-hsl-wheel")
-export class ColorSelectionHslWheel extends LitElement {
+export class ColorSelectionHslWheel extends ColorSelectionBase {
   static styles = [
     css`
       :host {
@@ -40,13 +39,8 @@ export class ColorSelectionHslWheel extends LitElement {
     `,
   ];
 
-  @property({ attribute: false })
-  color: Color = new Color();
-
   @query("#color-grad")
   private colorGrad!: HTMLDivElement;
-
-  private lastCommittedColor: Color = this.color;
 
   private drag = new DragController(this, {
     onDrag: (e: MouseEvent) => {
@@ -71,15 +65,6 @@ export class ColorSelectionHslWheel extends LitElement {
       this.commitColor();
     },
   });
-
-  setColor(color: Color) {
-    this.lastCommittedColor = color;
-    this.dispatchEvent(new ColorPickerSetColorEvent(color));
-  }
-
-  commitColor() {
-    this.dispatchEvent(new ColorPickerCommitColorEvent(this.lastCommittedColor));
-  }
 
   render() {
     const [hue, saturation] = this.color.getHSL();
@@ -125,4 +110,3 @@ export class ColorSelectionHslWheel extends LitElement {
     `;
   }
 }
-

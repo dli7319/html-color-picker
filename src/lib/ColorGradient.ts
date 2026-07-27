@@ -25,7 +25,7 @@ export class ColorGradient {
 
   setColorStop(position: number, color: Color) {
     const index = this.positions.indexOf(position);
-    if (index == -1) {
+    if (index === -1) {
       this.addColorStop(position, color);
     } else {
       this.colors[index] = color;
@@ -33,8 +33,13 @@ export class ColorGradient {
   }
 
   addColorStop(position: number, color: Color) {
-    this.colors.push(color);
-    this.positions.push(position);
+    // Insert in sorted order to maintain the sort invariant required by getColorAt.
+    let i = 0;
+    while (i < this.positions.length && this.positions[i] < position) {
+      i++;
+    }
+    this.positions.splice(i, 0, position);
+    this.colors.splice(i, 0, color);
   }
 
   getColorAt(position: number, mode: ColorLerpMode): Color {

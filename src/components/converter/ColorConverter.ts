@@ -15,6 +15,7 @@ import {
 } from "./ColorConverterInput";
 import { ColorConverterInputEvent } from "../../events/ColorConverterInputEvent";
 import { parseHexColor, parseHSLColor, parseHSVColor, parseRGB01Color, parseRGB255Color } from "../../lib/ColorStringParsing";
+import { forEachMatchingChild } from "../../lib/utils/dom";
 
 const typeToParseFunction = {
   [InputType.HEX]: parseHexColor,
@@ -58,12 +59,14 @@ export class ColorConverter extends LitElement {
   }
 
   updateChildren() {
-    Array.prototype.forEach.call(this.children, (child) => {
-      if (child instanceof ColorConverterInput) {
-        child.inputValues = this.inputValues;
-        child.color = this.color;
-      }
+    forEachMatchingChild(this, ColorConverterInput, (c) => {
+      c.inputValues = this.inputValues;
+      c.color = this.color;
     });
+  }
+
+  updated() {
+    this.updateChildren();
   }
 
   render() {
@@ -79,7 +82,6 @@ export class ColorConverter extends LitElement {
       Math.round(this.coordinates.x),
       Math.round(this.coordinates.y),
     ];
-    this.updateChildren();
     return html`
       <h5 class="text-lg font-semibold text-gray-800 mb-2">Color Converter</h5>
       <div class="flex justify-between items-center px-4 py-2 bg-white/40 backdrop-blur-md rounded-lg text-sm font-medium mb-3">

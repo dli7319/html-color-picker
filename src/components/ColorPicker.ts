@@ -1,5 +1,5 @@
-import { html, LitElement } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { html, LitElement, PropertyValues } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
 import { Color, ColorInputType } from "../lib/Color";
 import { Coordinates } from "../lib/Coordinates";
@@ -19,6 +19,7 @@ import "./tools/ColorPalette";
 import "./tools/ColorHistory";
 import "./tools/OtherTools";
 import { ColorPickerSetPaletteActiveEvent } from "../events/ColorPickerSetPaletteActiveEvent";
+import { forEachMatchingChild } from "../lib/utils/dom";
 
 const INTERPOLATION_STORAGE_KEY = "color-interpolation-store";
 
@@ -58,6 +59,10 @@ export class ColorPicker extends LitElement {
   interpolationActive: ActiveColorSide = ActiveColorSide.NONE;
   @state()
   paletteActiveIndex: number = -1;
+
+  /** When true, sets document.body.style.background to the current color on change. */
+  @property({ type: Boolean })
+  updateBodyBackground = false;
 
   constructor() {
     super();
@@ -148,11 +153,16 @@ export class ColorPicker extends LitElement {
 
   setColor(newColor: Color) {
     this.color = newColor;
+    this.syncInterpolationEndpoint(newColor);
+  }
+
+  /** Updates the active interpolation endpoint to match the current color. */
+  private syncInterpolationEndpoint(color: Color) {
     if (this.interpolationActive === ActiveColorSide.LEFT) {
-      this.interpolationLeft = newColor;
+      this.interpolationLeft = color;
       this.saveInterpolationState();
     } else if (this.interpolationActive === ActiveColorSide.RIGHT) {
-      this.interpolationRight = newColor;
+      this.interpolationRight = color;
       this.saveInterpolationState();
     }
   }
@@ -167,28 +177,33 @@ export class ColorPicker extends LitElement {
   }
 
   updateChildren() {
-    Array.prototype.forEach.call(this.children, (child) => {
-      if (child instanceof ColorSelection) {
-        child.color = this.color;
-      } else if (child instanceof ColorConverter) {
-        child.color = this.color;
-        child.coordinates = this.coordinates;
-      } else if (child instanceof ImageSampling) {
-        child.coordinates = this.coordinates;
-      } else if (child instanceof ColorInterpolation) {
-        child.leftColor = this.interpolationLeft;
-        child.rightColor = this.interpolationRight;
-        child.activeColor = this.interpolationActive;
-      } else if (child instanceof ColorMaps) {
-        child.color = this.color;
-      } else if (child instanceof ColorPalette) {
-        child.activeEditingColor = this.color;
-      }
+    forEachMatchingChild(this, ColorSelection, (c) => {
+      c.color = this.color;
+    });
+    forEachMatchingChild(this, ColorConverter, (c) => {
+      c.color = this.color;
+      c.coordinates = this.coordinates;
+    });
+    forEachMatchingChild(this, ImageSampling, (c) => {
+      c.coordinates = this.coordinates;
+    });
+    forEachMatchingChild(this, ColorInterpolation, (c) => {
+      c.leftColor = this.interpolationLeft;
+      c.rightColor = this.interpolationRight;
+      c.activeColor = this.interpolationActive;
+    });
+    forEachMatchingChild(this, ColorMaps, (c) => {
+      c.color = this.color;
+    });
+    forEachMatchingChild(this, ColorPalette, (c) => {
+      c.activeEditingColor = this.color;
     });
   }
 
-  updated() {
-    document.body.style.background = "#" + this.color.getHex();
+  updated(changedProperties: PropertyValues) {
+    if (this.updateBodyBackground && changedProperties.has("color")) {
+      document.body.style.background = "#" + this.color.getHex();
+    }
     this.updateChildren();
   }
 

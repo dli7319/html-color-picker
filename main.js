@@ -1072,7 +1072,7 @@ const Ki=(t,e)=>{const o=t._$AN;if(void 0===o)return!1;for(const t of o)t._$AO?.
                   ${this.activeIndex===e?F`
                         <button
                           class="palette-action-btn"
-                          @click=${()=>this.copyColor(t)}
+                          @click=${e=>{e.stopPropagation(),this.copyColor(t)}}
                           title="Copy hex"
                         >
                           <span class="material-symbols-outlined"

@@ -195,9 +195,7 @@ export class ColorInterpolation extends LitElement {
           const isActive = this.activeLerpMode === lerpMode;
           const pointerColor = isActive
             ? "#" +
-              this.colorGradient
-                .getColorAt(this.activeRatio, lerpMode)
-                .getHex()
+              this.colorGradient.getColorAt(this.activeRatio, lerpMode).getHex()
             : "#ffffff";
 
           return html`

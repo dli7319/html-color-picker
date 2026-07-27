@@ -90,9 +90,7 @@ export class ColorHistory extends LitElement {
   private loadFromStorage(): Color[] {
     const data = storageGet<{ hex: string }[] | null>(STORAGE_KEY, null);
     if (!data || !Array.isArray(data)) return [];
-    return data.map(
-      (d) => new Color({ type: ColorInputType.HEX, hex: d.hex }),
-    );
+    return data.map((d) => new Color({ type: ColorInputType.HEX, hex: d.hex }));
   }
 
   render() {

@@ -40,6 +40,11 @@ export class ColorPalette extends LitElement {
   @state()
   private narrow: boolean = false;
 
+  @state()
+  private dragIndex: number = -1;
+  @state()
+  private dragOverIndex: number = -1;
+
   private prevEditingColor: Color | null = null;
   private resizeObserver: ResizeObserver | null = null;
 
@@ -123,6 +128,46 @@ export class ColorPalette extends LitElement {
     this.locked[index] = !this.locked[index];
     this.locked = [...this.locked];
     this.saveToStorage();
+  }
+
+  private onDragStart(index: number, e: DragEvent) {
+    this.dragIndex = index;
+    e.dataTransfer!.effectAllowed = "move";
+    e.dataTransfer!.setData("text/plain", String(index));
+  }
+
+  private onDragOver(index: number, e: DragEvent) {
+    e.preventDefault();
+    e.dataTransfer!.dropEffect = "move";
+    this.dragOverIndex = index;
+  }
+
+  private onDragLeave() {
+    this.dragOverIndex = -1;
+  }
+
+  private onDrop(index: number) {
+    const from = this.dragIndex;
+    if (from < 0 || from === index) return;
+    const colors = [...this.colors];
+    const locked = [...this.locked];
+    const [movedColor] = colors.splice(from, 1);
+    const [movedLock] = locked.splice(from, 1);
+    colors.splice(index, 0, movedColor);
+    locked.splice(index, 0, movedLock);
+    this.colors = colors;
+    this.locked = locked;
+    if (this.activeIndex === from) {
+      this.activeIndex = index;
+    } else if (this.activeIndex >= 0) {
+      this.activeIndex = colors.indexOf(this.colors[this.activeIndex]);
+    }
+    this.saveToStorage();
+  }
+
+  private onDragEnd() {
+    this.dragIndex = -1;
+    this.dragOverIndex = -1;
   }
 
   private saveToStorage() {
@@ -217,9 +262,19 @@ export class ColorPalette extends LitElement {
         ${this.colors.map(
           (color, i) => html`
             <div
-              class="palette-swatch ${this.activeIndex === i ? "active" : ""}"
+              class="palette-swatch ${this.activeIndex === i
+                ? "active"
+                : ""} ${this.dragIndex === i
+                ? "dragging"
+                : ""} ${this.dragOverIndex === i ? "drag-over" : ""}"
               style="background: ${color.toCSS()}"
+              draggable="true"
               @click=${() => this.selectSwatch(i)}
+              @dragstart=${(e: DragEvent) => this.onDragStart(i, e)}
+              @dragover=${(e: DragEvent) => this.onDragOver(i, e)}
+              @dragleave=${this.onDragLeave}
+              @drop=${() => this.onDrop(i)}
+              @dragend=${this.onDragEnd}
             >
               <button
                 class="palette-swatch-lock ${this.locked[i] ? "locked" : ""}"

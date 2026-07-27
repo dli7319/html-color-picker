@@ -8,6 +8,8 @@ import { describe, it, expect, vi, afterEach } from "vitest";
 import { Color, ColorInputType } from "../../lib/Color";
 import "./ColorSelectionHsvGrad";
 import type { ColorSelectionHsvGrad } from "./ColorSelectionHsvGrad";
+import { ColorPickerSetColorEvent } from "../../events/ColorPickerSetColorEvent";
+import { ColorPickerCommitColorEvent } from "../../events/ColorPickerCommitColorEvent";
 
 describe("ColorSelectionHsvGrad", () => {
   let el: ColorSelectionHsvGrad;
@@ -155,5 +157,90 @@ describe("ColorSelectionHsvGrad", () => {
     expect(updatedStyle).toContain("top: 70%");
     // saturation=80 => left = 80/100 * 100 = 80%
     expect(updatedStyle).toContain("left: 80%");
+  });
+
+  // ---- Test 7 ----
+  it("dragging on the grad updates saturation and value while preserving hue", async () => {
+    el = document.createElement(
+      "color-selection-hsv-grad",
+    ) as ColorSelectionHsvGrad;
+    document.body.appendChild(el);
+    el.color = new Color({
+      type: ColorInputType.HSV,
+      h: 180,
+      s: 50,
+      v: 50,
+    });
+    await el.updateComplete;
+
+    const container = el.shadowRoot!.getElementById(
+      "color-grad-container",
+    ) as HTMLElement;
+    const grad = el.shadowRoot!.querySelector(
+      ".color-grad-2",
+    ) as HTMLElement;
+
+    const bcrSpy = vi
+      .spyOn(container, "getBoundingClientRect")
+      .mockReturnValue(new DOMRect(0, 0, 200, 200));
+
+    const setEvent = await new Promise<ColorPickerSetColorEvent>(
+      (resolve) => {
+        el.addEventListener(
+          "set-color",
+          (e: Event) => resolve(e as ColorPickerSetColorEvent),
+          { once: true },
+        );
+        grad.dispatchEvent(
+          new MouseEvent("mousedown", {
+            bubbles: true,
+            clientX: 150,
+            clientY: 50,
+          }),
+        );
+        document.dispatchEvent(
+          new MouseEvent("mousemove", {
+            bubbles: true,
+            clientX: 150,
+            clientY: 50,
+          }),
+        );
+      },
+    );
+
+    const [hue, sat, val] = setEvent.color.getHSV();
+    expect(hue).toBe(180);
+    expect(sat).toBeCloseTo(75);
+    expect(val).toBeCloseTo(75);
+
+    document.dispatchEvent(new MouseEvent("mouseup"));
+    bcrSpy.mockRestore();
+  });
+
+  // ---- Test 8 ----
+  it("drag end commits the color", async () => {
+    el = document.createElement(
+      "color-selection-hsv-grad",
+    ) as ColorSelectionHsvGrad;
+    document.body.appendChild(el);
+    await el.updateComplete;
+
+    const grad = el.shadowRoot!.querySelector(
+      ".color-grad-2",
+    ) as HTMLElement;
+
+    const commitEvent = await new Promise<Event>((resolve) => {
+      el.addEventListener("commit-color", resolve, { once: true });
+      grad.dispatchEvent(
+        new MouseEvent("mousedown", {
+          bubbles: true,
+          clientX: 100,
+          clientY: 100,
+        }),
+      );
+      document.dispatchEvent(new MouseEvent("mouseup"));
+    });
+
+    expect(commitEvent).toBeInstanceOf(ColorPickerCommitColorEvent);
   });
 });

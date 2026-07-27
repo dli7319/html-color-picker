@@ -1,8 +1,10 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { Color, ColorInputType } from "../../lib/Color";
 import "./ColorMap";
 import type { ColorMap } from "./ColorMap";
 import type { ColorBarPointer } from "../selection/ColorBarPointer";
+import { ColorPickerSetColorEvent } from "../../events/ColorPickerSetColorEvent";
+import { ColorPickerCommitColorEvent } from "../../events/ColorPickerCommitColorEvent";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -292,6 +294,114 @@ describe("ColorMap", () => {
       expect(pointer).toBeNull();
 
       document.body.removeChild(el);
+    });
+  });
+
+  describe("setColor and commitColor", () => {
+    it("setColor() dispatches ColorPickerSetColorEvent", () => {
+      const el = document.createElement("color-map") as ColorMap;
+      const events: ColorPickerSetColorEvent[] = [];
+      el.addEventListener(ColorPickerSetColorEvent.eventName, (e) =>
+        events.push(e as ColorPickerSetColorEvent),
+      );
+      const color = rgb(100, 150, 200);
+      el.setColor(color);
+      expect(events).toHaveLength(1);
+      expect(events[0].color).toBe(color);
+    });
+
+    it("commitColor() dispatches ColorPickerCommitColorEvent with last set color", () => {
+      const el = document.createElement("color-map") as ColorMap;
+      const commitEvents: ColorPickerCommitColorEvent[] = [];
+      el.addEventListener(ColorPickerCommitColorEvent.eventName, (e) =>
+        commitEvents.push(e as ColorPickerCommitColorEvent),
+      );
+      const color = rgb(100, 150, 200);
+      el.setColor(color);
+      el.commitColor();
+      expect(commitEvents).toHaveLength(1);
+      expect(commitEvents[0].color).toBe(color);
+    });
+  });
+
+  describe("drag interaction", () => {
+    it("mousedown+mousemove on colormap bar dispatches ColorPickerSetColorEvent", async () => {
+      const el = document.createElement("color-map") as ColorMap;
+      el.data = gradient256;
+      document.body.appendChild(el);
+      await el.updateComplete;
+
+      const div = el.shadowRoot!.getElementById(
+        "colormap-div",
+      ) as HTMLElement;
+      vi.spyOn(div, "getBoundingClientRect").mockReturnValue({
+        left: 0,
+        top: 0,
+        width: 256,
+        height: 30,
+        right: 256,
+        bottom: 30,
+        x: 0,
+        y: 0,
+        toJSON: () => ({}),
+      });
+
+      const setColorEvents: ColorPickerSetColorEvent[] = [];
+      el.addEventListener(ColorPickerSetColorEvent.eventName, (e) =>
+        setColorEvents.push(e as ColorPickerSetColorEvent),
+      );
+
+      div.dispatchEvent(
+        new MouseEvent("mousedown", { clientX: 128, bubbles: true }),
+      );
+      document.dispatchEvent(
+        new MouseEvent("mousemove", { clientX: 200, bubbles: true }),
+      );
+
+      expect(setColorEvents.length).toBeGreaterThan(0);
+
+      document.body.removeChild(el);
+      vi.restoreAllMocks();
+    });
+
+    it("mouseup after drag dispatches ColorPickerCommitColorEvent", async () => {
+      const el = document.createElement("color-map") as ColorMap;
+      el.data = gradient256;
+      document.body.appendChild(el);
+      await el.updateComplete;
+
+      const div = el.shadowRoot!.getElementById(
+        "colormap-div",
+      ) as HTMLElement;
+      vi.spyOn(div, "getBoundingClientRect").mockReturnValue({
+        left: 0,
+        top: 0,
+        width: 256,
+        height: 30,
+        right: 256,
+        bottom: 30,
+        x: 0,
+        y: 0,
+        toJSON: () => ({}),
+      });
+
+      const commitColorEvents: ColorPickerCommitColorEvent[] = [];
+      el.addEventListener(ColorPickerCommitColorEvent.eventName, (e) =>
+        commitColorEvents.push(e as ColorPickerCommitColorEvent),
+      );
+
+      div.dispatchEvent(
+        new MouseEvent("mousedown", { clientX: 128, bubbles: true }),
+      );
+      document.dispatchEvent(
+        new MouseEvent("mousemove", { clientX: 200, bubbles: true }),
+      );
+      document.dispatchEvent(new MouseEvent("mouseup", { bubbles: true }));
+
+      expect(commitColorEvents).toHaveLength(1);
+
+      document.body.removeChild(el);
+      vi.restoreAllMocks();
     });
   });
 });

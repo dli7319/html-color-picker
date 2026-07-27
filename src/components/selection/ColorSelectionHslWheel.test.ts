@@ -1,7 +1,9 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { Color, ColorInputType } from "../../lib/Color";
 import "./ColorSelectionHslWheel";
 import type { ColorSelectionHslWheel } from "./ColorSelectionHslWheel";
+import { ColorPickerSetColorEvent } from "../../events/ColorPickerSetColorEvent";
+import { ColorPickerCommitColorEvent } from "../../events/ColorPickerCommitColorEvent";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -428,6 +430,76 @@ describe("ColorSelectionHslWheel", () => {
       document.body.appendChild(el);
       await el.updateComplete;
       expect(el.shadowRoot).toBeTruthy();
+      document.body.removeChild(el);
+    });
+  });
+
+  // -----------------------------------------------------------------------
+  // 7. Drag interaction
+  // -----------------------------------------------------------------------
+  describe("drag interaction", () => {
+    it("dragging on the wheel updates hue and saturation", async () => {
+      const el = document.createElement(
+        "color-selection-hsl-wheel",
+      ) as ColorSelectionHslWheel;
+      document.body.appendChild(el);
+      await el.updateComplete;
+
+      const grad = el.shadowRoot!.querySelector(".color-grad") as HTMLElement;
+      const bcrSpy = vi
+        .spyOn(grad, "getBoundingClientRect")
+        .mockReturnValue(new DOMRect(0, 0, 200, 200));
+
+      const setEvent = await new Promise<ColorPickerSetColorEvent>(
+        (resolve) => {
+          el.addEventListener(
+            "set-color",
+            (e: Event) => resolve(e as ColorPickerSetColorEvent),
+            { once: true },
+          );
+          grad.dispatchEvent(
+            new MouseEvent("mousedown", {
+              bubbles: true,
+              clientX: 200,
+              clientY: 100,
+            }),
+          );
+          document.dispatchEvent(
+            new MouseEvent("mousemove", {
+              bubbles: true,
+              clientX: 200,
+              clientY: 100,
+            }),
+          );
+        },
+      );
+
+      const [hue] = setEvent.color.getHSL();
+      expect(hue).toBeCloseTo(90);
+
+      document.dispatchEvent(new MouseEvent("mouseup"));
+      bcrSpy.mockRestore();
+      document.body.removeChild(el);
+    });
+
+    it("drag end commits the color", async () => {
+      const el = document.createElement(
+        "color-selection-hsl-wheel",
+      ) as ColorSelectionHslWheel;
+      document.body.appendChild(el);
+      await el.updateComplete;
+
+      const grad = el.shadowRoot!.querySelector(".color-grad") as HTMLElement;
+
+      const commitEvent = await new Promise<Event>((resolve) => {
+        el.addEventListener("commit-color", resolve, { once: true });
+        grad.dispatchEvent(
+          new MouseEvent("mousedown", { bubbles: true, clientX: 100, clientY: 100 }),
+        );
+        document.dispatchEvent(new MouseEvent("mouseup"));
+      });
+
+      expect(commitEvent).toBeInstanceOf(ColorPickerCommitColorEvent);
       document.body.removeChild(el);
     });
   });

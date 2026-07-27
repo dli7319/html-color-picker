@@ -10,13 +10,16 @@ import { styles } from "../../styles/ColorPalette.css";
 import { tailwindStyles } from "../../styles/Tailwind";
 
 const STORAGE_KEY = "color-palette-store";
-const PALETTE_COUNT = 5;
+const MIN_COUNT = 2;
+const MAX_COUNT = 7;
+const DEFAULT_COUNT = 5;
 const NARROW_BREAKPOINT = 448;
 
 interface StoredPalette {
   colors: { hex: string }[];
   locked: boolean[];
   mode: string;
+  count: number;
 }
 
 @customElement("color-palette")
@@ -30,13 +33,16 @@ export class ColorPalette extends LitElement {
   private colors: Color[] = [];
 
   @state()
-  private locked: boolean[] = Array(PALETTE_COUNT).fill(false);
+  private locked: boolean[] = Array(DEFAULT_COUNT).fill(false);
 
   @state()
   private activeIndex: number = -1;
 
   @state()
   private paletteMode: PaletteMode = PaletteMode.ANY;
+
+  @state()
+  private paletteCount: number = DEFAULT_COUNT;
 
   @state()
   private narrow: boolean = false;
@@ -56,8 +62,9 @@ export class ColorPalette extends LitElement {
       this.colors = stored.colors;
       this.locked = stored.locked;
       this.paletteMode = stored.mode;
+      this.paletteCount = stored.count;
     } else {
-      this.colors = generatePalette({ count: PALETTE_COUNT });
+      this.colors = generatePalette({ count: this.paletteCount });
     }
   }
 
@@ -100,7 +107,7 @@ export class ColorPalette extends LitElement {
 
   private regenerate() {
     this.colors = generatePalette(
-      { count: PALETTE_COUNT, mode: this.paletteMode },
+      { count: this.paletteCount, mode: this.paletteMode },
       this.locked,
       this.colors,
     );
@@ -110,6 +117,22 @@ export class ColorPalette extends LitElement {
         new ColorPickerSetColorEvent(this.colors[this.activeIndex]),
       );
     }
+  }
+
+  private copyColor(color: Color) {
+    navigator.clipboard.writeText("#" + color.getHex()).catch(() => {});
+  }
+
+  private regenerateSwatch(index: number, e: Event) {
+    e.stopPropagation();
+    const newColor = generatePalette(
+      { count: 1, mode: this.paletteMode },
+    )[0];
+    this.colors[index] = newColor;
+    this.colors = [...this.colors];
+    this.dispatchEvent(new ColorPickerSetColorEvent(newColor));
+    this.dispatchEvent(new ColorPickerCommitColorEvent(newColor));
+    this.saveToStorage();
   }
 
   private selectSwatch(index: number) {
@@ -126,6 +149,29 @@ export class ColorPalette extends LitElement {
 
   private setMode(mode: PaletteMode) {
     this.paletteMode = mode;
+    this.saveToStorage();
+    this.regenerate();
+  }
+
+  private setCount(count: number) {
+    if (count === this.paletteCount) return;
+    this.paletteCount = count;
+    if (count > this.colors.length) {
+      const extra = generatePalette(
+        { count: count - this.colors.length, mode: this.paletteMode },
+      );
+      this.colors = [...this.colors, ...extra];
+      this.locked = [...this.locked, ...Array(count - this.locked.length).fill(false)];
+    } else {
+      this.colors = this.colors.slice(0, count);
+      this.locked = this.locked.slice(0, count);
+      if (this.activeIndex >= count) {
+        this.activeIndex = -1;
+        this.dispatchEvent(new ColorPickerSetPaletteActiveEvent(-1));
+      }
+    }
+    this.colors = [...this.colors];
+    this.locked = [...this.locked];
     this.saveToStorage();
     this.regenerate();
   }
@@ -183,6 +229,7 @@ export class ColorPalette extends LitElement {
         colors: this.colors.map((c) => ({ hex: c.getHex() })),
         locked: this.locked,
         mode: this.paletteMode,
+        count: this.paletteCount,
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     } catch {
@@ -194,18 +241,21 @@ export class ColorPalette extends LitElement {
     colors: Color[];
     locked: boolean[];
     mode: PaletteMode;
+    count: number;
   } | null {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return null;
       const data = JSON.parse(raw) as StoredPalette;
-      if (!data.colors || data.colors.length !== PALETTE_COUNT) return null;
+      if (!data.colors || !data.colors.length) return null;
+      const count = data.count ?? data.colors.length;
       return {
         colors: data.colors.map(
           (c) => new Color({ type: ColorInputType.HEX, hex: c.hex }),
         ),
-        locked: data.locked ?? Array(PALETTE_COUNT).fill(false),
+        locked: data.locked ?? Array(count).fill(false),
         mode: (data.mode as PaletteMode) ?? PaletteMode.ANY,
+        count,
       };
     } catch {
       return null;
@@ -216,16 +266,22 @@ export class ColorPalette extends LitElement {
     return html`
       <div class="palette-root ${this.narrow ? "narrow" : ""}">
         <h5 class="text-lg font-semibold text-gray-800 mb-2">Color Palette</h5>
-        <div class="palette-actions mb-2">
-          <button
-            class="palette-btn"
-            @click=${this.regenerate}
-            title="Generate new palette (Space)"
-          >
-            <span class="material-symbols-outlined palette-btn-icon"
-              >refresh</span
-            >
-          </button>
+        <div class="palette-contrast mb-2">
+          <span class="palette-contrast-label">Count</span>
+          <div class="palette-contrast-group">
+            ${Array.from({ length: MAX_COUNT - MIN_COUNT + 1 }, (_, i) => i + MIN_COUNT).map(
+              (n) => html`
+                <button
+                  class="palette-contrast-btn ${this.paletteCount === n
+                    ? "active"
+                    : ""}"
+                  @click=${() => this.setCount(n)}
+                >
+                  ${n}
+                </button>
+              `,
+            )}
+          </div>
         </div>
         <div class="palette-contrast mb-2">
           <span class="palette-contrast-label">Mode</span>
@@ -267,6 +323,13 @@ export class ColorPalette extends LitElement {
             </button>
           </div>
         </div>
+        <button
+          class="palette-generate-btn"
+          @click=${this.regenerate}
+          title="Generate new palette (Space)"
+        >
+          Generate
+        </button>
         <div class="palette-swatches">
           ${this.colors.map(
             (color, i) => html`
@@ -286,24 +349,42 @@ export class ColorPalette extends LitElement {
                 @drop=${() => this.onDrop(i)}
                 @dragend=${this.onDragEnd}
               >
-                <button
-                  class="palette-swatch-lock ${this.locked[i] ? "locked" : ""}"
-                  @click=${(e: Event) => this.toggleLock(i, e)}
-                  title=${this.locked[i] ? "Unlock color" : "Lock color"}
-                >
-                  <span class="material-symbols-outlined palette-lock-icon"
-                    >${this.locked[i] ? "lock" : "lock_open"}</span
+                <div class="palette-swatch-actions">
+                  <button
+                    class="palette-action-btn"
+                    @click=${(e: Event) => this.toggleLock(i, e)}
+                    title=${this.locked[i] ? "Unlock color" : "Lock color"}
                   >
-                </button>
+                    <span class="material-symbols-outlined"
+                      >${this.locked[i] ? "lock" : "lock_open"}</span
+                    >
+                  </button>
+                  ${this.activeIndex === i
+                    ? html`
+                        <button
+                          class="palette-action-btn"
+                          @click=${() => this.copyColor(color)}
+                          title="Copy hex"
+                        >
+                          <span class="material-symbols-outlined"
+                            >content_copy</span
+                          >
+                        </button>
+                        <button
+                          class="palette-action-btn"
+                          @click=${(e: Event) => this.regenerateSwatch(i, e)}
+                          title="Regenerate this color"
+                        >
+                          <span class="material-symbols-outlined"
+                            >refresh</span
+                          >
+                        </button>
+                      `
+                    : ""}
+                </div>
                 <div class="palette-swatch-hex">
                   #${color.getHex().toUpperCase()}
                 </div>
-                ${this.activeIndex === i
-                  ? html`<sl-copy-button
-                      class="palette-swatch-copy"
-                      value="#${color.getHex()}"
-                    ></sl-copy-button>`
-                  : ""}
               </div>
             `,
           )}

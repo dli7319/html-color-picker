@@ -52,9 +52,34 @@ export class ColorInterpolation extends LitElement {
 
   colorGradient: ColorGradient = new ColorGradient();
 
+  connectedCallback() {
+    super.connectedCallback();
+    window.addEventListener(
+      ColorPickerSetColorEvent.eventName,
+      this.handleExternalColor as EventListener,
+    );
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    window.removeEventListener(
+      ColorPickerSetColorEvent.eventName,
+      this.handleExternalColor as EventListener,
+    );
+  }
+
+  private handleExternalColor = () => {
+    if (!this.isInternalDrag && this.activeLerpMode !== null) {
+      this.activeLerpMode = null;
+      this.saveUIState();
+    }
+  };
+
   private lastCommittedColor: Color = this.leftColor;
 
   private selectedGradientDiv: HTMLDivElement | null = null;
+
+  private isInternalDrag = false;
 
   private processDrag = (e: MouseEvent) => {
     if (this.selectedGradientDiv) {
@@ -68,7 +93,9 @@ export class ColorInterpolation extends LitElement {
       this.activeLerpMode = mode;
       this.saveUIState();
       this.setActiveColor(ActiveColorSide.NONE);
+      this.isInternalDrag = true;
       this.setColor(newColor);
+      this.isInternalDrag = false;
     }
   };
 

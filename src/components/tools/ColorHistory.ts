@@ -8,6 +8,7 @@ import { styles } from "../../styles/ColorHistory.css";
 import { tailwindStyles } from "../../styles/Tailwind";
 
 const STORAGE_KEY = "color-history-store";
+const LAST_COLOR_KEY = "last-active-color";
 const MAX_ENTRIES = 50;
 
 @customElement("color-history")
@@ -33,14 +34,11 @@ export class ColorHistory extends LitElement {
     );
   }
 
-  firstUpdated() {
-    // Restore the most recent color after initial render.
-    // Defer so the parent ColorPicker's update cycle has settled.
-    if (this.history.length > 0) {
-      const color = this.history[0];
-      setTimeout(() => {
-        this.dispatchEvent(new ColorPickerSetColorEvent(color));
-      });
+  private saveLastColor(color: Color) {
+    try {
+      localStorage.setItem(LAST_COLOR_KEY, color.getHex());
+    } catch {
+      // localStorage unavailable — silently ignore
     }
   }
 
@@ -73,11 +71,13 @@ export class ColorHistory extends LitElement {
     this.history = [event.color, ...this.history].slice(0, MAX_ENTRIES);
     this.activeIndex = -1;
     this.saveToStorage();
+    this.saveLastColor(event.color);
   };
 
   private selectSwatch(index: number, color: Color) {
     this.activeIndex = index;
     this.dispatchEvent(new ColorPickerSetColorEvent(color));
+    this.saveLastColor(color);
   }
 
   private clearHistory() {

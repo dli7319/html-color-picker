@@ -59,6 +59,7 @@ export class ColorPicker extends LitElement {
 
   constructor() {
     super();
+    this.loadLastColor();
     this.addEventListener(
       ColorPickerSetColorEvent.eventName,
       (event: Event) => {
@@ -91,6 +92,17 @@ export class ColorPicker extends LitElement {
         }
       },
     );
+  }
+
+  private loadLastColor() {
+    try {
+      const hex = localStorage.getItem("last-active-color");
+      if (hex) {
+        this.color = new Color({ type: ColorInputType.HEX, hex });
+      }
+    } catch {
+      // localStorage unavailable — silently ignore
+    }
   }
 
   setColor(newColor: Color) {

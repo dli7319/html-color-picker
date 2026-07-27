@@ -31,7 +31,10 @@ export class ColorHistory extends LitElement {
       ColorPickerCommitColorEvent.eventName,
       this.handleCommit as EventListener,
     );
-    // Restore the most recent color on first load
+  }
+
+  firstUpdated() {
+    // Restore the most recent color after initial render
     if (this.history.length > 0) {
       this.dispatchEvent(new ColorPickerSetColorEvent(this.history[0]));
     }

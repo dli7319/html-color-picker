@@ -14,7 +14,10 @@ import { ColorConverter } from "./converter/ColorConverter";
 import { ImageSampling } from "./tools/ImageSampling";
 import { ColorMaps } from "./colormaps/ColorMaps";
 import "./colormaps/ColorMaps";
+import { ColorPalette } from "./tools/ColorPalette";
+import "./tools/ColorPalette";
 import "./tools/OtherTools";
+import { ColorPickerSetPaletteActiveEvent } from "../events/ColorPickerSetPaletteActiveEvent";
 
 @customElement("color-picker")
 export class ColorPicker extends LitElement {
@@ -50,6 +53,8 @@ export class ColorPicker extends LitElement {
   });
   @state()
   interpolationActive: ActiveColorSide = ActiveColorSide.NONE;
+  @state()
+  paletteActiveIndex: number = -1;
 
   constructor() {
     super();
@@ -74,6 +79,14 @@ export class ColorPicker extends LitElement {
       (event: Event) => {
         if (event instanceof ColorPickerSetInterpolationActiveEvent) {
           this.setInterpolationActive(event.active);
+        }
+      },
+    );
+    this.addEventListener(
+      ColorPickerSetPaletteActiveEvent.eventName,
+      (event: Event) => {
+        if (event instanceof ColorPickerSetPaletteActiveEvent) {
+          this.paletteActiveIndex = event.index;
         }
       },
     );
@@ -111,6 +124,8 @@ export class ColorPicker extends LitElement {
         child.activeColor = this.interpolationActive;
       } else if (child instanceof ColorMaps) {
         child.color = this.color;
+      } else if (child instanceof ColorPalette) {
+        child.activeEditingColor = this.color;
       }
     });
   }

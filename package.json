@@ -6,12 +6,12 @@
   "type": "module",
   "scripts": {
     "setup": "npm ci",
-    "build": "rollup --config rollup.config.ts --configPlugin typescript --environment NODE_ENV:production",
+    "build": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript --environment NODE_ENV:production",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "lint": "eslint src/",
     "format": "prettier --write \"src/**/*.ts\" \"*.ts\"",
-    "dev": "rollup --config rollup.config.ts --configPlugin typescript --watch --environment NODE_ENV:development"
+    "dev": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript --watch --environment NODE_ENV:development"
   },
   "repository": {
     "type": "git",

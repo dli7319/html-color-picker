@@ -115,20 +115,18 @@ export class ColorHistory extends LitElement {
       <div class="history-root">
         <div class="history-header">
           <h5 class="text-lg font-semibold text-gray-800">Color History</h5>
-          ${this.history.length > 0
-            ? html`
-                <button
-                  class="history-clear-btn"
-                  @click=${this.clearHistory}
-                  title="Clear history"
-                >
-                  <span class="material-symbols-outlined history-clear-icon"
-                    >delete_sweep</span
-                  >
-                </button>
-              `
-            : ""}
         </div>
+        ${this.history.length > 0
+          ? html`
+              <button
+                class="history-clear-btn"
+                @click=${this.clearHistory}
+                title="Clear history"
+              >
+                Clear
+              </button>
+            `
+          : ""}
         ${this.history.length === 0
           ? html`<p class="history-empty">No colors yet</p>`
           : html`

@@ -24,6 +24,8 @@ export enum ActiveColorSide {
   NONE = "none",
 }
 
+const STORAGE_KEY = "color-interpolation-ui-store";
+
 @customElement("color-interpolation")
 export class ColorInterpolation extends LitElement {
   static styles = [tailwindStyles, styles];
@@ -64,6 +66,7 @@ export class ColorInterpolation extends LitElement {
       const newColor = this.colorGradient.getColorAt(x, lerpEnum);
       this.activeRatio = x;
       this.activeLerpMode = mode;
+      this.saveUIState();
       this.setActiveColor(ActiveColorSide.NONE);
       this.setColor(newColor);
     }
@@ -110,6 +113,38 @@ export class ColorInterpolation extends LitElement {
         ? ActiveColorSide.NONE
         : ActiveColorSide.RIGHT
     );
+  }
+
+  firstUpdated() {
+    this.loadUIState();
+  }
+
+  private saveUIState() {
+    try {
+      const data = {
+        activeLerpMode: this.activeLerpMode,
+        activeRatio: this.activeRatio,
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } catch {
+      // localStorage unavailable — silently ignore
+    }
+  }
+
+  private loadUIState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      const data = JSON.parse(raw);
+      if (data.activeLerpMode !== undefined) {
+        this.activeLerpMode = data.activeLerpMode;
+      }
+      if (data.activeRatio !== undefined) {
+        this.activeRatio = data.activeRatio;
+      }
+    } catch {
+      // localStorage unavailable — silently ignore
+    }
   }
 
   render() {

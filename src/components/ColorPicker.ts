@@ -20,6 +20,8 @@ import "./tools/ColorHistory";
 import "./tools/OtherTools";
 import { ColorPickerSetPaletteActiveEvent } from "../events/ColorPickerSetPaletteActiveEvent";
 
+const INTERPOLATION_STORAGE_KEY = "color-interpolation-store";
+
 @customElement("color-picker")
 export class ColorPicker extends LitElement {
   static styles = [tailwindStyles, styles];
@@ -60,6 +62,7 @@ export class ColorPicker extends LitElement {
   constructor() {
     super();
     this.loadLastColor();
+    this.loadInterpolationState();
     this.addEventListener(
       ColorPickerSetColorEvent.eventName,
       (event: Event) => {
@@ -105,12 +108,52 @@ export class ColorPicker extends LitElement {
     }
   }
 
+  private loadInterpolationState() {
+    try {
+      const raw = localStorage.getItem(INTERPOLATION_STORAGE_KEY);
+      if (!raw) return;
+      const data = JSON.parse(raw);
+      if (data.left) {
+        this.interpolationLeft = new Color({
+          type: ColorInputType.HEX,
+          hex: data.left,
+        });
+      }
+      if (data.right) {
+        this.interpolationRight = new Color({
+          type: ColorInputType.HEX,
+          hex: data.right,
+        });
+      }
+      if (data.active) {
+        this.interpolationActive = data.active as ActiveColorSide;
+      }
+    } catch {
+      // localStorage unavailable — silently ignore
+    }
+  }
+
+  private saveInterpolationState() {
+    try {
+      const data = {
+        left: this.interpolationLeft.getHex(),
+        right: this.interpolationRight.getHex(),
+        active: this.interpolationActive,
+      };
+      localStorage.setItem(INTERPOLATION_STORAGE_KEY, JSON.stringify(data));
+    } catch {
+      // localStorage unavailable — silently ignore
+    }
+  }
+
   setColor(newColor: Color) {
     this.color = newColor;
     if (this.interpolationActive === ActiveColorSide.LEFT) {
       this.interpolationLeft = newColor;
+      this.saveInterpolationState();
     } else if (this.interpolationActive === ActiveColorSide.RIGHT) {
       this.interpolationRight = newColor;
+      this.saveInterpolationState();
     }
   }
 
@@ -120,6 +163,7 @@ export class ColorPicker extends LitElement {
 
   setInterpolationActive(newActive: ActiveColorSide) {
     this.interpolationActive = newActive;
+    this.saveInterpolationState();
   }
 
   updateChildren() {

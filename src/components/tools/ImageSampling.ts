@@ -7,6 +7,7 @@ import { tailwindStyles } from "../../styles/Tailwind";
 import { Color, ColorInputType } from "../../lib/Color";
 import { Coordinates } from "../../lib/Coordinates";
 import { ColorPickerSetColorEvent } from "../../events/ColorPickerSetColorEvent";
+import { ColorPickerCommitColorEvent } from "../../events/ColorPickerCommitColorEvent";
 import { ColorPickerSetCoordinatesEvent } from "../../events/ColorPickerSetCoordinatesEvent";
 
 export enum OverlayColor {
@@ -50,8 +51,15 @@ export class ImageSampling extends LitElement {
     this.overlayColor = this.initialOverlayColor;
   }
 
+  private lastSampledColor: Color = new Color();
+
   setColor(color: Color) {
+    this.lastSampledColor = color;
     this.dispatchEvent(new ColorPickerSetColorEvent(color));
+  }
+
+  commitColor() {
+    this.dispatchEvent(new ColorPickerCommitColorEvent(this.lastSampledColor));
   }
 
   setCoordinates(coordinates: Coordinates) {
@@ -199,6 +207,7 @@ export class ImageSampling extends LitElement {
           ${ref(this.canvasRef)}
           @mousedown=${this.sampleImage}
           @mousemove=${this.sampleImage}
+          @mouseup=${this.commitColor}
         ></canvas>
         <div
           class="image-preview-overlay"

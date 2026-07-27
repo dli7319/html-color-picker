@@ -3,6 +3,7 @@ import { customElement, property, query } from "lit/decorators.js";
 
 import { Color, ColorInputType } from "../../lib/Color";
 import { ColorPickerSetColorEvent } from "../../events/ColorPickerSetColorEvent";
+import { ColorPickerCommitColorEvent } from "../../events/ColorPickerCommitColorEvent";
 import { DragController } from "../../controllers/DragController";
 
 // This is an HSL color wheel with a white center.
@@ -45,6 +46,8 @@ export class ColorSelectionHslWheel extends LitElement {
   @query("#color-grad")
   private colorGrad!: HTMLDivElement;
 
+  private lastCommittedColor: Color = this.color;
+
   private drag = new DragController(this, {
     onDrag: (e: MouseEvent) => {
       const rect = this.colorGrad.getBoundingClientRect();
@@ -64,10 +67,18 @@ export class ColorSelectionHslWheel extends LitElement {
         })
       );
     },
+    onDragEnd: () => {
+      this.commitColor();
+    },
   });
 
   setColor(color: Color) {
+    this.lastCommittedColor = color;
     this.dispatchEvent(new ColorPickerSetColorEvent(color));
+  }
+
+  commitColor() {
+    this.dispatchEvent(new ColorPickerCommitColorEvent(this.lastCommittedColor));
   }
 
   render() {

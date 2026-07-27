@@ -5,6 +5,7 @@ import { clamp } from "../../lib/utils/math";
 import { Color, ColorInputType } from "../../lib/Color";
 import { styles } from "../../styles/ColorSelectionTypeA.css";
 import { ColorPickerSetColorEvent } from "../../events/ColorPickerSetColorEvent";
+import { ColorPickerCommitColorEvent } from "../../events/ColorPickerCommitColorEvent";
 import { DragController } from "../../controllers/DragController";
 import "./ColorSelectionHsvBar";
 
@@ -28,6 +29,8 @@ export class ColorSelectionHsvGrad extends LitElement {
   @query("#color-grad-container")
   colorGradContainer!: HTMLDivElement;
 
+  private lastCommittedColor: Color = this.color;
+
   private drag = new DragController(this, {
     onDrag: (e: MouseEvent) => {
       const [hue] = this.color.getHSV();
@@ -45,10 +48,18 @@ export class ColorSelectionHsvGrad extends LitElement {
         }),
       );
     },
+    onDragEnd: () => {
+      this.commitColor();
+    },
   });
 
   setColor(color: Color) {
+    this.lastCommittedColor = color;
     this.dispatchEvent(new ColorPickerSetColorEvent(color));
+  }
+
+  commitColor() {
+    this.dispatchEvent(new ColorPickerCommitColorEvent(this.lastCommittedColor));
   }
 
   render() {

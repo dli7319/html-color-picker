@@ -4,6 +4,7 @@ import { customElement, property, state } from "lit/decorators.js";
 import { Color, ColorInputType } from "../../lib/Color";
 import { generatePalette, PaletteMode } from "../../lib/PaletteGenerator";
 import { ColorPickerSetColorEvent } from "../../events/ColorPickerSetColorEvent";
+import { ColorPickerCommitColorEvent } from "../../events/ColorPickerCommitColorEvent";
 import { ColorPickerSetPaletteActiveEvent } from "../../events/ColorPickerSetPaletteActiveEvent";
 import { styles } from "../../styles/ColorPalette.css";
 import { tailwindStyles } from "../../styles/Tailwind";
@@ -115,6 +116,7 @@ export class ColorPalette extends LitElement {
     this.activeIndex = index;
     this.dispatchEvent(new ColorPickerSetColorEvent(this.colors[index]));
     this.dispatchEvent(new ColorPickerSetPaletteActiveEvent(index));
+    this.dispatchEvent(new ColorPickerCommitColorEvent(this.colors[index]));
   }
 
   private setMode(mode: PaletteMode) {
@@ -208,96 +210,99 @@ export class ColorPalette extends LitElement {
   render() {
     return html`
       <div class="palette-root ${this.narrow ? "narrow" : ""}">
-      <h5 class="text-lg font-semibold text-gray-800 mb-2">Color Palette</h5>
-      <div class="palette-actions mb-2">
-        <button
-          class="palette-btn"
-          @click=${this.regenerate}
-          title="Generate new palette (Space)"
-        >
-          <span class="material-symbols-outlined palette-btn-icon"
-            >refresh</span
-          >
-        </button>
-      </div>
-      <div class="palette-contrast mb-2">
-        <span class="palette-contrast-label">Mode</span>
-        <div class="palette-contrast-group">
+        <h5 class="text-lg font-semibold text-gray-800 mb-2">Color Palette</h5>
+        <div class="palette-actions mb-2">
           <button
-            class="palette-contrast-btn ${this.paletteMode === PaletteMode.ANY
-              ? "active"
-              : ""}"
-            @click=${() => this.setMode(PaletteMode.ANY)}
+            class="palette-btn"
+            @click=${this.regenerate}
+            title="Generate new palette (Space)"
           >
-            Any
-          </button>
-          <button
-            class="palette-contrast-btn ${this.paletteMode === PaletteMode.TONAL
-              ? "active"
-              : ""}"
-            @click=${() => this.setMode(PaletteMode.TONAL)}
-          >
-            Tonal
-          </button>
-          <button
-            class="palette-contrast-btn ${this.paletteMode ===
-            PaletteMode.ANALOGOUS
-              ? "active"
-              : ""}"
-            @click=${() => this.setMode(PaletteMode.ANALOGOUS)}
-          >
-            Analogous
-          </button>
-          <button
-            class="palette-contrast-btn ${this.paletteMode === PaletteMode.VIVID
-              ? "active"
-              : ""}"
-            @click=${() => this.setMode(PaletteMode.VIVID)}
-          >
-            Vivid
+            <span class="material-symbols-outlined palette-btn-icon"
+              >refresh</span
+            >
           </button>
         </div>
-      </div>
-      <div class="palette-swatches">
-        ${this.colors.map(
-          (color, i) => html`
-            <div
-              class="palette-swatch ${this.activeIndex === i
+        <div class="palette-contrast mb-2">
+          <span class="palette-contrast-label">Mode</span>
+          <div class="palette-contrast-group">
+            <button
+              class="palette-contrast-btn ${this.paletteMode === PaletteMode.ANY
                 ? "active"
-                : ""} ${this.dragIndex === i
-                ? "dragging"
-                : ""} ${this.dragOverIndex === i ? "drag-over" : ""}"
-              style="background: ${color.toCSS()}"
-              draggable="true"
-              @click=${() => this.selectSwatch(i)}
-              @dragstart=${(e: DragEvent) => this.onDragStart(i, e)}
-              @dragover=${(e: DragEvent) => this.onDragOver(i, e)}
-              @dragleave=${this.onDragLeave}
-              @drop=${() => this.onDrop(i)}
-              @dragend=${this.onDragEnd}
+                : ""}"
+              @click=${() => this.setMode(PaletteMode.ANY)}
             >
-              <button
-                class="palette-swatch-lock ${this.locked[i] ? "locked" : ""}"
-                @click=${(e: Event) => this.toggleLock(i, e)}
-                title=${this.locked[i] ? "Unlock color" : "Lock color"}
+              Any
+            </button>
+            <button
+              class="palette-contrast-btn ${this.paletteMode ===
+              PaletteMode.TONAL
+                ? "active"
+                : ""}"
+              @click=${() => this.setMode(PaletteMode.TONAL)}
+            >
+              Tonal
+            </button>
+            <button
+              class="palette-contrast-btn ${this.paletteMode ===
+              PaletteMode.ANALOGOUS
+                ? "active"
+                : ""}"
+              @click=${() => this.setMode(PaletteMode.ANALOGOUS)}
+            >
+              Analogous
+            </button>
+            <button
+              class="palette-contrast-btn ${this.paletteMode ===
+              PaletteMode.VIVID
+                ? "active"
+                : ""}"
+              @click=${() => this.setMode(PaletteMode.VIVID)}
+            >
+              Vivid
+            </button>
+          </div>
+        </div>
+        <div class="palette-swatches">
+          ${this.colors.map(
+            (color, i) => html`
+              <div
+                class="palette-swatch ${this.activeIndex === i
+                  ? "active"
+                  : ""} ${this.dragIndex === i ? "dragging" : ""} ${this
+                  .dragOverIndex === i
+                  ? "drag-over"
+                  : ""}"
+                style="background: ${color.toCSS()}"
+                draggable="true"
+                @click=${() => this.selectSwatch(i)}
+                @dragstart=${(e: DragEvent) => this.onDragStart(i, e)}
+                @dragover=${(e: DragEvent) => this.onDragOver(i, e)}
+                @dragleave=${this.onDragLeave}
+                @drop=${() => this.onDrop(i)}
+                @dragend=${this.onDragEnd}
               >
-                <span class="material-symbols-outlined palette-lock-icon"
-                  >${this.locked[i] ? "lock" : "lock_open"}</span
+                <button
+                  class="palette-swatch-lock ${this.locked[i] ? "locked" : ""}"
+                  @click=${(e: Event) => this.toggleLock(i, e)}
+                  title=${this.locked[i] ? "Unlock color" : "Lock color"}
                 >
-              </button>
-              <div class="palette-swatch-hex">
-                #${color.getHex().toUpperCase()}
+                  <span class="material-symbols-outlined palette-lock-icon"
+                    >${this.locked[i] ? "lock" : "lock_open"}</span
+                  >
+                </button>
+                <div class="palette-swatch-hex">
+                  #${color.getHex().toUpperCase()}
+                </div>
+                ${this.activeIndex === i
+                  ? html`<sl-copy-button
+                      class="palette-swatch-copy"
+                      value="#${color.getHex()}"
+                    ></sl-copy-button>`
+                  : ""}
               </div>
-              ${this.activeIndex === i
-                ? html`<sl-copy-button
-                    class="palette-swatch-copy"
-                    value="#${color.getHex()}"
-                  ></sl-copy-button>`
-                : ""}
-            </div>
-          `,
-        )}
-      </div>
+            `,
+          )}
+        </div>
       </div>
     `;
   }

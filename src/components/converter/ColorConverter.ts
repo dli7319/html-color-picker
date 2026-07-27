@@ -6,6 +6,7 @@ import { Color } from "../../lib/Color";
 import { Coordinates } from "../../lib/Coordinates";
 import { styles } from "../../styles/ColorConverter.css";
 import { ColorPickerSetColorEvent } from "../../events/ColorPickerSetColorEvent";
+import { ColorPickerCommitColorEvent } from "../../events/ColorPickerCommitColorEvent";
 import {
   ColorConverterInput,
   InputType,
@@ -43,6 +44,7 @@ export class ColorConverter extends LitElement {
         const parsedColor = typeToParseFunction[inputType](value);
         if (parsedColor != null) {
           this.setColor(parsedColor);
+          this.dispatchEvent(new ColorPickerCommitColorEvent(parsedColor));
           this.inputValues = {
             [inputTypeToInputValueKey[inputType]]: value,
           };

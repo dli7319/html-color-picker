@@ -6,6 +6,7 @@ import { ColorGradient } from "../../lib/ColorGradient";
 import { styles } from "../../styles/ColorInterpolation.css";
 import { tailwindStyles } from "../../styles/Tailwind";
 import { ColorPickerSetColorEvent } from "../../events/ColorPickerSetColorEvent";
+import { ColorPickerCommitColorEvent } from "../../events/ColorPickerCommitColorEvent";
 import { ColorPickerSetInterpolationActiveEvent } from "../../events/ColorPickerSetInterpolationActiveEvent";
 import { ColorLerpMode } from "../../lib/ColorLerp";
 
@@ -49,6 +50,8 @@ export class ColorInterpolation extends LitElement {
 
   colorGradient: ColorGradient = new ColorGradient();
 
+  private lastCommittedColor: Color = this.leftColor;
+
   private selectedGradientDiv: HTMLDivElement | null = null;
 
   private processDrag = (e: MouseEvent) => {
@@ -76,11 +79,17 @@ export class ColorInterpolation extends LitElement {
     },
     onDragEnd: () => {
       this.selectedGradientDiv = null;
+      this.commitColor();
     },
   });
 
   setColor(color: Color) {
+    this.lastCommittedColor = color;
     this.dispatchEvent(new ColorPickerSetColorEvent(color));
+  }
+
+  commitColor() {
+    this.dispatchEvent(new ColorPickerCommitColorEvent(this.lastCommittedColor));
   }
 
   setActiveColor(activeColor: ActiveColorSide) {

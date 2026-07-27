@@ -16,6 +16,7 @@ import { ColorMaps } from "./colormaps/ColorMaps";
 import "./colormaps/ColorMaps";
 import { ColorPalette } from "./tools/ColorPalette";
 import "./tools/ColorPalette";
+import "./tools/ColorHistory";
 import "./tools/OtherTools";
 import { ColorPickerSetPaletteActiveEvent } from "../events/ColorPickerSetPaletteActiveEvent";
 

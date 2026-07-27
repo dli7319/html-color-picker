@@ -132,17 +132,17 @@ export class ColorHistory extends LitElement {
             : html`
                 <div class="history-swatches">
                   ${this.history.map(
-                  (color, i) => html`
-                    <div
-                      class="history-swatch ${
+                    (color, i) => html`
+                      <div
+                        class="history-swatch ${
                         this.activeIndex === i ? "active" : ""
                       }"
-                      style="background: ${color.toCSS()}"
-                      @click=${() => this.selectSwatch(i, color)}
-                      title="#${color.getHex().toUpperCase()}"
-                    ></div>
-                  `,
-                )}
+                        style="background: ${color.toCSS()}"
+                        @click=${() => this.selectSwatch(i, color)}
+                        title="#${color.getHex().toUpperCase()}"
+                      ></div>
+                    `,
+                  )}
                 </div>
               `
         }

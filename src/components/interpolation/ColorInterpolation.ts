@@ -219,19 +219,19 @@ export class ColorInterpolation extends LitElement {
               <div
                 class="gradient flex-1 rounded relative overflow-visible cursor-crosshair h-6 shadow-inner"
                 style="background: ${this.colorGradient.getBackgroundImageStyle(
-                    lerpMode,
-                  )}"
+                  lerpMode,
+                )}"
                 data-mode=${lerpMode}
                 @mousedown=${this.drag.handleMouseDown}
               >
                 ${
-                    isActive
-                      ? html`<color-bar-pointer
-                          .position=${this.activeRatio * 100}
-                          .color=${pointerColor}
-                        ></color-bar-pointer>`
-                      : ""
-                  }
+                  isActive
+                    ? html`<color-bar-pointer
+                        .position=${this.activeRatio * 100}
+                        .color=${pointerColor}
+                      ></color-bar-pointer>`
+                    : ""
+                }
               </div>
             </div>
           `;

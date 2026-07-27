@@ -34,9 +34,13 @@ export class ColorHistory extends LitElement {
   }
 
   firstUpdated() {
-    // Restore the most recent color after initial render
+    // Restore the most recent color after initial render.
+    // Defer so the parent ColorPicker's update cycle has settled.
     if (this.history.length > 0) {
-      this.dispatchEvent(new ColorPickerSetColorEvent(this.history[0]));
+      const color = this.history[0];
+      setTimeout(() => {
+        this.dispatchEvent(new ColorPickerSetColorEvent(color));
+      });
     }
   }
 

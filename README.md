@@ -1,6 +1,6 @@
 # html-color-picker
 
-A small website to convert between color coordinates. Try it at [davidl.me/apps/colors](https://davidl.me/apps/colors).
+A small website to convert between color coordinates. Try it at [davidl.me/apps/colors](https://dli7319.github.io/html-color-picker).
 
 ## Features
 

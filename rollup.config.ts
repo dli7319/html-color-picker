@@ -16,7 +16,7 @@ const config: RollupOptions = {
   output: {
     file: "dist/main.js",
     format: "esm",
-    sourcemap: true,
+    sourcemap: !isProduction,
   },
   plugins: [
     resolve(),

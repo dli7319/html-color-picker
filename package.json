@@ -25,7 +25,6 @@
   },
   "homepage": "https://github.com/dli7319/html-color-picker#readme",
   "dependencies": {
-    "@shoelace-style/shoelace": "^2.20.1",
     "color-convert": "^3.1.3",
     "lit": "^3.3.3"
   },

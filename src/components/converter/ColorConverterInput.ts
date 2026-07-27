@@ -1,6 +1,5 @@
 import { html, LitElement } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import "@shoelace-style/shoelace/dist/components/copy-button/copy-button.js";
+import { customElement, property, state } from "lit/decorators.js";
 
 import { tailwindStyles } from "../../styles/Tailwind";
 import { Color } from "../../lib/Color";
@@ -62,6 +61,24 @@ export class ColorConverterInput extends LitElement {
   @property({ attribute: false })
   color: Color = new Color();
 
+  @state()
+  private _copied = false;
+
+  private _copyTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  private async _copyValue(value: string) {
+    try {
+      await navigator.clipboard.writeText(value);
+      this._copied = true;
+      if (this._copyTimeout) clearTimeout(this._copyTimeout);
+      this._copyTimeout = setTimeout(() => {
+        this._copied = false;
+      }, 1000);
+    } catch {
+      // Clipboard write failed — silently ignore
+    }
+  }
+
   onValueChange(event: Event) {
     this.dispatchEvent(
       new ColorConverterInputEvent(
@@ -92,7 +109,16 @@ export class ColorConverterInput extends LitElement {
           />
         </div>
         <div class="flex items-center px-2 bg-white/30">
-          <sl-copy-button value=${value}></sl-copy-button>
+          <button
+            class="p-1.5 rounded-md hover:bg-white/50 transition-colors cursor-pointer border-none bg-transparent"
+            @click=${() => this._copyValue(value)}
+            title="Copy to clipboard"
+            aria-label="Copy to clipboard"
+          >
+            ${this._copied
+              ? html`<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-green-600"><polyline points="20 6 9 17 4 12"></polyline></svg>`
+              : html`<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`}
+          </button>
         </div>
       </div>
     `;

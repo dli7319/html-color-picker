@@ -230,17 +230,18 @@ describe("ColorConverterInput", () => {
   });
 
   // -----------------------------------------------------------------------
-  // 7. sl-copy-button element exists in shadow DOM
+  // 7. Copy button exists in shadow DOM
   // -----------------------------------------------------------------------
   describe("copy button", () => {
-    it("renders an sl-copy-button element", async () => {
+    it("renders a copy button element", async () => {
       const el = document.createElement(
         "color-converter-input",
       ) as ColorConverterInput;
       document.body.appendChild(el);
       await el.updateComplete;
-      const copyButton = el.shadowRoot!.querySelector("sl-copy-button");
+      const copyButton = el.shadowRoot!.querySelector("button");
       expect(copyButton).not.toBeNull();
+      expect(copyButton!.getAttribute("aria-label")).toBe("Copy to clipboard");
       document.body.removeChild(el);
     });
   });

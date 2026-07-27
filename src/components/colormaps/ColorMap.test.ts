@@ -331,9 +331,7 @@ describe("ColorMap", () => {
       document.body.appendChild(el);
       await el.updateComplete;
 
-      const div = el.shadowRoot!.getElementById(
-        "colormap-div",
-      ) as HTMLElement;
+      const div = el.shadowRoot!.getElementById("colormap-div") as HTMLElement;
       vi.spyOn(div, "getBoundingClientRect").mockReturnValue({
         left: 0,
         top: 0,
@@ -370,9 +368,7 @@ describe("ColorMap", () => {
       document.body.appendChild(el);
       await el.updateComplete;
 
-      const div = el.shadowRoot!.getElementById(
-        "colormap-div",
-      ) as HTMLElement;
+      const div = el.shadowRoot!.getElementById("colormap-div") as HTMLElement;
       vi.spyOn(div, "getBoundingClientRect").mockReturnValue({
         left: 0,
         top: 0,

@@ -494,7 +494,11 @@ describe("ColorSelectionHslWheel", () => {
       const commitEvent = await new Promise<Event>((resolve) => {
         el.addEventListener("commit-color", resolve, { once: true });
         grad.dispatchEvent(
-          new MouseEvent("mousedown", { bubbles: true, clientX: 100, clientY: 100 }),
+          new MouseEvent("mousedown", {
+            bubbles: true,
+            clientX: 100,
+            clientY: 100,
+          }),
         );
         document.dispatchEvent(new MouseEvent("mouseup"));
       });

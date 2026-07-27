@@ -176,37 +176,33 @@ describe("ColorSelectionHsvGrad", () => {
     const container = el.shadowRoot!.getElementById(
       "color-grad-container",
     ) as HTMLElement;
-    const grad = el.shadowRoot!.querySelector(
-      ".color-grad-2",
-    ) as HTMLElement;
+    const grad = el.shadowRoot!.querySelector(".color-grad-2") as HTMLElement;
 
     const bcrSpy = vi
       .spyOn(container, "getBoundingClientRect")
       .mockReturnValue(new DOMRect(0, 0, 200, 200));
 
-    const setEvent = await new Promise<ColorPickerSetColorEvent>(
-      (resolve) => {
-        el.addEventListener(
-          "set-color",
-          (e: Event) => resolve(e as ColorPickerSetColorEvent),
-          { once: true },
-        );
-        grad.dispatchEvent(
-          new MouseEvent("mousedown", {
-            bubbles: true,
-            clientX: 150,
-            clientY: 50,
-          }),
-        );
-        document.dispatchEvent(
-          new MouseEvent("mousemove", {
-            bubbles: true,
-            clientX: 150,
-            clientY: 50,
-          }),
-        );
-      },
-    );
+    const setEvent = await new Promise<ColorPickerSetColorEvent>((resolve) => {
+      el.addEventListener(
+        "set-color",
+        (e: Event) => resolve(e as ColorPickerSetColorEvent),
+        { once: true },
+      );
+      grad.dispatchEvent(
+        new MouseEvent("mousedown", {
+          bubbles: true,
+          clientX: 150,
+          clientY: 50,
+        }),
+      );
+      document.dispatchEvent(
+        new MouseEvent("mousemove", {
+          bubbles: true,
+          clientX: 150,
+          clientY: 50,
+        }),
+      );
+    });
 
     const [hue, sat, val] = setEvent.color.getHSV();
     expect(hue).toBe(180);
@@ -225,9 +221,7 @@ describe("ColorSelectionHsvGrad", () => {
     document.body.appendChild(el);
     await el.updateComplete;
 
-    const grad = el.shadowRoot!.querySelector(
-      ".color-grad-2",
-    ) as HTMLElement;
+    const grad = el.shadowRoot!.querySelector(".color-grad-2") as HTMLElement;
 
     const commitEvent = await new Promise<Event>((resolve) => {
       el.addEventListener("commit-color", resolve, { once: true });

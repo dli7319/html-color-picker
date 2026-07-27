@@ -96,21 +96,19 @@ describe("ColorSelectionHslBar", () => {
       .spyOn(colorBar, "getBoundingClientRect")
       .mockReturnValue(new DOMRect(0, 0, 200, 20));
 
-    const setEvent = await new Promise<ColorPickerSetColorEvent>(
-      (resolve) => {
-        el.addEventListener(
-          "set-color",
-          (e: Event) => resolve(e as ColorPickerSetColorEvent),
-          { once: true },
-        );
-        colorBar.dispatchEvent(
-          new MouseEvent("mousedown", { bubbles: true, clientX: 100 }),
-        );
-        document.dispatchEvent(
-          new MouseEvent("mousemove", { bubbles: true, clientX: 150 }),
-        );
-      },
-    );
+    const setEvent = await new Promise<ColorPickerSetColorEvent>((resolve) => {
+      el.addEventListener(
+        "set-color",
+        (e: Event) => resolve(e as ColorPickerSetColorEvent),
+        { once: true },
+      );
+      colorBar.dispatchEvent(
+        new MouseEvent("mousedown", { bubbles: true, clientX: 100 }),
+      );
+      document.dispatchEvent(
+        new MouseEvent("mousemove", { bubbles: true, clientX: 150 }),
+      );
+    });
 
     const [hue, sat, light] = setEvent.color.getHSL();
     expect(light).toBeCloseTo(75);

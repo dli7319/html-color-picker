@@ -69,9 +69,7 @@ describe("ColorSelectionHsv", () => {
         v: 75,
       });
 
-      const el = document.createElement(
-        "color-selection-hsv",
-      ) as LitElement & {
+      const el = document.createElement("color-selection-hsv") as LitElement & {
         color: Color;
       };
       el.color = color;

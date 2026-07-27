@@ -91,15 +91,16 @@ describe("ColorConverter", () => {
       },
     );
 
-    const commitColorEventPromise =
-      new Promise<ColorPickerCommitColorEvent>((resolve) => {
+    const commitColorEventPromise = new Promise<ColorPickerCommitColorEvent>(
+      (resolve) => {
         el.addEventListener(
           ColorPickerCommitColorEvent.eventName,
           (e: Event) => {
             resolve(e as ColorPickerCommitColorEvent);
           },
         );
-      });
+      },
+    );
 
     el.dispatchEvent(new ColorConverterInputEvent(InputType.HEX, "#ff0000"));
 

@@ -11,7 +11,7 @@ export class OtherTools extends LitElement {
     return html`
       <h5 class="text-lg font-semibold text-gray-800 mb-2">Other Tools</h5>
       <ul class="list-disc list-inside text-left space-y-2 text-sm">
-        ${Array.prototype.map.call(this.children, (child) => {
+        ${[...this.children].map((child) => {
           if (child instanceof HTMLAnchorElement) {
             return html`<li>
               <a

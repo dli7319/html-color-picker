@@ -5,7 +5,9 @@ import { Color } from "../../lib/Color";
 import "./ColorSelectionHslWheel";
 import "./ColorSelectionHslBar";
 
-// This is an HSL color wheel with a white center.
+// Layout container that composes the HSL wheel and lightness bar.
+// The actual selection interaction is handled by the child components
+// (ColorSelectionHslWheel, ColorSelectionHslBar), which extend ColorSelectionBase.
 @customElement("color-selection-hsl")
 export class ColorSelectionHsl extends LitElement {
   static styles = [

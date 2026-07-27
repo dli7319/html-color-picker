@@ -8,6 +8,7 @@ import { ColorPickerCommitColorEvent } from "../../events/ColorPickerCommitColor
 import { ColorPickerSetPaletteActiveEvent } from "../../events/ColorPickerSetPaletteActiveEvent";
 import { styles } from "../../styles/ColorPalette.css";
 import { tailwindStyles } from "../../styles/Tailwind";
+import { storageGet, storageSet } from "../../lib/utils/storage";
 
 const STORAGE_KEY = "color-palette-store";
 const MIN_COUNT = 2;
@@ -226,17 +227,12 @@ export class ColorPalette extends LitElement {
   }
 
   private saveToStorage() {
-    try {
-      const data: StoredPalette = {
-        colors: this.colors.map((c) => ({ hex: c.getHex() })),
-        locked: this.locked,
-        mode: this.paletteMode,
-        count: this.paletteCount,
-      };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    } catch {
-      // localStorage unavailable — silently ignore
-    }
+    storageSet(STORAGE_KEY, {
+      colors: this.colors.map((c) => ({ hex: c.getHex() })),
+      locked: this.locked,
+      mode: this.paletteMode,
+      count: this.paletteCount,
+    } satisfies StoredPalette);
   }
 
   private loadFromStorage(): {
@@ -245,23 +241,17 @@ export class ColorPalette extends LitElement {
     mode: PaletteMode;
     count: number;
   } | null {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return null;
-      const data = JSON.parse(raw) as StoredPalette;
-      if (!data.colors || !data.colors.length) return null;
-      const count = data.count ?? data.colors.length;
-      return {
-        colors: data.colors.map(
-          (c) => new Color({ type: ColorInputType.HEX, hex: c.hex }),
-        ),
-        locked: data.locked ?? Array(count).fill(false),
-        mode: (data.mode as PaletteMode) ?? PaletteMode.ANY,
-        count,
-      };
-    } catch {
-      return null;
-    }
+    const data = storageGet<StoredPalette | null>(STORAGE_KEY, null);
+    if (!data || !data.colors || !data.colors.length) return null;
+    const count = data.count ?? data.colors.length;
+    return {
+      colors: data.colors.map(
+        (c) => new Color({ type: ColorInputType.HEX, hex: c.hex }),
+      ),
+      locked: data.locked ?? Array(count).fill(false),
+      mode: (data.mode as PaletteMode) ?? PaletteMode.ANY,
+      count,
+    };
   }
 
   render() {

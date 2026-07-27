@@ -254,22 +254,30 @@ describe("ColorGradient", () => {
       expect(css).toMatch(/^linear-gradient\(to right/);
     });
 
-    it("contains 101 color stops (0% to 100%)", () => {
+    it("uses simple two-stop gradient for default endpoints", () => {
       const g = new ColorGradient(rgb01(0, 0, 0), rgb01(1, 1, 1));
       const css = g.getBackgroundImageStyle();
-      // Each stop produces "rgba(...) X%" — count by matching "rgba"
+      // For a simple 0→1 two-stop gradient, we use a compact representation.
       const rgbaMatches = css.match(/rgba/g);
-      expect(rgbaMatches).toHaveLength(101);
-      // Verify the first and last percentage values
-      expect(css).toContain("rgba(0, 0, 0) 0%");
-      expect(css).toContain("rgba(255, 255, 255) 100%");
+      expect(rgbaMatches).toHaveLength(2);
+      expect(css).toContain("rgba(0, 0, 0)");
+      expect(css).toContain("rgba(255, 255, 255)");
     });
 
-    it("uses the specified ColorLerpMode", () => {
+    it("contains 101 color stops for multi-stop gradients", () => {
+      const g = new ColorGradient(rgb01(0, 0, 0), rgb01(1, 1, 1));
+      g.addColorStop(0.5, rgb01(0.5, 0, 0));
+      const css = g.getBackgroundImageStyle();
+      const rgbaMatches = css.match(/rgba/g);
+      expect(rgbaMatches).toHaveLength(101);
+    });
+
+    it("uses the specified ColorLerpMode for multi-stop gradients", () => {
       const g = new ColorGradient(rgb01(1, 0, 0), rgb01(0, 0, 1));
+      g.addColorStop(0.5, rgb01(0, 1, 0));
       const rgb = g.getBackgroundImageStyle(ColorLerpMode.RGB);
       const hsv = g.getBackgroundImageStyle(ColorLerpMode.HSV);
-      // Different modes should produce different CSS
+      // Different modes should produce different CSS for multi-stop gradients
       expect(rgb).not.toBe(hsv);
     });
 

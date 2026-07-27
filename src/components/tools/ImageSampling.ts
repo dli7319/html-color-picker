@@ -9,6 +9,7 @@ import { Coordinates } from "../../lib/Coordinates";
 import { ColorPickerSetColorEvent } from "../../events/ColorPickerSetColorEvent";
 import { ColorPickerCommitColorEvent } from "../../events/ColorPickerCommitColorEvent";
 import { ColorPickerSetCoordinatesEvent } from "../../events/ColorPickerSetCoordinatesEvent";
+import { DragController } from "../../controllers/DragController";
 
 export enum OverlayColor {
   Transparent = "transparent",
@@ -53,18 +54,42 @@ export class ImageSampling extends LitElement {
 
   private lastSampledColor: Color = new Color();
 
-  setColor(color: Color) {
-    this.lastSampledColor = color;
-    this.dispatchEvent(new ColorPickerSetColorEvent(color));
+  private samplePixel(e: MouseEvent) {
+    const canvas = this.canvasRef.value!;
+    const ctx = canvas.getContext("2d");
+    if (ctx) {
+      const rect = canvas.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * canvas.width;
+      const y = ((e.clientY - rect.top) / rect.height) * canvas.height;
+      const imageData = ctx.getImageData(x, y, 1, 1);
+      const color = new Color({
+        type: ColorInputType.RGB255,
+        r: imageData.data[0],
+        g: imageData.data[1],
+        b: imageData.data[2],
+      });
+      this.lastSampledColor = color;
+      this.dispatchEvent(new ColorPickerSetColorEvent(color));
+      this.dispatchEvent(
+        new ColorPickerSetCoordinatesEvent({
+          x,
+          y,
+          width: canvas.width,
+          height: canvas.height,
+        }),
+      );
+    }
   }
 
-  commitColor() {
-    this.dispatchEvent(new ColorPickerCommitColorEvent(this.lastSampledColor));
-  }
-
-  setCoordinates(coordinates: Coordinates) {
-    this.dispatchEvent(new ColorPickerSetCoordinatesEvent(coordinates));
-  }
+  private drag = new DragController(this, {
+    onDragStart: (e: MouseEvent) => this.samplePixel(e),
+    onDrag: (e: MouseEvent) => this.samplePixel(e),
+    onDragEnd: () => {
+      this.dispatchEvent(
+        new ColorPickerCommitColorEvent(this.lastSampledColor),
+      );
+    },
+  });
 
   loadImage(e: Event) {
     const file = (e.currentTarget as HTMLInputElement).files?.item(0);
@@ -85,33 +110,6 @@ export class ImageSampling extends LitElement {
         img.src = e.target?.result as string;
       };
       reader.readAsDataURL(file);
-    }
-  }
-
-  sampleImage(e: Event) {
-    if (e instanceof MouseEvent && e.buttons === 1) {
-      const canvas = this.canvasRef.value!;
-      const ctx = canvas.getContext("2d");
-      if (ctx) {
-        const rect = canvas.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width) * canvas.width;
-        const y = ((e.clientY - rect.top) / rect.height) * canvas.height;
-        const imageData = ctx.getImageData(x, y, 1, 1);
-        this.setColor(
-          new Color({
-            type: ColorInputType.RGB255,
-            r: imageData.data[0],
-            g: imageData.data[1],
-            b: imageData.data[2],
-          }),
-        );
-        this.setCoordinates({
-          x: x,
-          y: y,
-          width: canvas.width,
-          height: canvas.height,
-        });
-      }
     }
   }
 
@@ -215,9 +213,7 @@ export class ImageSampling extends LitElement {
           width="0"
           height="0"
           ${ref(this.canvasRef)}
-          @mousedown=${this.sampleImage}
-          @mousemove=${this.sampleImage}
-          @mouseup=${this.commitColor}
+          @mousedown=${this.drag.handleMouseDown}
         ></canvas>
         <div
           class="image-preview-overlay"

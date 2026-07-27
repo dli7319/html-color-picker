@@ -6,6 +6,9 @@ import { styles } from "../../styles/ColorSelectionTypeA.css";
 import "./ColorSelectionHsvGrad";
 import "./ColorSelectionHsvBar";
 
+// Layout container that composes the HSV saturation/value gradient and hue bar.
+// The actual selection interaction is handled by the child components
+// (ColorSelectionHsvGrad, ColorSelectionHsvBar), which extend ColorSelectionBase.
 @customElement("color-selection-hsv")
 export class ColorSelectionHsv extends LitElement {
   static styles = [styles];

@@ -73,6 +73,10 @@ export class ColorGradient {
   }
 
   getBackgroundImageStyle(mode: ColorLerpMode = ColorLerpMode.RGB) {
+    // Simple two-stop gradient: just use the endpoint colors directly.
+    if (this.colors.length === 2 && this.positions[0] === 0 && this.positions[1] === 1) {
+      return `linear-gradient(to right, ${this.colors[0].toCSS()}, ${this.colors[1].toCSS()})`;
+    }
     let gradient = "linear-gradient(to right";
     for (let i = 0; i <= 100; i++) {
       gradient += ", " + this.getColorAt(i / 100, mode).toCSS() + " " + i + "%";

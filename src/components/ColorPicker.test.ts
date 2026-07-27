@@ -104,7 +104,7 @@ describe("ColorPicker", () => {
   });
 
   it("loads last color from localStorage on construction", () => {
-    localStorage.setItem("last-active-color", "ff8800");
+    localStorage.setItem("last-active-color", JSON.stringify("ff8800"));
     const el = createPicker();
     expect(el.color.getHex()).toBe("ff8800");
   });

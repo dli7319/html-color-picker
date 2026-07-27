@@ -6,6 +6,7 @@ import { ColorPickerSetColorEvent } from "../../events/ColorPickerSetColorEvent"
 import { ColorPickerCommitColorEvent } from "../../events/ColorPickerCommitColorEvent";
 import { styles } from "../../styles/ColorHistory.css";
 import { tailwindStyles } from "../../styles/Tailwind";
+import { storageGet, storageSet } from "../../lib/utils/storage";
 
 const STORAGE_KEY = "color-history-store";
 const LAST_COLOR_KEY = "last-active-color";
@@ -35,11 +36,7 @@ export class ColorHistory extends LitElement {
   }
 
   private saveLastColor(color: Color) {
-    try {
-      localStorage.setItem(LAST_COLOR_KEY, color.getHex());
-    } catch {
-      // localStorage unavailable — silently ignore
-    }
+    storageSet(LAST_COLOR_KEY, color.getHex());
   }
 
   disconnectedCallback() {
@@ -84,27 +81,18 @@ export class ColorHistory extends LitElement {
   }
 
   private saveToStorage() {
-    try {
-      const data = this.history.map((c) => ({ hex: c.getHex() }));
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    } catch {
-      // localStorage unavailable — silently ignore
-    }
+    storageSet(
+      STORAGE_KEY,
+      this.history.map((c) => ({ hex: c.getHex() })),
+    );
   }
 
   private loadFromStorage(): Color[] {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return [];
-      const data = JSON.parse(raw);
-      if (!Array.isArray(data)) return [];
-      return data.map(
-        (d: { hex: string }) =>
-          new Color({ type: ColorInputType.HEX, hex: d.hex }),
-      );
-    } catch {
-      return [];
-    }
+    const data = storageGet<{ hex: string }[] | null>(STORAGE_KEY, null);
+    if (!data || !Array.isArray(data)) return [];
+    return data.map(
+      (d) => new Color({ type: ColorInputType.HEX, hex: d.hex }),
+    );
   }
 
   render() {

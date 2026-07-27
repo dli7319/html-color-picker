@@ -5,7 +5,7 @@ import { Color, ColorInputType } from "../../lib/Color";
 import { ColorSelectionBase } from "./ColorSelectionBase";
 import { DragController } from "../../controllers/DragController";
 
-// This is an HSL color wheel with a white center.
+// This is an HSL color wheel with a middle-gray center (l=50%).
 @customElement("color-selection-hsl-wheel")
 export class ColorSelectionHslWheel extends ColorSelectionBase {
   static styles = [

@@ -50,35 +50,10 @@ describe("Color", () => {
     it("returns black from getLCH", () => {
       expect(c.getLCH()).toEqual([0, 0, 0]);
     });
-
-    it("defaults a to 1", () => {
-      expect(c.a).toBe(1);
-    });
   });
 
   // ---------------------------------------------------------------
-  // 2. Property `a` defaults to 1
-  // ---------------------------------------------------------------
-  describe("property a", () => {
-    it("is 1 for default constructor", () => {
-      expect(new Color().a).toBe(1);
-    });
-
-    it("is 1 for all input types", () => {
-      const colors = [
-        rgb(255, 0, 0),
-        new Color({ type: ColorInputType.RGB01, r: 0.5, g: 0.5, b: 0.5 }),
-        new Color({ type: ColorInputType.HEX, hex: "ff0000" }),
-        new Color({ type: ColorInputType.HSV, h: 0, s: 100, v: 100 }),
-        new Color({ type: ColorInputType.HSL, h: 0, s: 100, l: 50 }),
-        new Color({ type: ColorInputType.LCH, l: 50, c: 30, h: 200 }),
-      ];
-      colors.forEach((c) => expect(c.a).toBe(1));
-    });
-  });
-
-  // ---------------------------------------------------------------
-  // 3. Construction with all 6 input types — input is stored
+  // 2. Construction with all 6 input types — input is stored
   // ---------------------------------------------------------------
   describe("construction stores original input", () => {
     it("RGB255", () => {
@@ -191,10 +166,6 @@ describe("Color", () => {
         true,
       );
     });
-
-    it("sets a to 1", () => {
-      expect(Color.fromRGB255Array([0, 0, 0]).a).toBe(1);
-    });
   });
 
   // ---------------------------------------------------------------
@@ -212,7 +183,7 @@ describe("Color", () => {
     it("cannot set existing properties", () => {
       const c = new Color();
       expect(() => {
-        (c as unknown as Record<string, unknown>).a = 2;
+        (c as unknown as Record<string, unknown>).input = {} as unknown;
       }).toThrow();
     });
 
@@ -226,14 +197,14 @@ describe("Color", () => {
     it("cannot delete properties", () => {
       const c = new Color();
       expect(() => {
-        delete (c as unknown as Record<string, unknown>).a;
+        delete (c as unknown as Record<string, unknown>).input;
       }).toThrow();
     });
 
     it("cannot reconfigure properties", () => {
       const c = new Color();
       expect(() => {
-        Object.defineProperty(c, "a", { value: 2 });
+        Object.defineProperty(c, "input", { value: {} });
       }).toThrow();
     });
   });

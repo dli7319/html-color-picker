@@ -23,6 +23,7 @@ import "./tools/ColorHistory";
 import "./tools/OtherTools";
 import { ColorPickerSetPaletteActiveEvent } from "../events/ColorPickerSetPaletteActiveEvent";
 import { forEachMatchingChild } from "../lib/utils/dom";
+import { storageGet, storageSet } from "../lib/utils/storage";
 
 const INTERPOLATION_STORAGE_KEY = "color-interpolation-store";
 
@@ -106,52 +107,42 @@ export class ColorPicker extends LitElement {
   }
 
   private loadLastColor() {
-    try {
-      const hex = localStorage.getItem("last-active-color");
-      if (hex) {
-        this.color = new Color({ type: ColorInputType.HEX, hex });
-      }
-    } catch {
-      // localStorage unavailable — silently ignore
+    const hex = storageGet<string | null>("last-active-color", null);
+    if (hex) {
+      this.color = new Color({ type: ColorInputType.HEX, hex });
     }
   }
 
   private loadInterpolationState() {
-    try {
-      const raw = localStorage.getItem(INTERPOLATION_STORAGE_KEY);
-      if (!raw) return;
-      const data = JSON.parse(raw);
-      if (data.left) {
-        this.interpolationLeft = new Color({
-          type: ColorInputType.HEX,
-          hex: data.left,
-        });
-      }
-      if (data.right) {
-        this.interpolationRight = new Color({
-          type: ColorInputType.HEX,
-          hex: data.right,
-        });
-      }
-      if (data.active) {
-        this.interpolationActive = data.active as ActiveColorSide;
-      }
-    } catch {
-      // localStorage unavailable — silently ignore
+    const data = storageGet<{
+      left?: string;
+      right?: string;
+      active?: string;
+    } | null>(INTERPOLATION_STORAGE_KEY, null);
+    if (!data) return;
+    if (data.left) {
+      this.interpolationLeft = new Color({
+        type: ColorInputType.HEX,
+        hex: data.left,
+      });
+    }
+    if (data.right) {
+      this.interpolationRight = new Color({
+        type: ColorInputType.HEX,
+        hex: data.right,
+      });
+    }
+    if (data.active) {
+      this.interpolationActive = data.active as ActiveColorSide;
     }
   }
 
   private saveInterpolationState() {
-    try {
-      const data = {
-        left: this.interpolationLeft.getHex(),
-        right: this.interpolationRight.getHex(),
-        active: this.interpolationActive,
-      };
-      localStorage.setItem(INTERPOLATION_STORAGE_KEY, JSON.stringify(data));
-    } catch {
-      // localStorage unavailable — silently ignore
-    }
+    storageSet(INTERPOLATION_STORAGE_KEY, {
+      left: this.interpolationLeft.getHex(),
+      right: this.interpolationRight.getHex(),
+      active: this.interpolationActive,
+    });
   }
 
   setColor(newColor: Color) {

@@ -44,7 +44,6 @@ function convertColor<T>(
 }
 
 export class Color {
-  a: number = 1;
   input: ColorInput;
   private conversionInput!: string | [number, number, number];
 

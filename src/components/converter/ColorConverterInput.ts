@@ -41,15 +41,14 @@ export const inputTypeToInputValueKey = {
 const colorToString = {
   [InputType.HEX]: (color: Color) => "#" + color.getHex(),
   [InputType.RGB255]: (color: Color) =>
-    color.getRGB255().slice(0, 3).toString(),
+    color.getRGB255().toString(),
   [InputType.RGB01]: (color: Color) =>
     color
       .getRGB01()
-      .slice(0, 3)
       .map((x) => x.toFixed(3))
       .toString(),
-  [InputType.HSV]: (color: Color) => color.getHSV(false).slice(0, 3).toString(),
-  [InputType.HSL]: (color: Color) => color.getHSL(false).slice(0, 3).toString(),
+  [InputType.HSV]: (color: Color) => color.getHSV(false).toString(),
+  [InputType.HSL]: (color: Color) => color.getHSL(false).toString(),
 };
 
 @customElement("color-converter-input")

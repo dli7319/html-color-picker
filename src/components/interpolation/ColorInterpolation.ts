@@ -15,6 +15,7 @@ interface GradientDef {
   typeName?: string;
 }
 import { clamp } from "../../lib/utils/math";
+import { storageGet, storageSet } from "../../lib/utils/storage";
 import { DragController } from "../../controllers/DragController";
 import "../selection/ColorBarPointer";
 
@@ -149,30 +150,23 @@ export class ColorInterpolation extends LitElement {
   }
 
   private saveUIState() {
-    try {
-      const data = {
-        activeLerpMode: this.activeLerpMode,
-        activeRatio: this.activeRatio,
-      };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    } catch {
-      // localStorage unavailable — silently ignore
-    }
+    storageSet(STORAGE_KEY, {
+      activeLerpMode: this.activeLerpMode,
+      activeRatio: this.activeRatio,
+    });
   }
 
   private loadUIState() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return;
-      const data = JSON.parse(raw);
-      if (data.activeLerpMode !== undefined) {
-        this.activeLerpMode = data.activeLerpMode;
-      }
-      if (data.activeRatio !== undefined) {
-        this.activeRatio = data.activeRatio;
-      }
-    } catch {
-      // localStorage unavailable — silently ignore
+    const data = storageGet<{
+      activeLerpMode?: string | null;
+      activeRatio?: number;
+    } | null>(STORAGE_KEY, null);
+    if (!data) return;
+    if (data.activeLerpMode !== undefined) {
+      this.activeLerpMode = data.activeLerpMode;
+    }
+    if (data.activeRatio !== undefined) {
+      this.activeRatio = data.activeRatio;
     }
   }
 
@@ -202,12 +196,7 @@ export class ColorInterpolation extends LitElement {
           const pointerColor = isActive
             ? "#" +
               this.colorGradient
-                .getColorAt(
-                  this.activeRatio,
-                  ColorLerpMode[
-                    lerpMode.toUpperCase() as keyof typeof ColorLerpMode
-                  ],
-                )
+                .getColorAt(this.activeRatio, lerpMode)
                 .getHex()
             : "#ffffff";
 

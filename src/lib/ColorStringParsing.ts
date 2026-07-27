@@ -2,11 +2,7 @@ import { Color, ColorInputType } from "./Color";
 
 const hexRegex = /^#?([0-9a-fA-F]{3}(?:[0-9a-fA-F]{3})?)$/;
 const rgb255Regex = /^(\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})$/;
-const rgb01Regex =
-  /^([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+\s*([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+\s*([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)$/;
-const hsvRegex =
-  /^([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+\s*([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+\s*([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)$/;
-const hslRegex =
+const floatTripletRegex =
   /^([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+\s*([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+\s*([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)$/;
 
 export function parseHexColor(value: string) {
@@ -39,7 +35,7 @@ export function parseRGB255Color(value: string) {
 }
 
 export function parseRGB01Color(value: string) {
-  const match = rgb01Regex.exec(value);
+  const match = floatTripletRegex.exec(value);
   if (match && match.length === 4) {
     const r = parseFloat(match[1]);
     const g = parseFloat(match[2]);
@@ -57,7 +53,7 @@ export function parseRGB01Color(value: string) {
 }
 
 export function parseHSVColor(value: string) {
-  const match = hsvRegex.exec(value);
+  const match = floatTripletRegex.exec(value);
   if (match && match.length === 4) {
     const h = parseFloat(match[1]);
     const s = parseFloat(match[2]);
@@ -65,9 +61,9 @@ export function parseHSVColor(value: string) {
     if (0 <= h && h <= 360 && 0 <= s && s <= 100 && 0 <= v && v <= 100) {
       return new Color({
         type: ColorInputType.HSV,
-        h: parseFloat(match[1]),
-        s: parseFloat(match[2]),
-        v: parseFloat(match[3]),
+        h: h,
+        s: s,
+        v: v,
       });
     }
   }
@@ -75,7 +71,7 @@ export function parseHSVColor(value: string) {
 }
 
 export function parseHSLColor(value: string) {
-  const match = hslRegex.exec(value);
+  const match = floatTripletRegex.exec(value);
   if (match && match.length === 4) {
     const h = parseFloat(match[1]);
     const s = parseFloat(match[2]);
@@ -83,9 +79,9 @@ export function parseHSLColor(value: string) {
     if (0 <= h && h <= 360 && 0 <= s && s <= 100 && 0 <= l && l <= 100) {
       return new Color({
         type: ColorInputType.HSL,
-        h: parseFloat(match[1]),
-        s: parseFloat(match[2]),
-        l: parseFloat(match[3]),
+        h: h,
+        s: s,
+        l: l,
       });
     }
   }

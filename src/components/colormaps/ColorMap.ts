@@ -1,10 +1,9 @@
-import { html, LitElement } from "lit";
+import { html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 
 import { tailwindStyles } from "../../styles/Tailwind";
 import { Color, ColorInputType } from "../../lib/Color";
-import { ColorPickerSetColorEvent } from "../../events/ColorPickerSetColorEvent";
-import { ColorPickerCommitColorEvent } from "../../events/ColorPickerCommitColorEvent";
+import { ColorSelectionBase } from "../selection/ColorSelectionBase";
 import { clamp } from "../../lib/utils/math";
 import { lerpColor } from "../../lib/ColorLerp";
 import { DragController } from "../../controllers/DragController";
@@ -14,11 +13,8 @@ import "../selection/ColorBarPointer";
 const CLOSE_COLOR_DISTANCE = 30;
 
 @customElement("color-map")
-export class ColorMap extends LitElement {
+export class ColorMap extends ColorSelectionBase {
   static styles = [tailwindStyles];
-
-  @property({ attribute: false })
-  color: Color = new Color();
 
   @property({ attribute: false })
   data: number[][] = [[0, 0, 0]];
@@ -28,19 +24,6 @@ export class ColorMap extends LitElement {
 
   @query("#colormap-div")
   private colorMapDiv!: HTMLDivElement;
-
-  private lastCommittedColor: Color = this.color;
-
-  setColor(color: Color) {
-    this.lastCommittedColor = color;
-    this.dispatchEvent(new ColorPickerSetColorEvent(color));
-  }
-
-  commitColor() {
-    this.dispatchEvent(
-      new ColorPickerCommitColorEvent(this.lastCommittedColor),
-    );
-  }
 
   toCss() {
     const colormapData = this.data;

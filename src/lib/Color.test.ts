@@ -212,21 +212,21 @@ describe("Color", () => {
     it("cannot set existing properties", () => {
       const c = new Color();
       expect(() => {
-        (c as Record<string, unknown>).a = 2;
+        (c as unknown as Record<string, unknown>).a = 2;
       }).toThrow();
     });
 
     it("cannot add new properties", () => {
       const c = new Color();
       expect(() => {
-        (c as Record<string, unknown>).foo = "bar";
+        (c as unknown as Record<string, unknown>).foo = "bar";
       }).toThrow();
     });
 
     it("cannot delete properties", () => {
       const c = new Color();
       expect(() => {
-        delete (c as Record<string, unknown>).a;
+        delete (c as unknown as Record<string, unknown>).a;
       }).toThrow();
     });
 

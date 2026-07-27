@@ -1,18 +1,24 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import type { ReactiveControllerHost } from "lit";
 import { DragController } from "./DragController";
 
 describe("DragController", () => {
-  let mockHost: { addController: ReturnType<typeof vi.fn> };
-  let onDragStart: ReturnType<typeof vi.fn>;
-  let onDrag: ReturnType<typeof vi.fn>;
-  let onDragEnd: ReturnType<typeof vi.fn>;
+  let mockHost: ReactiveControllerHost;
+  let onDragStart: ReturnType<typeof vi.fn<(e: MouseEvent) => void>>;
+  let onDrag: ReturnType<typeof vi.fn<(e: MouseEvent) => void>>;
+  let onDragEnd: ReturnType<typeof vi.fn<() => void>>;
   let controller: DragController;
 
   beforeEach(() => {
-    mockHost = { addController: vi.fn() };
-    onDragStart = vi.fn();
-    onDrag = vi.fn();
-    onDragEnd = vi.fn();
+    mockHost = {
+      addController: vi.fn(),
+      removeController: vi.fn(),
+      requestUpdate: vi.fn(),
+      updateComplete: Promise.resolve(true),
+    } as unknown as ReactiveControllerHost;
+    onDragStart = vi.fn<(e: MouseEvent) => void>();
+    onDrag = vi.fn<(e: MouseEvent) => void>();
+    onDragEnd = vi.fn<() => void>();
     controller = new DragController(mockHost, {
       onDragStart,
       onDrag,

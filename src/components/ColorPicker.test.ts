@@ -15,7 +15,9 @@ import { ColorPicker } from "./ColorPicker";
  */
 function createPicker(): ColorPicker {
   const el = document.createElement("color-picker") as ColorPicker;
-  el.renderRoot = el.attachShadow({ mode: "open" });
+  (
+    el as unknown as { renderRoot: ShadowRoot }
+  ).renderRoot = el.attachShadow({ mode: "open" });
   return el;
 }
 

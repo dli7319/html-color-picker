@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import type { LitElement } from "lit";
 import { Color, ColorInputType } from "../../lib/Color";
 import {
   turboColorMapData,
@@ -34,7 +35,7 @@ describe("ColorMaps", () => {
     it('renders an h5 with text "Color Maps"', async () => {
       const el = document.createElement("color-maps");
       document.body.appendChild(el);
-      await el.updateComplete;
+      await (el as LitElement).updateComplete;
 
       const heading = el.shadowRoot!.querySelector("h5");
       expect(heading).not.toBeNull();
@@ -51,7 +52,7 @@ describe("ColorMaps", () => {
     it("renders a <color-map> element in its shadow DOM", async () => {
       const el = document.createElement("color-maps");
       document.body.appendChild(el);
-      await el.updateComplete;
+      await (el as LitElement).updateComplete;
 
       const colorMap = el.shadowRoot!.querySelector("color-map");
       expect(colorMap).not.toBeNull();
@@ -62,7 +63,7 @@ describe("ColorMaps", () => {
     it("renders exactly one <color-map> child", async () => {
       const el = document.createElement("color-maps");
       document.body.appendChild(el);
-      await el.updateComplete;
+      await (el as LitElement).updateComplete;
 
       const colorMaps = el.shadowRoot!.querySelectorAll("color-map");
       expect(colorMaps.length).toBe(1);

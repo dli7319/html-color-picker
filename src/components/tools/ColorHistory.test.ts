@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { css, LitElement } from "lit";
 import { Color, ColorInputType } from "../../lib/Color";
 import { ColorPickerCommitColorEvent } from "../../events/ColorPickerCommitColorEvent";
@@ -83,7 +83,7 @@ describe("ColorHistory", () => {
     const { el } = setupInPicker();
     await el.updateComplete;
     // No swatches rendered — confirms history is empty
-    expect(el.shadowRoot.querySelectorAll(".history-swatch")).toHaveLength(0);
+    expect(el.shadowRoot!.querySelectorAll(".history-swatch")).toHaveLength(0);
   });
 
   // ---------------------------------------------------------------
@@ -92,7 +92,7 @@ describe("ColorHistory", () => {
   it('shows "No colors yet" when history is empty', async () => {
     const { el } = setupInPicker();
     await el.updateComplete;
-    const emptyMsg = el.shadowRoot.querySelector(".history-empty");
+    const emptyMsg = el.shadowRoot!.querySelector(".history-empty");
     expect(emptyMsg).not.toBeNull();
     expect(emptyMsg!.textContent).toBe("No colors yet");
   });
@@ -129,12 +129,12 @@ describe("ColorHistory", () => {
     await el.updateComplete;
 
     // No history → no Clear button
-    expect(el.shadowRoot.querySelector(".history-clear-btn")).toBeNull();
+    expect(el.shadowRoot!.querySelector(".history-clear-btn")).toBeNull();
 
     trigger.dispatchEvent(new ColorPickerCommitColorEvent(rgb(255, 0, 0)));
     await el.updateComplete;
 
-    const clearBtn = el.shadowRoot.querySelector(".history-clear-btn");
+    const clearBtn = el.shadowRoot!.querySelector(".history-clear-btn");
     expect(clearBtn).not.toBeNull();
     expect(clearBtn!.textContent!.trim()).toBe("Clear");
   });
@@ -166,14 +166,14 @@ describe("ColorHistory", () => {
     trigger.dispatchEvent(new ColorPickerCommitColorEvent(red));
     trigger.dispatchEvent(new ColorPickerCommitColorEvent(red));
     await el.updateComplete;
-    expect(el.shadowRoot.querySelectorAll(".history-swatch")).toHaveLength(1);
+    expect(el.shadowRoot!.querySelectorAll(".history-swatch")).toHaveLength(1);
 
     // Different color in between allows red to be added again
     const blue = rgb(0, 0, 255);
     trigger.dispatchEvent(new ColorPickerCommitColorEvent(blue));
     trigger.dispatchEvent(new ColorPickerCommitColorEvent(red));
     await el.updateComplete;
-    expect(el.shadowRoot.querySelectorAll(".history-swatch")).toHaveLength(3);
+    expect(el.shadowRoot!.querySelectorAll(".history-swatch")).toHaveLength(3);
   });
 
   // ---------------------------------------------------------------
@@ -188,7 +188,7 @@ describe("ColorHistory", () => {
     }
     await el.updateComplete;
 
-    expect(el.shadowRoot.querySelectorAll(".history-swatch")).toHaveLength(50);
+    expect(el.shadowRoot!.querySelectorAll(".history-swatch")).toHaveLength(50);
   });
 
   // ---------------------------------------------------------------
@@ -199,15 +199,15 @@ describe("ColorHistory", () => {
     await el.updateComplete;
 
     // Empty state is shown
-    expect(el.shadowRoot.querySelector(".history-empty")).not.toBeNull();
+    expect(el.shadowRoot!.querySelector(".history-empty")).not.toBeNull();
 
     // Dispatch a commit-color event on window (where the listener is attached)
     window.dispatchEvent(new ColorPickerCommitColorEvent(rgb(255, 0, 0)));
     await el.updateComplete;
 
     // History should remain empty — the scope guard prevented processing
-    expect(el.shadowRoot.querySelector(".history-empty")).not.toBeNull();
-    expect(el.shadowRoot.querySelector(".history-swatch")).toBeNull();
+    expect(el.shadowRoot!.querySelector(".history-empty")).not.toBeNull();
+    expect(el.shadowRoot!.querySelector(".history-swatch")).toBeNull();
     expect(localStorage.getItem(STORAGE_KEY)).toBeNull();
   });
 });

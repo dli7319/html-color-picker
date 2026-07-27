@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import type { LitElement } from "lit";
 import { Color, ColorInputType } from "../../lib/Color";
 import "./ColorSelectionHsl";
 import type { ColorSelectionHsl } from "./ColorSelectionHsl";
@@ -39,7 +40,7 @@ describe("ColorSelectionHsl", () => {
     it("renders a <color-selection-hsl-wheel> child", async () => {
       const el = document.createElement("color-selection-hsl");
       document.body.appendChild(el);
-      await el.updateComplete;
+      await (el as LitElement).updateComplete;
 
       const wheel = el.shadowRoot!.querySelector("color-selection-hsl-wheel");
       expect(wheel).not.toBeNull();
@@ -50,7 +51,7 @@ describe("ColorSelectionHsl", () => {
     it("renders a <color-selection-hsl-bar> child", async () => {
       const el = document.createElement("color-selection-hsl");
       document.body.appendChild(el);
-      await el.updateComplete;
+      await (el as LitElement).updateComplete;
 
       const bar = el.shadowRoot!.querySelector("color-selection-hsl-bar");
       expect(bar).not.toBeNull();
@@ -61,7 +62,7 @@ describe("ColorSelectionHsl", () => {
     it("renders exactly two custom element children", async () => {
       const el = document.createElement("color-selection-hsl");
       document.body.appendChild(el);
-      await el.updateComplete;
+      await (el as LitElement).updateComplete;
 
       const wheels = el.shadowRoot!.querySelectorAll(
         "color-selection-hsl-wheel",

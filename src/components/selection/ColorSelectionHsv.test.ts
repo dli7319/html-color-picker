@@ -1,4 +1,5 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
+import type { LitElement } from "lit";
 import { Color, ColorInputType } from "../../lib/Color";
 
 // Mock CSS imports — vitest treats .css as an empty module, but the build
@@ -16,15 +17,15 @@ import "./ColorSelectionHsv";
 async function createElement() {
   const el = document.createElement("color-selection-hsv");
   document.body.appendChild(el);
-  await el.updateComplete;
-  return el as HTMLElement & { color: Color };
+  await (el as LitElement).updateComplete;
+  return el as LitElement & { color: Color };
 }
 
-function getGrad(el: HTMLElement): Element | null {
+function getGrad(el: LitElement): Element | null {
   return el.shadowRoot!.querySelector("color-selection-hsv-grad");
 }
 
-function getBar(el: HTMLElement): Element | null {
+function getBar(el: LitElement): Element | null {
   return el.shadowRoot!.querySelector("color-selection-hsv-bar");
 }
 
@@ -70,7 +71,7 @@ describe("ColorSelectionHsv", () => {
 
       const el = document.createElement(
         "color-selection-hsv",
-      ) as HTMLElement & {
+      ) as LitElement & {
         color: Color;
       };
       el.color = color;

@@ -89,7 +89,7 @@ export class ImageSampling extends LitElement {
   }
 
   sampleImage(e: Event) {
-    if (e instanceof MouseEvent && e.buttons == 1) {
+    if (e instanceof MouseEvent && e.buttons === 1) {
       const canvas = this.canvasRef.value!;
       const ctx = canvas.getContext("2d");
       if (ctx) {

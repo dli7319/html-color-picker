@@ -51,6 +51,10 @@ function pickRule(mode: PaletteMode): PaletteRule {
   return pool[Math.floor(Math.random() * pool.length)];
 }
 
+const TONAL_MIN_LIGHTNESS = 15;
+const TONAL_LIGHTNESS_RANGE = 70;
+const TONAL_HUE_JITTER = 3;
+
 function randomInRange(min: number, max: number): number {
   return min + Math.random() * (max - min);
 }
@@ -102,10 +106,10 @@ function randomHSLColor(hue: number, config: PaletteConfig): Color {
 }
 
 function tonalColor(hue: number, saturation: number, index: number, count: number): Color {
-  const lightness = 15 + ((count - 1 - index) / (count - 1)) * 70;
+  const lightness = TONAL_MIN_LIGHTNESS + ((count - 1 - index) / (count - 1)) * TONAL_LIGHTNESS_RANGE;
   return new Color({
     type: ColorInputType.HSL,
-    h: wrapHue(hue + randomInRange(-3, 3)),
+    h: wrapHue(hue + randomInRange(-TONAL_HUE_JITTER, TONAL_HUE_JITTER)),
     s: saturation,
     l: lightness,
   });

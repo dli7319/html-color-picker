@@ -10,6 +10,9 @@ import { lerpColor } from "../../lib/ColorLerp";
 import { DragController } from "../../controllers/DragController";
 import "../selection/ColorBarPointer";
 
+/** Threshold in 0-255 RGB Euclidean distance for a "close match" on the colormap. */
+const CLOSE_COLOR_DISTANCE = 30;
+
 @customElement("color-map")
 export class ColorMap extends LitElement {
   static styles = [tailwindStyles];
@@ -120,7 +123,7 @@ export class ColorMap extends LitElement {
 
   render() {
     const match = this.findClosestColormapPoint(this.color);
-    const isVeryClose = match.distance <= 30; // Threshold for close color match in 0-255 RGB space
+    const isVeryClose = match.distance <= CLOSE_COLOR_DISTANCE;
 
     return html`
       <div class="flex flex-col gap-1">

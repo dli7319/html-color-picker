@@ -70,9 +70,12 @@ export class ColorConverter extends LitElement {
   }
 
   render() {
+    const { width, height } = this.coordinates;
+    const safeW = width || 1;
+    const safeH = height || 1;
     const floatCoordinates = {
-      x: this.coordinates.x / this.coordinates.width,
-      y: this.coordinates.y / this.coordinates.height,
+      x: this.coordinates.x / safeW,
+      y: this.coordinates.y / safeH,
     };
     const floatCoordinatesRounded = [
       floatCoordinates.x.toFixed(3),

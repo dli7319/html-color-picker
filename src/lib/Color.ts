@@ -46,7 +46,7 @@ function convertColor<T>(
 export class Color {
   a: number = 1;
   input: ColorInput;
-  private conversionInput: string | [number, number, number];
+  private conversionInput!: string | [number, number, number];
 
   constructor(
     color: ColorInput = {
@@ -76,11 +76,8 @@ export class Color {
       this.conversionInput = [color.h, color.s, color.l];
     } else if (color.type === ColorInputType.LCH) {
       this.conversionInput = [color.l, color.c, color.h];
-    } else {
-      // Safety fallback — unreachable with valid union types.
-      color = { type: ColorInputType.RGB255, r: 0, g: 0, b: 0 };
-      this.conversionInput = [0, 0, 0];
     }
+    // ColorInput is an exhaustive discriminated union — every case is covered above.
     this.input = color;
     Object.freeze(this);
   }

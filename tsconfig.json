@@ -16,7 +16,6 @@
     "moduleResolution": "bundler", // Resolve modules using bundler style (required by TypeScript 7)
     "isolatedModules": true, // Unconditionally emit imports for unresolved files
     "resolveJsonModule": true, // Include modules imported with .json extension
-    "jsx": "react", // Support JSX in .tsx files
     "declaration": false, // Generate corresponding .d.ts file
     "noUnusedLocals": true, // Report errors on unused locals
     "noUnusedParameters": true, // Report errors on unused parameters

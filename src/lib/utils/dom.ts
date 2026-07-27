@@ -3,7 +3,7 @@
  */
 export function forEachMatchingChild<T extends Element>(
   parent: Element,
-  type: new (...args: any[]) => T,
+  type: new (...args: never[]) => T,
   fn: (child: T) => void,
 ): void {
   for (const child of parent.children) {

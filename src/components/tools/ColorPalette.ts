@@ -113,6 +113,11 @@ export class ColorPalette extends LitElement {
   }
 
   private selectSwatch(index: number) {
+    if (this.activeIndex === index) {
+      this.activeIndex = -1;
+      this.dispatchEvent(new ColorPickerSetPaletteActiveEvent(-1));
+      return;
+    }
     this.activeIndex = index;
     this.dispatchEvent(new ColorPickerSetColorEvent(this.colors[index]));
     this.dispatchEvent(new ColorPickerSetPaletteActiveEvent(index));

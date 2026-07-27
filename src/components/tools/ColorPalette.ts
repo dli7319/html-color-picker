@@ -363,7 +363,7 @@ export class ColorPalette extends LitElement {
                     ? html`
                         <button
                           class="palette-action-btn"
-                          @click=${() => this.copyColor(color)}
+                          @click=${(e: Event) => { e.stopPropagation(); this.copyColor(color); }}
                           title="Copy hex"
                         >
                           <span class="material-symbols-outlined"

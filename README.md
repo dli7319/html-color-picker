@@ -1,36 +1,38 @@
 # html-color-picker
-HTML Color Picker
 
-A small website to convert between color coordinates
-* HEX
-* RGB (0-255)
-* RGB (0-1)
-* LAB
-
-Relies on color-convert
-
-Try it at https://davidl.me/apps/colors
-
-## Setup for development
-* `git clone`
-* `npm run setup` will install dependencies.
-* `npm run dev` will start a server at `localhost:8080` with hot reloading.
+A small website to convert between color coordinates. Try it at [davidl.me/apps/colors](https://davidl.me/apps/colors).
 
 ## Features
-* Color picker
-* Color conversion
-* Image sampling
-* Color interpolation
+
+- **Color picker** — HSV square and HSL wheel
+- **Color converter** — HEX, RGB 0-255, RGB 0-1, HSV, HSL. Uses [color-convert](https://github.com/Qix-/color-convert).
+- **Image sampling** — upload an image and click to sample colors
+- **Color interpolation** — blend two colors across RGB, HSL, HSL\*, and LCH
+- **Palette generator** — generate palettes (tonal, analogous, complementary, triadic, etc.), lock swatches, drag to reorder
+- **Color maps** — sample from colormaps like Turbo
+- **Color history** — last 50 colors saved to localStorage
+
+## Setup
+
+```bash
+git clone https://github.com/dli7319/html-color-picker.git
+cd html-color-picker
+
+npm run setup    # install dependencies
+npm run dev      # start dev server at localhost:8080 with hot reload
+```
+
+## Scripts
+
+| Command          | Description                 |
+| ---------------- | --------------------------- |
+| `npm run setup`  | Install dependencies        |
+| `npm run dev`    | Dev server with live reload |
+| `npm run build`  | Production build to `dist/` |
+| `npm test`       | Run tests                   |
+| `npm run lint`   | Lint                        |
+| `npm run format` | Format with Prettier        |
 
 ## Deployment
-* This project is automatically deployed to github pages on push to master.
-* For local deployment, run `npm run build` and then serve the `dist` folder.
 
-<!-- ## TODO
-* Add locking on click to image sampling
- * With multiple sampling points
-* Ability to save colors (to local storage on browser)
- * Export colors to csv
-* Ability to generate color palettes (similar to coolors)
- * Save and export as csv
-* Ability to create and edit colormaps -->
+Pushes to `master` are auto-deployed to GitHub Pages. For manual deployment, run `npm run build` and serve `dist/`.

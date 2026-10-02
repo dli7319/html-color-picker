@@ -69,7 +69,7 @@ dist/
 | CSS | **Tailwind CSS v4** via `@tailwindcss/postcss` (processed through `rollup-plugin-lit-css` + PostCSS pipeline) |
 | Bundler | **Rolldown** (config: `rolldown.config.ts`) |
 | Language | **TypeScript 7.x** (strict, ES2020 target, ESNext modules) |
-| Testing | **Vitest 4** (jsdom for components, node for pure logic; globals enabled; 500ms timeout) |
+| Testing | **Vitest 5** (jsdom for components, node for pure logic; globals enabled; 500ms timeout) |
 | Linting | **Oxlint** (config: `.oxlintrc.json`) |
 | Formatting | **Prettier** (tabWidth: 2) |
 | Color math | **color-convert** |

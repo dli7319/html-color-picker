@@ -4,8 +4,9 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "jsdom",
+    setupFiles: ["src/test-setup.ts"],
     testTimeout: 500,
-    exclude: [".rollup.cache", "node_modules", "dist"],
+    exclude: ["node_modules", "dist"],
     coverage: {
       provider: "v8",
       reporter: ["text", "lcov"],

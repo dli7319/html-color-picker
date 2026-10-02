@@ -8,7 +8,7 @@ npm run dev              # dev server with hot-reload at localhost:8080
 npm run build            # production build → dist/main.js (ESM, tree-shaken, minified)
 npm test                 # run vitest test suite (607 tests, ~4s)
 npm run test:coverage    # run tests with coverage report
-npm run lint             # eslint src/
+npm run lint             # oxlint
 npm run format           # prettier --write src/**/*.ts *.ts
 ```
 
@@ -67,10 +67,10 @@ dist/
 |---------|---------|
 | Web components | **Lit** (LitElement, customElement, decorators) |
 | CSS | **Tailwind CSS v4** via `@tailwindcss/postcss` (processed through `rollup-plugin-lit-css` + PostCSS pipeline) |
-| Bundler | **Rollup** (config: `rollup.config.ts`) |
-| Language | **TypeScript 6.x** (strict, ES2020 target, ESNext modules) |
+| Bundler | **Rolldown** (config: `rolldown.config.ts`) |
+| Language | **TypeScript 7.x** (strict, ES2020 target, ESNext modules) |
 | Testing | **Vitest 4** (jsdom for components, node for pure logic; globals enabled; 500ms timeout) |
-| Linting | **ESLint 10** (flat config: `@eslint/js` + `typescript-eslint`) |
+| Linting | **Oxlint** (config: `.oxlintrc.json`) |
 | Formatting | **Prettier** (tabWidth: 2) |
 | Color math | **color-convert** |
 
@@ -91,7 +91,7 @@ Before making any git commit, run the full quality pipeline and verify it passes
 
 ```bash
 npm test              # all 607 tests must pass
-npm run lint          # zero eslint errors
+npm run lint          # zero oxlint errors
 npm run format        # prettier formatting
 ```
 

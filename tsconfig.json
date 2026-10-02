@@ -27,7 +27,7 @@
     "types": ["node"]
   },
   "include": [
-    "rollup.config.ts",
+    "rolldown.config.ts",
     "src/**/*"
   ],
   "exclude": ["node_modules", "build"] // *** The files to not type check ***

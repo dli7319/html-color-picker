@@ -25,23 +25,26 @@ export class ColorSelectionHsvGrad extends ColorSelectionBase {
   @query("#color-grad-container")
   colorGradContainer!: HTMLDivElement;
 
+  private handlePointer = (e: MouseEvent) => {
+    const [hue] = this.color.getHSV();
+    const rect = this.colorGradContainer.getBoundingClientRect();
+    const x = clamp((e.clientX - rect.left) / rect.width, 0, 1);
+    const y = clamp((e.clientY - rect.top) / rect.height, 0, 1);
+    const newSaturation = x * 100;
+    const newValue = (1 - y) * 100;
+    this.setColor(
+      new Color({
+        type: ColorInputType.HSV,
+        h: hue,
+        s: newSaturation,
+        v: newValue,
+      }),
+    );
+  };
+
   private drag = new DragController(this, {
-    onDrag: (e: MouseEvent) => {
-      const [hue] = this.color.getHSV();
-      const rect = this.colorGradContainer.getBoundingClientRect();
-      const x = clamp((e.clientX - rect.left) / rect.width, 0, 1);
-      const y = clamp((e.clientY - rect.top) / rect.height, 0, 1);
-      const newSaturation = x * 100;
-      const newValue = (1 - y) * 100;
-      this.setColor(
-        new Color({
-          type: ColorInputType.HSV,
-          h: hue,
-          s: newSaturation,
-          v: newValue,
-        }),
-      );
-    },
+    onDragStart: this.handlePointer,
+    onDrag: this.handlePointer,
     onDragEnd: () => {
       this.commitColor();
     },

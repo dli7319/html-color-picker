@@ -154,12 +154,47 @@ describe("ColorSelectionHsvBar", () => {
     // End drag
     document.dispatchEvent(new MouseEvent("mouseup"));
 
-    expect(setColorSpy).toHaveBeenCalledTimes(1);
+    // mousedown (clientX=0) + mousemove (clientX=100) both update the color.
+    expect(setColorSpy).toHaveBeenCalledTimes(2);
 
-    const ev = setColorSpy.mock.calls[0][0] as ColorPickerSetColorEvent;
+    const ev = setColorSpy.mock.calls[1][0] as ColorPickerSetColorEvent;
     const [h, s, v] = ev.color.getHSV();
     expect(h).toBeCloseTo(180);
     expect(s).toBe(100);
     expect(v).toBe(100);
+  });
+
+  // ---- Test 7: Click without drag ----
+  it("sets color on mousedown alone, without any mousemove", async () => {
+    el = document.createElement(
+      "color-selection-hsv-bar",
+    ) as ColorSelectionHsvBar;
+    el.color = hsv(0, 100, 100);
+    document.body.appendChild(el);
+    await el.updateComplete;
+
+    const bar = el.shadowRoot!.querySelector(".color-bar") as HTMLDivElement;
+    vi.spyOn(bar, "getBoundingClientRect").mockReturnValue(rect(200, 20));
+
+    const setColorSpy = vi.fn();
+    el.addEventListener("set-color", setColorSpy);
+
+    // Click at x=100 → x-ratio = 0.5 → newHue = 180, with NO mousemove.
+    bar.dispatchEvent(
+      new MouseEvent("mousedown", {
+        bubbles: true,
+        composed: true,
+        clientX: 100,
+      }),
+    );
+    document.dispatchEvent(new MouseEvent("mouseup"));
+
+    expect(setColorSpy).toHaveBeenCalledTimes(1);
+
+    const ev2 = setColorSpy.mock.calls[0][0] as ColorPickerSetColorEvent;
+    const [h2, s2, v2] = ev2.color.getHSV();
+    expect(h2).toBeCloseTo(180);
+    expect(s2).toBe(100);
+    expect(v2).toBe(100);
   });
 });

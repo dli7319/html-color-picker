@@ -96,26 +96,61 @@ describe("ColorSelectionHslBar", () => {
       .spyOn(colorBar, "getBoundingClientRect")
       .mockReturnValue(new DOMRect(0, 0, 200, 20));
 
-    const setEvent = await new Promise<ColorPickerSetColorEvent>((resolve) => {
-      el.addEventListener(
-        "set-color",
-        (e: Event) => resolve(e as ColorPickerSetColorEvent),
-        { once: true },
-      );
-      colorBar.dispatchEvent(
-        new MouseEvent("mousedown", { bubbles: true, clientX: 100 }),
-      );
-      document.dispatchEvent(
-        new MouseEvent("mousemove", { bubbles: true, clientX: 150 }),
-      );
-    });
+    const events: ColorPickerSetColorEvent[] = [];
+    el.addEventListener("set-color", (e: Event) =>
+      events.push(e as ColorPickerSetColorEvent),
+    );
+    colorBar.dispatchEvent(
+      new MouseEvent("mousedown", { bubbles: true, clientX: 100 }),
+    );
+    document.dispatchEvent(
+      new MouseEvent("mousemove", { bubbles: true, clientX: 150 }),
+    );
 
+    // mousedown (clientX=100 → l=50) and mousemove (clientX=150 → l=75).
+    expect(events.length).toBe(2);
+    const setEvent = events[events.length - 1];
     const [hue, sat, light] = setEvent.color.getHSL();
     expect(light).toBeCloseTo(75);
     expect(hue).toBe(180);
     expect(sat).toBe(50);
 
     document.dispatchEvent(new MouseEvent("mouseup"));
+    bcrSpy.mockRestore();
+    el.parentNode?.removeChild(el);
+  });
+
+  it("sets color on mousedown alone, without any mousemove", async () => {
+    const color = new Color({
+      type: ColorInputType.HSL,
+      h: 180,
+      s: 50,
+      l: 50,
+    });
+    const el = createElement(color);
+    await el.updateComplete;
+
+    const colorBar = el.shadowRoot!.querySelector(".color-bar") as HTMLElement;
+    const bcrSpy = vi
+      .spyOn(colorBar, "getBoundingClientRect")
+      .mockReturnValue(new DOMRect(0, 0, 200, 20));
+
+    const events: ColorPickerSetColorEvent[] = [];
+    el.addEventListener("set-color", (e: Event) =>
+      events.push(e as ColorPickerSetColorEvent),
+    );
+    // Click at clientX=150 → x-ratio = 0.75 → lightness = 75, NO mousemove.
+    colorBar.dispatchEvent(
+      new MouseEvent("mousedown", { bubbles: true, clientX: 150 }),
+    );
+    document.dispatchEvent(new MouseEvent("mouseup"));
+
+    expect(events.length).toBe(1);
+    const [hue, sat, light] = events[0].color.getHSL();
+    expect(light).toBeCloseTo(75);
+    expect(hue).toBe(180);
+    expect(sat).toBe(50);
+
     bcrSpy.mockRestore();
     el.parentNode?.removeChild(el);
   });

@@ -213,6 +213,55 @@ describe("ColorSelectionHsvGrad", () => {
     bcrSpy.mockRestore();
   });
 
+  // ---- Test 7b: Click without drag ----
+  it("sets color on mousedown alone, without any mousemove", async () => {
+    el = document.createElement(
+      "color-selection-hsv-grad",
+    ) as ColorSelectionHsvGrad;
+    document.body.appendChild(el);
+    el.color = new Color({
+      type: ColorInputType.HSV,
+      h: 180,
+      s: 50,
+      v: 50,
+    });
+    await el.updateComplete;
+
+    const container = el.shadowRoot!.getElementById(
+      "color-grad-container",
+    ) as HTMLElement;
+    const grad = el.shadowRoot!.querySelector(".color-grad-2") as HTMLElement;
+
+    const bcrSpy = vi
+      .spyOn(container, "getBoundingClientRect")
+      .mockReturnValue(new DOMRect(0, 0, 200, 200));
+
+    const setEvent = await new Promise<ColorPickerSetColorEvent>((resolve) => {
+      el.addEventListener(
+        "set-color",
+        (e: Event) => resolve(e as ColorPickerSetColorEvent),
+        { once: true },
+      );
+      // Click at (150, 50) — x-ratio 0.75 → sat 75, y-ratio 0.25 → val 75.
+      // NO mousemove.
+      grad.dispatchEvent(
+        new MouseEvent("mousedown", {
+          bubbles: true,
+          clientX: 150,
+          clientY: 50,
+        }),
+      );
+      document.dispatchEvent(new MouseEvent("mouseup"));
+    });
+
+    const [hue, sat, val] = setEvent.color.getHSV();
+    expect(hue).toBe(180);
+    expect(sat).toBeCloseTo(75);
+    expect(val).toBeCloseTo(75);
+
+    bcrSpy.mockRestore();
+  });
+
   // ---- Test 8 ----
   it("drag end commits the color", async () => {
     el = document.createElement(

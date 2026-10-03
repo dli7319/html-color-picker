@@ -22,21 +22,24 @@ export class ColorSelectionHslBar extends ColorSelectionBase {
   @query("#color-bar")
   colorBar!: HTMLDivElement;
 
+  private handlePointer = (e: MouseEvent) => {
+    const [hue, saturation] = this.color.getHSL();
+    const rect = this.colorBar.getBoundingClientRect();
+    const x = clamp((e.clientX - rect.left) / rect.width, 0, 1);
+    const newLightness = x * 100;
+    this.setColor(
+      new Color({
+        type: ColorInputType.HSL,
+        h: hue,
+        s: saturation,
+        l: newLightness,
+      }),
+    );
+  };
+
   private drag = new DragController(this, {
-    onDrag: (e: MouseEvent) => {
-      const [hue, saturation] = this.color.getHSL();
-      const rect = this.colorBar.getBoundingClientRect();
-      const x = clamp((e.clientX - rect.left) / rect.width, 0, 1);
-      const newLightness = x * 100;
-      this.setColor(
-        new Color({
-          type: ColorInputType.HSL,
-          h: hue,
-          s: saturation,
-          l: newLightness,
-        }),
-      );
-    },
+    onDragStart: this.handlePointer,
+    onDrag: this.handlePointer,
     onDragEnd: () => {
       this.commitColor();
     },

@@ -482,6 +482,44 @@ describe("ColorSelectionHslWheel", () => {
       document.body.removeChild(el);
     });
 
+    it("sets color on mousedown alone, without any mousemove", async () => {
+      const el = document.createElement(
+        "color-selection-hsl-wheel",
+      ) as ColorSelectionHslWheel;
+      document.body.appendChild(el);
+      await el.updateComplete;
+
+      const grad = el.shadowRoot!.querySelector(".color-grad") as HTMLElement;
+      const bcrSpy = vi
+        .spyOn(grad, "getBoundingClientRect")
+        .mockReturnValue(new DOMRect(0, 0, 200, 200));
+
+      const setEvent = await new Promise<ColorPickerSetColorEvent>(
+        (resolve) => {
+          el.addEventListener(
+            "set-color",
+            (e: Event) => resolve(e as ColorPickerSetColorEvent),
+            { once: true },
+          );
+          // Click at (200, 100) — right edge, horizontal → hue 90. NO mousemove.
+          grad.dispatchEvent(
+            new MouseEvent("mousedown", {
+              bubbles: true,
+              clientX: 200,
+              clientY: 100,
+            }),
+          );
+          document.dispatchEvent(new MouseEvent("mouseup"));
+        },
+      );
+
+      const [hue] = setEvent.color.getHSL();
+      expect(hue).toBeCloseTo(90);
+
+      bcrSpy.mockRestore();
+      document.body.removeChild(el);
+    });
+
     it("drag end commits the color", async () => {
       const el = document.createElement(
         "color-selection-hsl-wheel",

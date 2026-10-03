@@ -42,25 +42,28 @@ export class ColorSelectionHslWheel extends ColorSelectionBase {
   @query("#color-grad")
   private colorGrad!: HTMLDivElement;
 
-  private drag = new DragController(this, {
-    onDrag: (e: MouseEvent) => {
-      const rect = this.colorGrad.getBoundingClientRect();
-      const x = e.clientX - rect.left - rect.width / 2;
-      const y = e.clientY - rect.top - rect.height / 2;
-      const radius = Math.sqrt(x * x + y * y) / (rect.width / 2);
-      const clampedRadius = Math.min(radius, 1);
-      const angle = Math.atan2(y, x) * (180 / Math.PI) + 90;
-      const clampedAngle = (angle + 360) % 360;
+  private handlePointer = (e: MouseEvent) => {
+    const rect = this.colorGrad.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    const radius = Math.sqrt(x * x + y * y) / (rect.width / 2);
+    const clampedRadius = Math.min(radius, 1);
+    const angle = Math.atan2(y, x) * (180 / Math.PI) + 90;
+    const clampedAngle = (angle + 360) % 360;
 
-      this.setColor(
-        new Color({
-          type: ColorInputType.HSL,
-          h: clampedAngle,
-          s: 100.0 * clampedRadius,
-          l: 50,
-        }),
-      );
-    },
+    this.setColor(
+      new Color({
+        type: ColorInputType.HSL,
+        h: clampedAngle,
+        s: 100.0 * clampedRadius,
+        l: 50,
+      }),
+    );
+  };
+
+  private drag = new DragController(this, {
+    onDragStart: this.handlePointer,
+    onDrag: this.handlePointer,
     onDragEnd: () => {
       this.commitColor();
     },

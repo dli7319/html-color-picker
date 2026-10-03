@@ -1,7 +1,6 @@
 import { defineConfig } from "rolldown";
 import litCss from "rollup-plugin-lit-css";
 import serve from "rollup-plugin-serve";
-import livereload from "rollup-plugin-livereload";
 import postcss from "postcss";
 import tailwindcss from "@tailwindcss/postcss";
 
@@ -32,6 +31,5 @@ export default defineConfig({
         contentBase: "dist",
         port: 8080,
       }),
-    !isProduction && livereload("dist"),
   ],
 });

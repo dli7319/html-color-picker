@@ -234,7 +234,7 @@ table > * {
       #00f 66%,
       #f0f 83%,
       #f00 100%);
-}`;var K=class extends w{constructor(...e){super(...e),this.color=new L,this.lastCommittedColor=this.color}setColor(e){this.lastCommittedColor=e,this.dispatchEvent(new z(e))}commitColor(){this.dispatchEvent(new B(this.lastCommittedColor))}};W([E({attribute:!1})],K.prototype,`color`,void 0);let vt=class extends K{constructor(...e){super(...e),this.drag=new U(this,{onDrag:e=>{let[,t,n]=this.color.getHSV(),r=this.colorBar.getBoundingClientRect(),i=F((e.clientX-r.left)/r.width,0,1)*360;this.setColor(new L({type:`hsv`,h:i,s:t,v:n}))},onDragEnd:()=>{this.commitColor()}})}static{this.styles=[_t]}render(){let[e]=this.color.getHSV(),t=`#`+new L({type:`hsv`,h:e,s:100,v:100}).getHex();return v`
+}`;var K=class extends w{constructor(...e){super(...e),this.color=new L,this.lastCommittedColor=this.color}setColor(e){this.lastCommittedColor=e,this.dispatchEvent(new z(e))}commitColor(){this.dispatchEvent(new B(this.lastCommittedColor))}};W([E({attribute:!1})],K.prototype,`color`,void 0);let vt=class extends K{constructor(...e){super(...e),this.handlePointer=e=>{let[,t,n]=this.color.getHSV(),r=this.colorBar.getBoundingClientRect(),i=F((e.clientX-r.left)/r.width,0,1)*360;this.setColor(new L({type:`hsv`,h:i,s:t,v:n}))},this.drag=new U(this,{onDragStart:this.handlePointer,onDrag:this.handlePointer,onDragEnd:()=>{this.commitColor()}})}static{this.styles=[_t]}render(){let[e]=this.color.getHSV(),t=`#`+new L({type:`hsv`,h:e,s:100,v:100}).getHex();return v`
       <div
         class="color-bar"
         @mousedown=${this.drag.handleMouseDown}
@@ -245,7 +245,7 @@ table > * {
           .color=${t}
         ></color-bar-pointer>
       </div>
-    `}};W([Ge(`#color-bar`)],vt.prototype,`colorBar`,void 0),vt=W([T(`color-selection-hsv-bar`)],vt);let yt=class extends K{constructor(...e){super(...e),this.drag=new U(this,{onDrag:e=>{let[t]=this.color.getHSV(),n=this.colorGradContainer.getBoundingClientRect(),r=F((e.clientX-n.left)/n.width,0,1),i=F((e.clientY-n.top)/n.height,0,1),a=r*100,o=(1-i)*100;this.setColor(new L({type:`hsv`,h:t,s:a,v:o}))},onDragEnd:()=>{this.commitColor()}})}static{this.styles=[_t,o`
+    `}};W([Ge(`#color-bar`)],vt.prototype,`colorBar`,void 0),vt=W([T(`color-selection-hsv-bar`)],vt);let yt=class extends K{constructor(...e){super(...e),this.handlePointer=e=>{let[t]=this.color.getHSV(),n=this.colorGradContainer.getBoundingClientRect(),r=F((e.clientX-n.left)/n.width,0,1),i=F((e.clientY-n.top)/n.height,0,1),a=r*100,o=(1-i)*100;this.setColor(new L({type:`hsv`,h:t,s:a,v:o}))},this.drag=new U(this,{onDragStart:this.handlePointer,onDrag:this.handlePointer,onDragEnd:()=>{this.commitColor()}})}static{this.styles=[_t,o`
       :host {
         display: flex;
         flex-direction: column;
@@ -272,7 +272,7 @@ table > * {
     `}};W([Ge(`#color-grad-container`)],yt.prototype,`colorGradContainer`,void 0),yt=W([T(`color-selection-hsv-grad`)],yt);let bt=class extends w{constructor(...e){super(...e),this.color=new L}static{this.styles=[_t]}render(){return v`
       <color-selection-hsv-grad .color=${this.color}></color-selection-hsv-grad>
       <color-selection-hsv-bar .color=${this.color}></color-selection-hsv-bar>
-    `}};W([E({attribute:!1})],bt.prototype,`color`,void 0),bt=W([T(`color-selection-hsv`)],bt);let xt=class extends K{constructor(...e){super(...e),this.drag=new U(this,{onDrag:e=>{let t=this.colorGrad.getBoundingClientRect(),n=e.clientX-t.left-t.width/2,r=e.clientY-t.top-t.height/2,i=Math.sqrt(n*n+r*r)/(t.width/2),a=Math.min(i,1),o=(180/Math.PI*Math.atan2(r,n)+90+360)%360;this.setColor(new L({type:`hsl`,h:o,s:100*a,l:50}))},onDragEnd:()=>{this.commitColor()}})}static{this.styles=[o`
+    `}};W([E({attribute:!1})],bt.prototype,`color`,void 0),bt=W([T(`color-selection-hsv`)],bt);let xt=class extends K{constructor(...e){super(...e),this.handlePointer=e=>{let t=this.colorGrad.getBoundingClientRect(),n=e.clientX-t.left-t.width/2,r=e.clientY-t.top-t.height/2,i=Math.sqrt(n*n+r*r)/(t.width/2),a=Math.min(i,1),o=(180/Math.PI*Math.atan2(r,n)+90+360)%360;this.setColor(new L({type:`hsl`,h:o,s:100*a,l:50}))},this.drag=new U(this,{onDragStart:this.handlePointer,onDrag:this.handlePointer,onDragEnd:()=>{this.commitColor()}})}static{this.styles=[o`
       :host {
         display: flex;
         flex-direction: column;
@@ -327,7 +327,7 @@ table > * {
       >
         <div class="color-grad-circle" style=${a}></div>
       </div>
-    `}};W([Ge(`#color-grad`)],xt.prototype,`colorGrad`,void 0),xt=W([T(`color-selection-hsl-wheel`)],xt);let St=class extends K{constructor(...e){super(...e),this.drag=new U(this,{onDrag:e=>{let[t,n]=this.color.getHSL(),r=this.colorBar.getBoundingClientRect(),i=F((e.clientX-r.left)/r.width,0,1)*100;this.setColor(new L({type:`hsl`,h:t,s:n,l:i}))},onDragEnd:()=>{this.commitColor()}})}static{this.styles=o`
+    `}};W([Ge(`#color-grad`)],xt.prototype,`colorGrad`,void 0),xt=W([T(`color-selection-hsl-wheel`)],xt);let St=class extends K{constructor(...e){super(...e),this.handlePointer=e=>{let[t,n]=this.color.getHSL(),r=this.colorBar.getBoundingClientRect(),i=F((e.clientX-r.left)/r.width,0,1)*100;this.setColor(new L({type:`hsl`,h:t,s:n,l:i}))},this.drag=new U(this,{onDragStart:this.handlePointer,onDrag:this.handlePointer,onDragEnd:()=>{this.commitColor()}})}static{this.styles=o`
     .color-bar {
       position: relative;
       width: 100%;

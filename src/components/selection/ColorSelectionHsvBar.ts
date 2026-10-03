@@ -15,21 +15,24 @@ export class ColorSelectionHsvBar extends ColorSelectionBase {
   @query("#color-bar")
   colorBar!: HTMLDivElement;
 
+  private handlePointer = (e: MouseEvent) => {
+    const [, saturation, value] = this.color.getHSV();
+    const rect = this.colorBar.getBoundingClientRect();
+    const x = clamp((e.clientX - rect.left) / rect.width, 0, 1);
+    const newHue = x * 360;
+    this.setColor(
+      new Color({
+        type: ColorInputType.HSV,
+        h: newHue,
+        s: saturation,
+        v: value,
+      }),
+    );
+  };
+
   private drag = new DragController(this, {
-    onDrag: (e: MouseEvent) => {
-      const [, saturation, value] = this.color.getHSV();
-      const rect = this.colorBar.getBoundingClientRect();
-      const x = clamp((e.clientX - rect.left) / rect.width, 0, 1);
-      const newHue = x * 360;
-      this.setColor(
-        new Color({
-          type: ColorInputType.HSV,
-          h: newHue,
-          s: saturation,
-          v: value,
-        }),
-      );
-    },
+    onDragStart: this.handlePointer,
+    onDrag: this.handlePointer,
     onDragEnd: () => {
       this.commitColor();
     },

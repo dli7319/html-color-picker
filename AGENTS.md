@@ -5,12 +5,31 @@
 ```bash
 npm run setup            # install dependencies (uses npm ci)
 npm run dev              # dev server with hot-reload at localhost:8080
-npm run build            # production build → dist/main.js (ESM, tree-shaken, minified)
-npm test                 # run vitest test suite (607 tests, ~4s)
+npm run build            # production build → dist/ (main.js, sw.js, copied public/ assets)
+npm test                 # run vitest test suite (625 tests, ~8s)
 npm run test:coverage    # run tests with coverage report
 npm run lint             # oxlint
-npm run format           # prettier --write src/**/*.ts *.ts
+npm run format           # prettier --write src/**/*.ts *.ts scripts/**/*.ts
+uv run --with cairosvg python scripts/generate-icons.py   # dev-only: rebuild PWA icons (PNGs are committed)
 ```
+
+## Build Pipeline
+
+`npm run build` runs four steps in order:
+
+1. `scripts/copy-static.ts` — copies `public/` (fonts, icons, manifest.json) into `dist/`.
+2. `rolldown -c rolldown.config.ts` — bundles the app to `dist/main.js`.
+3. `rolldown -c rolldown.sw.config.ts` — bundles `src/sw/sw.ts` to `dist/sw.js` (separate config AND separate invocation — a single-file IIFE build silently drops extra entries).
+4. `scripts/build-sw.ts` — generates the precache manifest from the actual `dist/` bytes, derives the content-hash cache version, and substitutes the `SW_VERSION` / `PRECACHE_LIST` placeholders into `dist/sw.js`. Fails the build when a placeholder is missing or survives substitution.
+
+## PWA
+
+The app is installable and works fully offline (service worker at `dist/sw.js`).
+
+- Fonts are self-hosted in `public/fonts/` (no third-party runtime requests). Keep it that way — a single render-blocking CDN request breaks offline.
+- `manifest.json`, icons and font files are committed under `public/`; `dist/index.html` is the committed app shell.
+- Service-worker rules live in `src/sw/rules.ts` (pure, unit-tested); wiring in `src/sw/sw.ts`; update flow in `src/pwa/serviceWorkerRegistration.ts` (unit-tested — the reload-on-controllerchange guard has a mutation check: if the guard is removed, `never reloads on controllerchange without a user-requested refresh` must fail).
+- Icons come from `assets/icon.svg` / `assets/icon-maskable.svg`; regenerate PNGs with the dev-only script above (never in CI).
 
 ## Repository Structure
 
@@ -56,9 +75,25 @@ src/
   styles/                     # CSS files (lit-css) + Tailwind entry point
   colormap-data/
     turbo.ts                  # turbo colormap sampled points
+  sw/
+    rules.ts                  # pure service-worker rules (cache naming, request filtering)
+    sw.ts                     # service-worker wiring (precache, fetch, SKIP_WAITING)
+  pwa/
+    serviceWorkerRegistration.ts  # registration + passive update banner
+scripts/
+  copy-static.ts              # copies public/ → dist/ (build + dev)
+  build-sw.ts                 # precache manifest + placeholder substitution
+  generate-icons.py           # dev-only: assets/*.svg → public/icons/*.png
+public/                       # committed static assets (copied into dist/)
+  manifest.json               # web app manifest (all paths relative)
+  fonts.css, fonts/           # self-hosted Google Sans Flex + Material Symbols subset
+  icons/                      # PWA icons (192/512 any, 512 maskable, 180 apple-touch)
+assets/
+  icon.svg, icon-maskable.svg # icon sources (rasterised by scripts/generate-icons.py)
 dist/
   index.html                  # static SPA shell (committed to repo)
   main.js                     # built output
+  sw.js                       # built service worker (generated precache + version)
 ```
 
 ## Tech Stack

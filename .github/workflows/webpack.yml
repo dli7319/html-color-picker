@@ -32,7 +32,7 @@ jobs:
         run: npm run lint
 
       - name: Format check
-        run: npx prettier --check "src/**/*.ts" "*.ts"
+        run: npx prettier --check "src/**/*.ts" "*.ts" "scripts/**/*.ts"
 
   deploy:
     name: Build & Deploy

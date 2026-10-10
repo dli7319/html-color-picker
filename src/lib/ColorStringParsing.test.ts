@@ -793,6 +793,30 @@ describe("CSS color function syntax", () => {
   });
 });
 
+describe("percent semantics (round-2 review)", () => {
+  it("RGB255 maps % components over the 0-255 range", () => {
+    const color = parseRGB255Color("100%, 50%, 0%");
+    expect(color).toBeInstanceOf(Color);
+    expect(color!.getRGB255()).toEqual([255, 128, 0]);
+  });
+
+  it("RGB01 maps % components over the 0-1 range", () => {
+    const color = parseRGB01Color("40%, 20%, 10%");
+    expect(color).toBeInstanceOf(Color);
+    expect(color!.getRGB01()).toEqual([0.4, 0.2, 0.1]);
+  });
+
+  it("rejects % components out of range instead of silently mis-parsing", () => {
+    // "102%" would previously parse as the integer 102 — a wrong color.
+    expect(parseRGB255Color("51%, 102%, 204%")).toBeNull();
+    expect(parseRGB01Color("51%, 102%, 204%")).toBeNull();
+  });
+
+  it("keeps plain RGB255 components integer-only", () => {
+    expect(parseRGB255Color("51.5, 102, 204")).toBeNull();
+  });
+});
+
 describe("parseColorString", () => {
   it("routes each kind to its parser", () => {
     expect(parseColorString("HEX", "#ff0000")).toBeInstanceOf(Color);

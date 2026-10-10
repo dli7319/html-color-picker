@@ -134,6 +134,10 @@ export class ColorConverterInput extends LitElement {
     const canonical = colorToString[this.type](this.color);
     this._lastSettled = canonical;
     this._invalid = false;
+    // Imperatively rewrite the field: invalid text is not in inputValues, so
+    // the Lit .value binding alone would not replace it (round-2 review).
+    const input = this.shadowRoot?.querySelector("input");
+    if (input) input.value = canonical;
     this.dispatchEvent(new ColorConverterInputEvent(this.type, canonical));
   }
 

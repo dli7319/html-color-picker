@@ -71,6 +71,19 @@ describe("DragController", () => {
       );
     });
 
+    it("focuses the surface on pointerdown so arrow keys work after clicking", () => {
+      const surface = document.createElement("div");
+      surface.tabIndex = 0;
+      document.body.appendChild(surface);
+      surface.addEventListener("pointerdown", controller.handlePointerDown);
+
+      surface.dispatchEvent(pointerEvent("pointerdown", 5, 5));
+      expect(document.activeElement).toBe(surface);
+
+      surface.dispatchEvent(pointerEvent("pointerup"));
+      surface.remove();
+    });
+
     it("ignores a second pointerdown while a drag is active", () => {
       controller.handlePointerDown(pointerEvent("pointerdown", 0, 0));
       controller.handlePointerDown(pointerEvent("pointerdown", 5, 5));

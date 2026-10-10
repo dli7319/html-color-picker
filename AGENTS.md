@@ -136,5 +136,5 @@ npm run format        # prettier formatting
 
 ## CI/CD
 
-- GitHub Actions workflow at `.github/workflows/webpack.yml` — deploys to GitHub Pages on push to `master`.
+- GitHub Actions workflow at `.github/workflows/ci.yml` (formerly `webpack.yml` from the pre-Rolldown era) — deploys to GitHub Pages on push to `master`.
 - Production site: https://davidl.me/apps/colors

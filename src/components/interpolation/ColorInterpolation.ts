@@ -177,15 +177,21 @@ export class ColorInterpolation extends LitElement {
       <h5 class="text-lg font-semibold text-gray-800 mb-2">
         Color Interpolation
       </h5>
+      <p class="text-[10px] text-gray-700 mb-2">
+        Click an endpoint swatch to bind the picker to it; drag a gradient bar
+        to sample an interpolated color.
+      </p>
       <div class="flex justify-center gap-6 my-2">
         <div
           class="color-selection cursor-pointer ${this.activeColor === ActiveColorSide.LEFT ? "active ring-2 ring-blue-600" : ""}"
           @click=${this.setActiveColorLeft}
+          title="Set left endpoint color"
           style="background: #${this.leftColor.getHex()}"
         ></div>
         <div
           class="color-selection cursor-pointer ${this.activeColor === ActiveColorSide.RIGHT ? "active ring-2 ring-blue-600" : ""}"
           @click=${this.setActiveColorRight}
+          title="Set right endpoint color"
           style="background: #${this.rightColor.getHex()}"
         ></div>
       </div>
@@ -202,7 +208,11 @@ export class ColorInterpolation extends LitElement {
           return html`
             <div class="flex items-center gap-3">
               <span class="w-12 text-left font-bold text-xs text-gray-700"
-                >${gradient.typeName || gradient.type}</span
+                >${
+                  gradient.typeName === "HSL*"
+                    ? html`<span title="HSL via shortest hue path">HSL*</span>`
+                    : gradient.typeName || gradient.type
+                }</span
               >
               <div
                 class="gradient flex-1 rounded relative overflow-visible cursor-crosshair h-6 shadow-inner drag-surface"
@@ -210,6 +220,7 @@ export class ColorInterpolation extends LitElement {
                   lerpMode,
                 )}"
                 data-mode=${lerpMode}
+                title="Drag to pick an interpolated color"
                 @pointerdown=${this.drag.handlePointerDown}
               >
                 ${

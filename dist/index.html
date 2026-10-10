@@ -65,13 +65,42 @@
       width: 100%;
       height: 100%;
     }
+    .app-header {
+      text-align: center;
+      padding: 1rem 1rem 0.25rem;
+    }
+    .app-header > * {
+      margin: 0 auto;
+      max-width: 40rem;
+      background: rgba(255, 255, 255, 0.55);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .app-title {
+      padding: 0.5rem 1.25rem 0.15rem;
+      border-radius: 1rem 1rem 0 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1f2937;
+    }
+    .app-tagline {
+      padding: 0.15rem 1.25rem 0.55rem;
+      border-radius: 0 0 1rem 1rem;
+      font-size: 0.875rem;
+      color: #374151;
+    }
     body {
+      flex-direction: column;
       background: var(--pre-paint-bg, #475569);
       transition: background-color 500ms var(--ease-out);
     }
     body.dragging {
       transition: none;
       --handle-transition: none;
+    }
+    color-picker {
+      flex: 1;
+      display: flex;
     }
     body {
       font-family: 'Google Sans Flex', sans-serif;
@@ -82,6 +111,12 @@
 </head>
 
 <body>
+  <header class="app-header">
+    <h1 class="app-title">Color Picker</h1>
+    <p class="app-tagline">
+      Pick, convert, sample, and generate colors — everything stays in sync.
+    </p>
+  </header>
   <color-picker updatebodybackground>
     <color-selection></color-selection>
     <color-converter>

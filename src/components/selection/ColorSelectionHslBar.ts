@@ -6,11 +6,13 @@ import { clamp } from "../../lib/utils/math";
 import { ColorSelectionBase } from "./ColorSelectionBase";
 import { DragController } from "../../controllers/DragController";
 import { dragSurfaceStyles } from "../../styles/DragSurface";
+import { reducedMotionStyles } from "../../styles/Motion";
 import "./ColorBarPointer";
 
 @customElement("color-selection-hsl-bar")
 export class ColorSelectionHslBar extends ColorSelectionBase {
   static styles = [
+    reducedMotionStyles,
     css`
       .color-bar {
         position: relative;

@@ -3,6 +3,7 @@ import { customElement, property } from "lit/decorators.js";
 
 import { Color } from "../../lib/Color";
 import { tailwindStyles } from "../../styles/Tailwind";
+import { reducedMotionStyles } from "../../styles/Motion";
 import "./ColorSelectionHsv";
 import "./ColorSelectionHsl";
 
@@ -14,6 +15,7 @@ enum ColorSelectionType {
 @customElement("color-selection")
 export class ColorSelection extends LitElement {
   static styles = [
+    reducedMotionStyles,
     tailwindStyles,
     css`
       :host {

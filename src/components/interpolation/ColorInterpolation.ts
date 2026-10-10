@@ -5,6 +5,7 @@ import { Color } from "../../lib/Color";
 import { ColorGradient } from "../../lib/ColorGradient";
 import { styles } from "../../styles/ColorInterpolation.css";
 import { dragSurfaceStyles } from "../../styles/DragSurface";
+import { reducedMotionStyles } from "../../styles/Motion";
 import { tailwindStyles } from "../../styles/Tailwind";
 import { ColorPickerSetColorEvent } from "../../events/ColorPickerSetColorEvent";
 import { ColorPickerCommitColorEvent } from "../../events/ColorPickerCommitColorEvent";
@@ -30,7 +31,12 @@ const STORAGE_KEY = "color-interpolation-ui-store";
 
 @customElement("color-interpolation")
 export class ColorInterpolation extends LitElement {
-  static styles = [tailwindStyles, styles, dragSurfaceStyles];
+  static styles = [
+    reducedMotionStyles,
+    tailwindStyles,
+    styles,
+    dragSurfaceStyles,
+  ];
 
   @property()
   activeColor: ActiveColorSide = ActiveColorSide.NONE;

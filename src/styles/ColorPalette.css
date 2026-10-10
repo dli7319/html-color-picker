@@ -105,11 +105,13 @@
 @keyframes palette-swatch-in {
   from {
     opacity: 0;
-    transform: translateY(6px) scale(0.96);
+    translate: 0 6px;
+    scale: 0.96;
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    translate: 0 0;
+    scale: 1;
   }
 }
 
@@ -122,14 +124,16 @@
 .palette-swatch {
   animation: palette-swatch-in 220ms cubic-bezier(0.2, 0, 0, 1) both;
   animation-delay: calc(var(--i, 0) * 30ms);
-  transition: background-color 280ms cubic-bezier(0.4, 0, 0.2, 1);
   flex: 1;
   min-height: 8rem;
   border-radius: 0.75rem;
   position: relative;
   cursor: pointer;
   overflow: hidden;
+  /* One transition list: a second `transition` shorthand here silently
+     overrides the background-color crossfade (round-2 review). */
   transition:
+    background-color 280ms cubic-bezier(0.4, 0, 0.2, 1),
     flex 0.15s ease,
     box-shadow 0.15s ease;
 }

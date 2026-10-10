@@ -9,6 +9,7 @@ import { ColorPickerCommitColorEvent } from "../../events/ColorPickerCommitColor
 import { ColorPickerSetPaletteActiveEvent } from "../../events/ColorPickerSetPaletteActiveEvent";
 import { styles } from "../../styles/ColorPalette.css";
 import { tailwindStyles } from "../../styles/Tailwind";
+import { reducedMotionStyles } from "../../styles/Motion";
 import { storageGet, storageSet } from "../../lib/utils/storage";
 
 const STORAGE_KEY = "color-palette-store";
@@ -26,7 +27,7 @@ interface StoredPalette {
 
 @customElement("color-palette")
 export class ColorPalette extends LitElement {
-  static styles = [tailwindStyles, styles];
+  static styles = [reducedMotionStyles, tailwindStyles, styles];
 
   @property({ attribute: false })
   activeEditingColor: Color = new Color();
@@ -43,6 +44,13 @@ export class ColorPalette extends LitElement {
   /** Index of the swatch whose hex was just copied (transient check icon). */
   @state()
   private copiedIndex: number = -1;
+
+  /**
+   * Bumped on Generate so the keyed repeat() re-creates swatches (replaying
+   * the staggered entrance). Keys otherwise stay stable so live color edits
+   * during drags update in place instead of re-animating (round-2 review).
+   */
+  private generation = 0;
 
   @state()
   private paletteMode: PaletteMode = PaletteMode.ANY;
@@ -130,6 +138,7 @@ export class ColorPalette extends LitElement {
   };
 
   private regenerate() {
+    this.generation++;
     this.colors = generatePalette(
       { count: this.paletteCount, mode: this.paletteMode },
       this.locked,
@@ -358,7 +367,7 @@ export class ColorPalette extends LitElement {
         <div class="palette-swatches">
           ${repeat(
             this.colors,
-            (color) => color,
+            (_color, i) => `${this.generation}-${i}`,
             (color, i) => html`
               <div
                 class="palette-swatch ${

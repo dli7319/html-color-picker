@@ -19,7 +19,7 @@ export class ColorMaps extends LitElement {
   render() {
     return html`
       <h5 class="text-lg font-semibold text-gray-800 mb-2">Color Maps</h5>
-      <p class="text-[10px] text-gray-700 mb-2">
+      <p class="text-[11px] text-gray-800 mb-2">
         Drag to sample from the Turbo map; the marker shows where the current
         color sits.
       </p>

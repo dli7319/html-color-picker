@@ -15,7 +15,7 @@ export class OtherTools extends LitElement {
           if (child instanceof HTMLAnchorElement) {
             return html`<li>
               <a
-                class="text-blue-800 hover:text-blue-900 hover:underline font-medium inline-flex items-center gap-1"
+                class="text-blue-900 hover:underline font-medium inline-flex items-center gap-1"
                 href="${child.href}"
                 target="${child.target || "_blank"}"
                 rel="noopener noreferrer"

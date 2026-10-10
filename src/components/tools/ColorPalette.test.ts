@@ -112,7 +112,7 @@ describe("ColorPalette Space shortcut (issue #73)", () => {
 
   it("keeps swatch DOM nodes stable while the active color is edited (round-2 regression)", async () => {
     const swatch = el.shadowRoot!.querySelector(
-      ".palette-swatch",
+      ".palette-swatch-apply",
     ) as HTMLElement;
     swatch.click(); // activates the swatch
     await el.updateComplete;

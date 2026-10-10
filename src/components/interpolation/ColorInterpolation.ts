@@ -183,7 +183,7 @@ export class ColorInterpolation extends LitElement {
       <h5 class="text-lg font-semibold text-gray-800 mb-2">
         Color Interpolation
       </h5>
-      <p class="text-[10px] text-gray-700 mb-2">
+      <p class="text-[11px] text-gray-800 mb-2">
         Click an endpoint swatch to bind the picker to it; drag a gradient bar
         to sample an interpolated color.
       </p>

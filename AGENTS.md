@@ -9,6 +9,7 @@ npm run build            # production build → dist/ (main.js, sw.js, copied pu
 npm test                 # run vitest test suite (~9s)
 npm run test:coverage    # run tests with coverage report
 npm run typecheck        # tsc --noEmit — strict type check, also runs in CI
+npm run test:e2e         # Playwright integration tests (run `npm run build` first)
 npm run lint             # oxlint
 npm run format           # prettier --write src/**/*.ts *.ts scripts/**/*.ts
 uv run --with cairosvg python scripts/generate-icons.py   # dev-only: rebuild PWA icons (PNGs are committed)
@@ -22,6 +23,21 @@ uv run --with cairosvg python scripts/generate-icons.py   # dev-only: rebuild PW
 2. `rolldown -c rolldown.config.ts` — bundles the app to `dist/main.js`.
 3. `rolldown -c rolldown.sw.config.ts` — bundles `src/sw/sw.ts` to `dist/sw.js` (separate config AND separate invocation — a single-file IIFE build silently drops extra entries).
 4. `scripts/build-sw.ts` — generates the precache manifest from the actual `dist/` bytes, derives the content-hash cache version, and substitutes the `SW_VERSION` / `PRECACHE_LIST` placeholders into `dist/sw.js`. Fails the build when a placeholder is missing or survives substitution.
+
+## Integration Tests
+
+`tests/e2e/*.spec.ts` are Playwright (chromium) journeys that drive the BUILT
+`dist/` artifact through `scripts/serve-dist.mjs` (static server, ephemeral
+port). They cover what the jsdom unit suite cannot: real pointer drags, real
+layout, localStorage round-trips across reloads, service-worker offline
+rendering, and real canvas pixel sampling. Run `npm run build && npm run test:e2e`.
+
+- Keep the suite lean (4 journeys): unit tests own the edge cases.
+- Specs must pass the repo gate like any other code (typecheck, lint, prettier).
+- `vitest.config.ts` excludes `tests/e2e` — its default include would
+  otherwise pick up `*.spec.ts` under jsdom.
+- CI runs them in a separate `e2e` job (browser cached; report uploaded only
+  on failure).
 
 ## PWA
 
@@ -106,6 +122,7 @@ dist/
 | Bundler | **Rolldown** (config: `rolldown.config.ts`) |
 | Language | **TypeScript 7.x** (strict, ES2020 target, ESNext modules) |
 | Testing | **Vitest 5** (jsdom for components, node for pure logic; globals enabled; 500ms timeout) |
+| Integration tests | **Playwright** (chromium-only, `tests/e2e/`, drives the built `dist/`) |
 | Linting | **Oxlint** (config: `.oxlintrc.json`) |
 | Formatting | **Prettier** (tabWidth: 2) |
 | Color math | **color-convert** |

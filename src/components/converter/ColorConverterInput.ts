@@ -1,4 +1,4 @@
-import { html, LitElement } from "lit";
+import { css, html, LitElement } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import { tailwindStyles } from "../../styles/Tailwind";
@@ -52,7 +52,24 @@ const colorToString = {
 
 @customElement("color-converter-input")
 export class ColorConverterInput extends LitElement {
-  static styles = [tailwindStyles];
+  static styles = [
+    tailwindStyles,
+    css`
+      .copied-icon {
+        animation: copied-pop 180ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+      }
+      @keyframes copied-pop {
+        from {
+          transform: scale(0.6);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+    `,
+  ];
 
   @property()
   type: InputType = InputType.HEX;
@@ -183,7 +200,7 @@ export class ColorConverterInput extends LitElement {
                     stroke-width="2.5"
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    class="text-green-600"
+                    class="text-green-600 copied-icon"
                   >
                     <polyline points="20 6 9 17 4 12"></polyline>
                   </svg>`

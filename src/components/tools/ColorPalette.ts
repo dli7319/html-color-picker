@@ -1,4 +1,5 @@
 import { html, LitElement } from "lit";
+import { repeat } from "lit/directives/repeat.js";
 import { customElement, property, state } from "lit/decorators.js";
 
 import { Color, ColorInputType } from "../../lib/Color";
@@ -337,7 +338,9 @@ export class ColorPalette extends LitElement {
           Generate
         </button>
         <div class="palette-swatches">
-          ${this.colors.map(
+          ${repeat(
+            this.colors,
+            (color) => color,
             (color, i) => html`
               <div
                 class="palette-swatch ${
@@ -345,7 +348,7 @@ export class ColorPalette extends LitElement {
                 } ${this.dragIndex === i ? "dragging" : ""} ${
                   this.dragOverIndex === i ? "drag-over" : ""
                 }"
-                style="background: ${color.toCSS()}"
+                style="background: ${color.toCSS()}; --i: ${i}"
                 draggable="true"
                 tabindex="0"
                 role="button"

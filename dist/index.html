@@ -10,13 +10,53 @@
   <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
   <link href="./fonts.css" rel="stylesheet">
   <script src="main.js" defer></script>
+  <script>
+    // Pre-paint the saved color so returning users don't get a white flash.
+    try {
+      var saved = JSON.parse(localStorage.getItem("last-active-color") || "null");
+      if (saved) {
+        document.documentElement.style.setProperty("--pre-paint-bg", "#" + saved);
+      }
+    } catch (e) {}
+  </script>
   <style>
+    :root {
+      --motion-fast: 120ms;
+      --motion-base: 180ms;
+      --motion-slow: 260ms;
+      --ease-out: cubic-bezier(0.2, 0, 0, 1);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      /* Handles track 1:1 during drags (see body.dragging below). */
+      --handle-transition: top var(--motion-base) var(--ease-out),
+        left var(--motion-base) var(--ease-out);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+      body {
+        transition: none !important;
+      }
+    }
     html,
     body {
       margin: 0;
       padding: 0;
       width: 100%;
       height: 100%;
+    }
+    body {
+      background: var(--pre-paint-bg, #475569);
+      transition: background-color 500ms var(--ease-out);
+    }
+    body.dragging {
+      transition: none;
+      --handle-transition: none;
     }
     body {
       font-family: 'Google Sans Flex', sans-serif;

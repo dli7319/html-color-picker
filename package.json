@@ -9,6 +9,7 @@
     "build": "node scripts/copy-static.ts && rolldown -c rolldown.config.ts --environment NODE_ENV:production && rolldown -c rolldown.sw.config.ts --environment NODE_ENV:production && node scripts/build-sw.ts",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
     "lint": "oxlint",
     "format": "prettier --write \"src/**/*.ts\" \"*.ts\" \"scripts/**/*.ts\"",
     "dev": "node scripts/copy-static.ts && rolldown -c rolldown.config.ts --watch --environment NODE_ENV:development"

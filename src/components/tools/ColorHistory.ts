@@ -210,27 +210,28 @@ export class ColorHistory extends LitElement {
                 </div>
               `
         }
-        ${
-          this.clearedSnapshot
-            ? html`<div
-                class="history-undo-toast"
-                role="status"
-                @mouseenter=${this.pauseUndoTimer}
-                @mouseleave=${this.resumeUndoTimer}
-                @focusin=${this.pauseUndoTimer}
-                @focusout=${this.resumeUndoTimer}
-              >
-                History cleared
-                <button
-                  type="button"
-                  class="history-undo-btn"
-                  @click=${this.undoClear}
-                >
-                  Undo
-                </button>
-              </div>`
-            : ""
-        }
+        <div
+          class="history-undo-toast"
+          role="status"
+          ?hidden=${!this.clearedSnapshot}
+          @mouseenter=${this.pauseUndoTimer}
+          @mouseleave=${this.resumeUndoTimer}
+          @focusin=${this.pauseUndoTimer}
+          @focusout=${this.resumeUndoTimer}
+        >
+          ${
+            this.clearedSnapshot
+              ? html`History cleared
+                  <button
+                    type="button"
+                    class="history-undo-btn"
+                    @click=${this.undoClear}
+                  >
+                    Undo
+                  </button>`
+              : ""
+          }
+        </div>
       </div>
     `;
   }

@@ -189,7 +189,7 @@ export class ImageSampling extends LitElement {
           accept="image/*"
           @change=${this.loadImage}
         />
-        <p class="text-[10px] text-gray-700 mt-1 text-left">
+        <p class="text-[11px] text-gray-800 mt-1 text-left">
           Upload an image, then click or drag on it to sample colors.
         </p>
         ${

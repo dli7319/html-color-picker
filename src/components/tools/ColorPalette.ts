@@ -46,6 +46,10 @@ export class ColorPalette extends LitElement {
   @state()
   private copiedIndex: number = -1;
 
+  /** Polite announcements for screen-reader users (round-2 review). */
+  @state()
+  private statusMessage = "";
+
   /**
    * Bumped on Generate so the keyed repeat() re-creates swatches (replaying
    * the staggered entrance). Keys otherwise stay stable so live color edits
@@ -140,6 +144,7 @@ export class ColorPalette extends LitElement {
 
   private regenerate() {
     this.generation++;
+    this.statusMessage = `Palette regenerated, ${this.colors.length} colors`;
     this.colors = generatePalette(
       { count: this.paletteCount, mode: this.paletteMode },
       this.locked,
@@ -158,6 +163,7 @@ export class ColorPalette extends LitElement {
       .writeText("#" + color.getHex())
       .then(() => {
         this.copiedIndex = index;
+        this.statusMessage = `Copied #${color.getHex().toUpperCase()}`;
         setTimeout(() => {
           if (this.copiedIndex === index) this.copiedIndex = -1;
         }, 1000);
@@ -326,6 +332,9 @@ export class ColorPalette extends LitElement {
     return html`
       <div class="palette-root ${this.narrow ? "narrow" : ""}">
         <h5 class="text-lg font-semibold text-gray-800 mb-2">Color Palette</h5>
+        <div class="sr-only" role="status" aria-live="polite">
+          ${this.statusMessage}
+        </div>
         <div class="palette-contrast mb-2">
           <span class="palette-contrast-label">Count</span>
           <div class="palette-contrast-group">
@@ -338,6 +347,7 @@ export class ColorPalette extends LitElement {
                   class="palette-contrast-btn ${
                     this.paletteCount === n ? "active" : ""
                   }"
+                  aria-pressed=${this.paletteCount === n ? "true" : "false"}
                   @click=${() => this.setCount(n)}
                 >
                   ${n}
@@ -353,6 +363,7 @@ export class ColorPalette extends LitElement {
               class="palette-contrast-btn ${
                 this.paletteMode === PaletteMode.ANY ? "active" : ""
               }"
+              aria-pressed=${this.paletteMode === PaletteMode.ANY ? "true" : "false"}
               @click=${() => this.setMode(PaletteMode.ANY)}
             >
               Any
@@ -361,6 +372,7 @@ export class ColorPalette extends LitElement {
               class="palette-contrast-btn ${
                 this.paletteMode === PaletteMode.TONAL ? "active" : ""
               }"
+              aria-pressed=${this.paletteMode === PaletteMode.TONAL ? "true" : "false"}
               @click=${() => this.setMode(PaletteMode.TONAL)}
             >
               Tonal
@@ -369,6 +381,7 @@ export class ColorPalette extends LitElement {
               class="palette-contrast-btn ${
                 this.paletteMode === PaletteMode.ANALOGOUS ? "active" : ""
               }"
+              aria-pressed=${this.paletteMode === PaletteMode.ANALOGOUS ? "true" : "false"}
               @click=${() => this.setMode(PaletteMode.ANALOGOUS)}
             >
               Analogous
@@ -377,6 +390,7 @@ export class ColorPalette extends LitElement {
               class="palette-contrast-btn ${
                 this.paletteMode === PaletteMode.VIVID ? "active" : ""
               }"
+              aria-pressed=${this.paletteMode === PaletteMode.VIVID ? "true" : "false"}
               @click=${() => this.setMode(PaletteMode.VIVID)}
             >
               Vivid
@@ -403,29 +417,32 @@ export class ColorPalette extends LitElement {
                 }"
                 style="background: ${color.toCSS()}; --i: ${i}"
                 draggable="true"
-                tabindex="0"
-                role="button"
-                aria-label="Apply color #${color.getHex().toUpperCase()}, position ${i + 1} of ${this.colors.length}"
-                @keydown=${(e: KeyboardEvent) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    this.selectSwatch(i);
-                  }
-                }}
-                @click=${() => this.selectSwatch(i)}
+                role="group"
+                aria-label="Color swatch ${i + 1} of ${this.colors.length}: #${color.getHex().toUpperCase()}"
                 @dragstart=${(e: DragEvent) => this.onDragStart(i, e)}
                 @dragover=${(e: DragEvent) => this.onDragOver(i, e)}
                 @dragleave=${this.onDragLeave}
                 @drop=${() => this.onDrop(i)}
                 @dragend=${this.onDragEnd}
               >
+                <button
+                  class="palette-swatch-apply"
+                  aria-label="Apply color #${color.getHex().toUpperCase()}, position ${i + 1} of ${this.colors.length}"
+                  @click=${() => this.selectSwatch(i)}
+                ></button>
                 <div class="palette-swatch-actions">
                   <button
-                    class="palette-action-btn"
+                    class="palette-action-btn ${this.locked[i] ? "locked" : ""}"
                     @click=${(e: Event) => this.toggleLock(i, e)}
                     title=${this.locked[i] ? "Unlock color" : "Lock color"}
+                    aria-pressed=${this.locked[i] ? "true" : "false"}
+                    aria-label=${
+                      this.locked[i]
+                        ? `Unlock color, position ${i + 1} of ${this.colors.length}`
+                        : `Lock color, position ${i + 1} of ${this.colors.length}`
+                    }
                   >
-                    <span class="material-symbols-outlined"
+                    <span class="material-symbols-outlined" aria-hidden="true"
                       >${this.locked[i] ? "lock" : "lock_open"}</span
                     >
                   </button>

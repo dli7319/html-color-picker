@@ -164,28 +164,36 @@ export class ColorConverterInput extends LitElement {
         <div class="flex-1 px-2 py-1">
           <label
             class="block text-[10px] font-semibold text-gray-700 uppercase tracking-wider"
+            for="color-input-${this.type}"
             >${inputTypeToLabel[this.type]}</label
           >
           <input
             type="text"
+            id="color-input-${this.type}"
             class=${inputClass}
             .value=${value}
             aria-invalid=${this._invalid ? "true" : "false"}
+            aria-describedby="color-error-${this.type}"
             @input=${this.onValueChange}
             @change=${this.settle}
             @keydown=${this.onKeydown}
           />
-          ${
-            this._invalid
-              ? html`<p class="text-[10px] text-red-600 mt-0.5">
-                  Not a valid ${inputTypeToLabel[this.type]} value
-                </p>`
-              : ""
-          }
+          <p
+            id="color-error-${this.type}"
+            class="text-[11px] text-red-800 font-medium mt-0.5 min-h-[14px]"
+            aria-live="polite"
+          >
+            ${
+              this._invalid
+                ? `Not a valid ${inputTypeToLabel[this.type]} value`
+                : ""
+            }
+          </p>
         </div>
         <div class="flex items-center px-2 bg-white/30">
           <button
             class="p-1.5 rounded-md hover:bg-white/50 transition-colors cursor-pointer border-none bg-transparent"
+            ?disabled=${this._invalid}
             @click=${() =>
               this._copyValue(colorToString[this.type](this.color))}
             title=${copyLabel}

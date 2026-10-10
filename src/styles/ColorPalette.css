@@ -33,20 +33,21 @@
 .palette-generate-btn {
   width: 100%;
   margin-bottom: 0.5rem;
-  padding: 0.35rem 0;
+  padding: 0.5rem 0;
   border-radius: 0.5rem;
-  border: 0.0625rem solid rgba(0, 0, 0, 0.1);
-  background: rgba(255, 255, 255, 0.7);
-  font-size: 0.7rem;
+  border: none;
+  background: rgb(51, 65, 85);
+  font-size: 0.8rem;
   font-weight: 600;
-  color: rgb(55, 65, 81);
+  color: white;
   cursor: pointer;
   transition: background 0.15s;
   line-height: 1;
+  box-shadow: 0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.2);
 }
 
 .palette-generate-btn:hover {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgb(30, 41, 59);
 }
 
 .palette-contrast {
@@ -59,7 +60,7 @@
 .palette-contrast-label {
   font-size: 0.65rem;
   font-weight: 600;
-  color: rgb(107, 114, 128);
+  color: rgb(55, 65, 81);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -72,10 +73,12 @@
 }
 
 .palette-contrast-btn {
-  padding: 0.15rem 0.5rem;
+  padding: 0.25rem 0.625rem;
+  min-height: 1.5rem;
+  min-width: 2rem;
   font-size: 0.65rem;
   font-weight: 600;
-  color: rgb(156, 163, 175);
+  color: rgb(75, 85, 99);
   background: rgba(255, 255, 255, 0.5);
   border: none;
   border-right: 0.0625rem solid rgba(0, 0, 0, 0.08);
@@ -94,8 +97,8 @@
 }
 
 .palette-contrast-btn.active {
-  color: rgb(55, 65, 81);
-  background: rgba(255, 255, 255, 0.9);
+  color: rgb(17, 24, 39);
+  background: rgba(255, 255, 255, 0.95);
   box-shadow: 0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.1);
 }
 
@@ -150,12 +153,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.45);
   backdrop-filter: blur(0.25rem);
   color: white;
   border: none;
   cursor: pointer;
-  opacity: 0.5;
+  opacity: 0.85;
   transition: opacity 0.15s, background 0.15s;
   padding: 0;
 }

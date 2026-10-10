@@ -105,7 +105,7 @@ export class ColorConverter extends LitElement {
         <span class="font-semibold text-gray-700">Coordinates</span>
         <div
           id="coordinates-container"
-          class="text-right text-gray-600 font-mono text-xs"
+          class="text-right text-gray-700 font-mono text-xs"
         >
           (${floatCoordinatesRounded[0]}, ${floatCoordinatesRounded[1]})<br />
           (${intCoordinates[0]}, ${intCoordinates[1]})

@@ -167,7 +167,7 @@ export class ImageSampling extends LitElement {
           accept="image/*"
           @change=${this.loadImage}
         />
-        <p class="text-[10px] text-gray-600 mt-1 text-left">
+        <p class="text-[10px] text-gray-700 mt-1 text-left">
           Upload an image, then click or drag on it to sample colors.
         </p>
         ${
@@ -183,7 +183,7 @@ export class ImageSampling extends LitElement {
           class="flex-1 rounded-lg bg-white/50 backdrop-blur-md p-1 px-2.5 text-left"
         >
           <label
-            class="block text-xs font-semibold text-gray-600 uppercase tracking-wider"
+            class="block text-xs font-semibold text-gray-700 uppercase tracking-wider"
             >Overlay Color</label
           >
           <select
@@ -216,7 +216,7 @@ export class ImageSampling extends LitElement {
           class="flex-1 rounded-lg bg-white/50 backdrop-blur-md p-1 px-2.5 text-left"
         >
           <label
-            class="block text-xs font-semibold text-gray-600 uppercase tracking-wider"
+            class="block text-xs font-semibold text-gray-700 uppercase tracking-wider"
             >Overlay Size</label
           >
           <select

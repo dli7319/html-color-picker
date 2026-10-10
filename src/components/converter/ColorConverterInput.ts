@@ -140,7 +140,7 @@ export class ColorConverterInput extends LitElement {
       >
         <div class="flex-1 px-2 py-1">
           <label
-            class="block text-[10px] font-semibold text-gray-600 uppercase tracking-wider"
+            class="block text-[10px] font-semibold text-gray-700 uppercase tracking-wider"
             >${inputTypeToLabel[this.type]}</label
           >
           <input

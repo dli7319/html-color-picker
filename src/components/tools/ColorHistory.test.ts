@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
+import type { ColorHistory } from "./ColorHistory";
 import { css, LitElement } from "lit";
 import { Color, ColorInputType } from "../../lib/Color";
 import { ColorPickerCommitColorEvent } from "../../events/ColorPickerCommitColorEvent";
@@ -61,6 +62,63 @@ function setupAlone() {
 // ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
+
+describe("round-2 state safety", () => {
+  async function mountWithPicker() {
+    const picker = document.createElement("color-picker");
+    const history = document.createElement("color-history") as ColorHistory;
+    picker.appendChild(history);
+    document.body.appendChild(picker);
+    await (history as unknown as { updateComplete: Promise<boolean> })
+      .updateComplete;
+    return { picker, history };
+  }
+
+  it("undo merges entries committed during the undo window", async () => {
+    const { picker, history } = await mountWithPicker();
+    const commit = (r: number) =>
+      picker.dispatchEvent(
+        new ColorPickerCommitColorEvent(
+          new Color({ type: ColorInputType.RGB255, r, g: 0, b: 0 }),
+        ),
+      );
+
+    commit(10);
+    await history.updateComplete;
+    (
+      history.shadowRoot!.querySelector(".history-clear-btn") as HTMLElement
+    ).click();
+    await history.updateComplete;
+
+    // A new color lands during the undo window.
+    commit(200);
+    await history.updateComplete;
+
+    (
+      history.shadowRoot!.querySelector(".history-undo-btn") as HTMLElement
+    ).click();
+    await history.updateComplete;
+    await history.updateComplete;
+
+    const swatches = history.shadowRoot!.querySelectorAll(".history-swatch");
+    expect(swatches.length).toBe(2);
+    document.body.removeChild(picker);
+  });
+
+  it("drops corrupt stored entries instead of crashing", async () => {
+    localStorage.setItem(
+      "color-history-store",
+      JSON.stringify([{ hex: "not-a-hex" }, { hex: "475569" }, { nope: 1 }]),
+    );
+    const history = document.createElement("color-history") as ColorHistory;
+    document.body.appendChild(history);
+    await history.updateComplete;
+    const swatches = history.shadowRoot!.querySelectorAll(".history-swatch");
+    expect(swatches.length).toBe(1);
+    localStorage.removeItem("color-history-store");
+    document.body.removeChild(history);
+  });
+});
 
 describe("ColorHistory", () => {
   beforeEach(() => {

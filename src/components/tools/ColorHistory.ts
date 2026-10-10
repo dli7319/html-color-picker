@@ -9,6 +9,7 @@ import { styles } from "../../styles/ColorHistory.css";
 import { tailwindStyles } from "../../styles/Tailwind";
 import { reducedMotionStyles } from "../../styles/Motion";
 import { storageGet, storageSet } from "../../lib/utils/storage";
+import { parseHexColor } from "../../lib/ColorStringParsing";
 
 const STORAGE_KEY = "color-history-store";
 const LAST_COLOR_KEY = "last-active-color";
@@ -89,19 +90,52 @@ export class ColorHistory extends LitElement {
     this.clearedSnapshot = this.history;
     this.history = [];
     this.activeIndex = -1;
-    this.saveToStorage();
+    // Persist the cleared state only when the undo window closes — a reload
+    // during the window must not lose the history (round-2 review).
+    this.startUndoTimer();
+    void this.updateComplete.then(() => {
+      const undo = this.shadowRoot?.querySelector(
+        ".history-undo-btn",
+      ) as HTMLElement | null;
+      undo?.focus();
+    });
+  }
+
+  private startUndoTimer() {
     if (this.clearUndoTimer) clearTimeout(this.clearUndoTimer);
     this.clearUndoTimer = setTimeout(() => {
+      this.clearUndoTimer = null;
       this.clearedSnapshot = null;
+      this.saveToStorage();
     }, 5000);
+  }
+
+  /** Keep the undo window alive while the user is interacting with it. */
+  private pauseUndoTimer() {
+    if (this.clearUndoTimer) {
+      clearTimeout(this.clearUndoTimer);
+      this.clearUndoTimer = null;
+    }
+  }
+
+  private resumeUndoTimer() {
+    if (this.clearedSnapshot) this.startUndoTimer();
   }
 
   private undoClear() {
     if (!this.clearedSnapshot) return;
     this.restoring = true;
-    this.history = this.clearedSnapshot;
+    // Merge instead of overwrite: colors committed during the undo window
+    // must survive the restore (round-2 review).
+    const merged = [...this.history];
+    for (const color of this.clearedSnapshot) {
+      if (!merged.some((c) => c.getHex() === color.getHex())) {
+        merged.push(color);
+      }
+    }
+    this.history = merged;
     this.clearedSnapshot = null;
-    if (this.clearUndoTimer) clearTimeout(this.clearUndoTimer);
+    this.pauseUndoTimer();
     this.saveToStorage();
     void this.updateComplete.then(() => {
       this.restoring = false;
@@ -118,7 +152,16 @@ export class ColorHistory extends LitElement {
   private loadFromStorage(): Color[] {
     const data = storageGet<{ hex: string }[] | null>(STORAGE_KEY, null);
     if (!data || !Array.isArray(data)) return [];
-    return data.map((d) => new Color({ type: ColorInputType.HEX, hex: d.hex }));
+    // Stored data is untrusted: drop corrupt entries instead of crashing
+    // the panel at startup (round-2 review).
+    return data
+      .filter(
+        (d) =>
+          d != null &&
+          typeof d.hex === "string" &&
+          parseHexColor(d.hex) != null,
+      )
+      .map((d) => new Color({ type: ColorInputType.HEX, hex: d.hex }));
   }
 
   render() {
@@ -142,7 +185,7 @@ export class ColorHistory extends LitElement {
           }
         </div>
         ${
-          this.history.length === 0
+          this.history.length === 0 && !this.clearedSnapshot
             ? html`<p class="history-empty">No colors yet</p>`
             : html`
                 <div
@@ -169,7 +212,14 @@ export class ColorHistory extends LitElement {
         }
         ${
           this.clearedSnapshot
-            ? html`<div class="history-undo-toast" role="status">
+            ? html`<div
+                class="history-undo-toast"
+                role="status"
+                @mouseenter=${this.pauseUndoTimer}
+                @mouseleave=${this.resumeUndoTimer}
+                @focusin=${this.pauseUndoTimer}
+                @focusout=${this.resumeUndoTimer}
+              >
                 History cleared
                 <button
                   type="button"

@@ -72,6 +72,44 @@ describe("ColorPalette Space shortcut (issue #73)", () => {
     expect(spaceEvent(el, { repeat: true }).defaultPrevented).toBe(false);
   });
 
+  it("count reduction preserves swatches and locks for regrow (round-2 regression)", async () => {
+    const hexes = () =>
+      [...el.shadowRoot!.querySelectorAll(".palette-swatch-hex")].map((n) =>
+        n.textContent!.trim(),
+      );
+    const labels = hexes();
+    expect(labels.length).toBe(5);
+
+    // Lock the first swatch via its action button.
+    const lockBtn = el.shadowRoot!.querySelector(
+      ".palette-swatch .palette-action-btn",
+    ) as HTMLElement;
+    lockBtn.click();
+    await el.updateComplete;
+
+    const clickCount = async (n: string) => {
+      const btn = [
+        ...el.shadowRoot!.querySelectorAll(".palette-contrast-btn"),
+      ].find((b) => b.textContent!.trim() === n) as HTMLElement;
+      btn.click();
+      await el.updateComplete;
+    };
+    await clickCount("2");
+    expect(hexes().length).toBe(2);
+    await clickCount("5");
+
+    // Shrinking then growing restores the exact swatches — no re-roll, no
+    // lost locks (previously slice + regenerate destroyed everything).
+    expect(hexes()).toEqual(labels);
+    const icons = [
+      ...el.shadowRoot!.querySelectorAll(
+        ".palette-swatch .palette-action-btn .material-symbols-outlined",
+      ),
+    ].map((n) => n.textContent!.trim());
+    expect(icons[0]).toBe("lock");
+    expect(icons.slice(1).every((t) => t === "lock_open")).toBe(true);
+  });
+
   it("keeps swatch DOM nodes stable while the active color is edited (round-2 regression)", async () => {
     const swatch = el.shadowRoot!.querySelector(
       ".palette-swatch",

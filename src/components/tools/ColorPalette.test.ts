@@ -10,6 +10,16 @@ vi.mock("../../styles/DragSurface", () => ({ dragSurfaceStyles: css`` }));
 import "./ColorPalette";
 import type { ColorPalette } from "./ColorPalette";
 
+// jsdom has no ResizeObserver; ColorPalette uses one in connectedCallback.
+// Without this stub the custom-element reaction error surfaces as an
+// unhandled error and fails the run after all tests pass (CI, Node 24).
+class ResizeObserverStub {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+vi.stubGlobal("ResizeObserver", ResizeObserverStub);
+
 const TAG = "color-palette";
 
 function spaceEvent(target: EventTarget, init: KeyboardEventInit = {}) {

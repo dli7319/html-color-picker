@@ -39,6 +39,10 @@ export class ColorPalette extends LitElement {
   @state()
   private activeIndex: number = -1;
 
+  /** Index of the swatch whose hex was just copied (transient check icon). */
+  @state()
+  private copiedIndex: number = -1;
+
   @state()
   private paletteMode: PaletteMode = PaletteMode.ANY;
 
@@ -120,8 +124,18 @@ export class ColorPalette extends LitElement {
     }
   }
 
-  private copyColor(color: Color) {
-    navigator.clipboard.writeText("#" + color.getHex()).catch(() => {});
+  private copyColor(index: number, color: Color) {
+    navigator.clipboard
+      .writeText("#" + color.getHex())
+      .then(() => {
+        this.copiedIndex = index;
+        setTimeout(() => {
+          if (this.copiedIndex === index) this.copiedIndex = -1;
+        }, 1000);
+      })
+      .catch(() => {
+        // Clipboard unavailable — leave the icon unchanged.
+      });
   }
 
   private regenerateSwatch(index: number, e: Event) {
@@ -333,6 +347,15 @@ export class ColorPalette extends LitElement {
                 }"
                 style="background: ${color.toCSS()}"
                 draggable="true"
+                tabindex="0"
+                role="button"
+                aria-label="Apply color #${color.getHex().toUpperCase()}, position ${i + 1} of ${this.colors.length}"
+                @keydown=${(e: KeyboardEvent) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    this.selectSwatch(i);
+                  }
+                }}
                 @click=${() => this.selectSwatch(i)}
                 @dragstart=${(e: DragEvent) => this.onDragStart(i, e)}
                 @dragover=${(e: DragEvent) => this.onDragOver(i, e)}
@@ -357,12 +380,16 @@ export class ColorPalette extends LitElement {
                             class="palette-action-btn"
                             @click=${(e: Event) => {
                               e.stopPropagation();
-                              this.copyColor(color);
+                              this.copyColor(i, color);
                             }}
-                            title="Copy hex"
+                            title=${this.copiedIndex === i ? "Copied" : "Copy hex"}
                           >
                             <span class="material-symbols-outlined"
-                              >content_copy</span
+                              >${
+                                this.copiedIndex === i
+                                  ? "check"
+                                  : "content_copy"
+                              }</span
                             >
                           </button>
                           <button

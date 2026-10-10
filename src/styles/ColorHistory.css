@@ -65,6 +65,34 @@
   border-color: rgba(220, 38, 38, 0.4);
 }
 
+.history-undo-toast {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.85);
+  font-size: 0.75rem;
+  color: rgb(55, 65, 81);
+}
+
+.history-undo-btn {
+  border: none;
+  background: transparent;
+  color: rgb(29, 78, 216);
+  font-weight: 600;
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+}
+
+.history-undo-btn:hover {
+  background: rgba(29, 78, 216, 0.1);
+}
+
 .history-swatches {
   display: flex;
   flex-wrap: wrap;
@@ -76,6 +104,10 @@
 }
 
 .history-swatch {
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
   width: 28px;
   height: 28px;
   border-radius: 6px;

@@ -22,6 +22,12 @@ export class ColorHistory extends LitElement {
   @state()
   private activeIndex: number = -1;
 
+  /** Snapshot for the Clear undo affordance (issue #81). */
+  @state()
+  private clearedSnapshot: Color[] | null = null;
+
+  private clearUndoTimer: ReturnType<typeof setTimeout> | null = null;
+
   constructor() {
     super();
     this.history = this.loadFromStorage();
@@ -75,8 +81,21 @@ export class ColorHistory extends LitElement {
   }
 
   private clearHistory() {
+    this.clearedSnapshot = this.history;
     this.history = [];
     this.activeIndex = -1;
+    this.saveToStorage();
+    if (this.clearUndoTimer) clearTimeout(this.clearUndoTimer);
+    this.clearUndoTimer = setTimeout(() => {
+      this.clearedSnapshot = null;
+    }, 5000);
+  }
+
+  private undoClear() {
+    if (!this.clearedSnapshot) return;
+    this.history = this.clearedSnapshot;
+    this.clearedSnapshot = null;
+    if (this.clearUndoTimer) clearTimeout(this.clearUndoTimer);
     this.saveToStorage();
   }
 
@@ -120,18 +139,34 @@ export class ColorHistory extends LitElement {
                 <div class="history-swatches">
                   ${this.history.map(
                     (color, i) => html`
-                      <div
+                      <button
+                        type="button"
                         class="history-swatch ${
                           this.activeIndex === i ? "active" : ""
                         }"
                         style="background: ${color.toCSS()}"
                         @click=${() => this.selectSwatch(i, color)}
                         title="#${color.getHex().toUpperCase()}"
-                      ></div>
+                        aria-label="Apply color #${color.getHex().toUpperCase()}, position ${i + 1} of ${this.history.length}"
+                      ></button>
                     `,
                   )}
                 </div>
               `
+        }
+        ${
+          this.clearedSnapshot
+            ? html`<div class="history-undo-toast" role="status">
+                History cleared
+                <button
+                  type="button"
+                  class="history-undo-btn"
+                  @click=${this.undoClear}
+                >
+                  Undo
+                </button>
+              </div>`
+            : ""
         }
       </div>
     `;

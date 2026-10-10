@@ -7,6 +7,7 @@ import { ColorPickerSetColorEvent } from "../../events/ColorPickerSetColorEvent"
 import { ColorPickerCommitColorEvent } from "../../events/ColorPickerCommitColorEvent";
 import { styles } from "../../styles/ColorHistory.css";
 import { tailwindStyles } from "../../styles/Tailwind";
+import { reducedMotionStyles } from "../../styles/Motion";
 import { storageGet, storageSet } from "../../lib/utils/storage";
 
 const STORAGE_KEY = "color-history-store";
@@ -15,7 +16,7 @@ const MAX_ENTRIES = 50;
 
 @customElement("color-history")
 export class ColorHistory extends LitElement {
-  static styles = [tailwindStyles, styles];
+  static styles = [reducedMotionStyles, tailwindStyles, styles];
 
   @state()
   private history: Color[] = [];
@@ -28,6 +29,9 @@ export class ColorHistory extends LitElement {
   private clearedSnapshot: Color[] | null = null;
 
   private clearUndoTimer: ReturnType<typeof setTimeout> | null = null;
+
+  /** True while re-rendering an undo restore (suppresses swatch entrances). */
+  private restoring = false;
 
   constructor() {
     super();
@@ -94,10 +98,14 @@ export class ColorHistory extends LitElement {
 
   private undoClear() {
     if (!this.clearedSnapshot) return;
+    this.restoring = true;
     this.history = this.clearedSnapshot;
     this.clearedSnapshot = null;
     if (this.clearUndoTimer) clearTimeout(this.clearUndoTimer);
     this.saveToStorage();
+    void this.updateComplete.then(() => {
+      this.restoring = false;
+    });
   }
 
   private saveToStorage() {
@@ -137,7 +145,9 @@ export class ColorHistory extends LitElement {
           this.history.length === 0
             ? html`<p class="history-empty">No colors yet</p>`
             : html`
-                <div class="history-swatches">
+                <div
+                  class="history-swatches ${this.restoring ? "restoring" : ""}"
+                >
                   ${repeat(
                     this.history,
                     (color) => color,

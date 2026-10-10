@@ -9,6 +9,7 @@ vi.mock("../../styles/DragSurface", () => ({ dragSurfaceStyles: css`` }));
 
 import "./ColorPalette";
 import type { ColorPalette } from "./ColorPalette";
+import { Color, ColorInputType } from "../../lib/Color";
 
 // jsdom has no ResizeObserver; ColorPalette uses one in connectedCallback.
 // Without this stub the custom-element reaction error surfaces as an
@@ -69,5 +70,28 @@ describe("ColorPalette Space shortcut (issue #73)", () => {
   it("ignores Space with modifiers or key repeat", () => {
     expect(spaceEvent(el, { ctrlKey: true }).defaultPrevented).toBe(false);
     expect(spaceEvent(el, { repeat: true }).defaultPrevented).toBe(false);
+  });
+
+  it("keeps swatch DOM nodes stable while the active color is edited (round-2 regression)", async () => {
+    const swatch = el.shadowRoot!.querySelector(
+      ".palette-swatch",
+    ) as HTMLElement;
+    swatch.click(); // activates the swatch
+    await el.updateComplete;
+
+    const before = el.shadowRoot!.querySelector(".palette-swatch");
+    // ColorPicker pushes a NEW Color instance on every drag frame; the keyed
+    // repeat() must update in place instead of recreating (re-animating) the
+    // swatch node.
+    el.activeEditingColor = new Color({
+      type: ColorInputType.RGB255,
+      r: 10,
+      g: 20,
+      b: 30,
+    });
+    await el.updateComplete;
+    await el.updateComplete;
+    const after = el.shadowRoot!.querySelector(".palette-swatch");
+    expect(after).toBe(before);
   });
 });

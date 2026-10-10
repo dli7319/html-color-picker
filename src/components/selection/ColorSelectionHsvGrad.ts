@@ -5,6 +5,7 @@ import { clamp } from "../../lib/utils/math";
 import { Color, ColorInputType } from "../../lib/Color";
 import { styles } from "../../styles/ColorSelectionTypeA.css";
 import { dragSurfaceStyles } from "../../styles/DragSurface";
+import { reducedMotionStyles } from "../../styles/Motion";
 import { ColorSelectionBase } from "./ColorSelectionBase";
 import { DragController } from "../../controllers/DragController";
 import "./ColorSelectionHsvBar";
@@ -12,6 +13,7 @@ import "./ColorSelectionHsvBar";
 @customElement("color-selection-hsv-grad")
 export class ColorSelectionHsvGrad extends ColorSelectionBase {
   static styles = [
+    reducedMotionStyles,
     styles,
     dragSurfaceStyles,
     css`

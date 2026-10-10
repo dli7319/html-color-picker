@@ -4,6 +4,7 @@ import { createRef, ref, Ref } from "lit/directives/ref.js";
 
 import { styles } from "../../styles/ImageSampling.css";
 import { dragSurfaceStyles } from "../../styles/DragSurface";
+import { reducedMotionStyles } from "../../styles/Motion";
 import { tailwindStyles } from "../../styles/Tailwind";
 import { Color, ColorInputType } from "../../lib/Color";
 import { Coordinates } from "../../lib/Coordinates";
@@ -32,7 +33,12 @@ const overlaySizeToRem = {
 
 @customElement("image-sampling")
 export class ImageSampling extends LitElement {
-  static styles = [tailwindStyles, styles, dragSurfaceStyles];
+  static styles = [
+    reducedMotionStyles,
+    tailwindStyles,
+    styles,
+    dragSurfaceStyles,
+  ];
 
   @property({ attribute: false })
   coordinates: Coordinates = { x: 0, y: 0, width: 0, height: 0 };

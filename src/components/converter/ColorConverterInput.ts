@@ -2,6 +2,7 @@ import { css, html, LitElement } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import { tailwindStyles } from "../../styles/Tailwind";
+import { reducedMotionStyles } from "../../styles/Motion";
 import { Color } from "../../lib/Color";
 import { parseColorString } from "../../lib/ColorStringParsing";
 import { ColorConverterInputEvent } from "../../events/ColorConverterInputEvent";
@@ -53,6 +54,7 @@ const colorToString = {
 @customElement("color-converter-input")
 export class ColorConverterInput extends LitElement {
   static styles = [
+    reducedMotionStyles,
     tailwindStyles,
     css`
       .copied-icon {

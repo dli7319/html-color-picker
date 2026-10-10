@@ -3,6 +3,7 @@ import { customElement, property, query } from "lit/decorators.js";
 
 import { tailwindStyles } from "../../styles/Tailwind";
 import { dragSurfaceStyles } from "../../styles/DragSurface";
+import { reducedMotionStyles } from "../../styles/Motion";
 import { Color, ColorInputType } from "../../lib/Color";
 import { ColorSelectionBase } from "../selection/ColorSelectionBase";
 import { clamp } from "../../lib/utils/math";
@@ -15,7 +16,7 @@ const CLOSE_COLOR_DISTANCE = 30;
 
 @customElement("color-map")
 export class ColorMap extends ColorSelectionBase {
-  static styles = [tailwindStyles, dragSurfaceStyles];
+  static styles = [reducedMotionStyles, tailwindStyles, dragSurfaceStyles];
 
   @property({ attribute: false })
   data: number[][] = [[0, 0, 0]];

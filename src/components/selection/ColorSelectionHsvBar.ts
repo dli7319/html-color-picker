@@ -5,13 +5,14 @@ import { clamp } from "../../lib/utils/math";
 import { Color, ColorInputType } from "../../lib/Color";
 import { styles } from "../../styles/ColorSelectionTypeA.css";
 import { dragSurfaceStyles } from "../../styles/DragSurface";
+import { reducedMotionStyles } from "../../styles/Motion";
 import { ColorSelectionBase } from "./ColorSelectionBase";
 import { DragController } from "../../controllers/DragController";
 import "./ColorBarPointer";
 
 @customElement("color-selection-hsv-bar")
 export class ColorSelectionHsvBar extends ColorSelectionBase {
-  static styles = [styles, dragSurfaceStyles];
+  static styles = [reducedMotionStyles, styles, dragSurfaceStyles];
 
   @query("#color-bar")
   colorBar!: HTMLDivElement;

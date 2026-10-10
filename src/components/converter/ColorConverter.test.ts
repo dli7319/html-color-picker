@@ -209,4 +209,38 @@ describe("ColorConverter", () => {
     // Child should now reflect the new color
     expect(child.color.getRGB255()).toEqual([0, 0, 255]);
   });
+
+  // ---------------------------------------------------------------
+  // 11. Raw input echo vs external color changes
+  // ---------------------------------------------------------------
+  it("keeps the raw input echo for the typed color but drops it on external color changes", async () => {
+    const el = document.createElement(TAG) as ColorConverter;
+    const child = document.createElement(
+      "color-converter-input",
+    ) as ColorConverterInput;
+    child.setAttribute("type", "HEX");
+    el.appendChild(child);
+    document.body.appendChild(el);
+    await el.updateComplete;
+
+    // User types a valid color: the raw string is echoed back to the input.
+    el.dispatchEvent(new ColorConverterInputEvent(InputType.HEX, "#3366CC"));
+    await el.updateComplete;
+    expect(el.inputValues).toEqual({ hexValue: "#3366CC" });
+
+    // The color round-trip from our own parse keeps the echo.
+    el.color = rgb(51, 102, 204);
+    await el.updateComplete;
+    await el.updateComplete;
+    expect(el.inputValues).toEqual({ hexValue: "#3366CC" });
+
+    // An external color change (drag, history, image sampling) must not be
+    // shadowed by the stale echo.
+    el.color = rgb(13, 13, 13);
+    await el.updateComplete;
+    await el.updateComplete;
+    expect(el.inputValues).toEqual({});
+    expect(child.inputValues).toEqual({});
+    expect(child.color.getRGB255()).toEqual([13, 13, 13]);
+  });
 });

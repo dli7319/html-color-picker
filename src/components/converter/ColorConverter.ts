@@ -1,4 +1,4 @@
-import { html, LitElement } from "lit";
+import { html, LitElement, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import { tailwindStyles } from "../../styles/Tailwind";
@@ -43,6 +43,9 @@ export class ColorConverter extends LitElement {
   @state()
   inputValues: InputValues = {};
 
+  /** Canonical hex of the raw value most recently echoed back from typing. */
+  private echoedHex: string | null = null;
+
   constructor() {
     super();
     this.addEventListener(ColorConverterInputEvent.eventName, (event) => {
@@ -50,6 +53,7 @@ export class ColorConverter extends LitElement {
         const { inputType, value } = event;
         const parsedColor = typeToParseFunction[inputType](value);
         if (parsedColor != null) {
+          this.echoedHex = parsedColor.getHex();
           this.setColor(parsedColor);
           this.dispatchEvent(new ColorPickerCommitColorEvent(parsedColor));
           this.inputValues = {
@@ -71,8 +75,20 @@ export class ColorConverter extends LitElement {
     });
   }
 
-  updated() {
+  updated(changedProperties: PropertyValues) {
+    if (changedProperties.has("color") && !this.isEchoedColorUpdate()) {
+      // External color change (drag, history, image sampling): drop the raw
+      // input echo so every input reflects the new color instead of the
+      // stale text last typed into one of them.
+      this.inputValues = {};
+      this.echoedHex = null;
+    }
     this.updateChildren();
+  }
+
+  /** True when the incoming color is the one just parsed from user typing. */
+  private isEchoedColorUpdate(): boolean {
+    return this.echoedHex !== null && this.color.getHex() === this.echoedHex;
   }
 
   render() {

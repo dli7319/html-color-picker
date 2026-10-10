@@ -8,6 +8,7 @@ npm run dev              # dev server with hot-reload at localhost:8080
 npm run build            # production build → dist/ (main.js, sw.js, copied public/ assets)
 npm test                 # run vitest test suite (625 tests, ~8s)
 npm run test:coverage    # run tests with coverage report
+npm run typecheck        # tsc --noEmit — strict type check, also runs in CI
 npm run lint             # oxlint
 npm run format           # prettier --write src/**/*.ts *.ts scripts/**/*.ts
 uv run --with cairosvg python scripts/generate-icons.py   # dev-only: rebuild PWA icons (PNGs are committed)
@@ -125,6 +126,7 @@ dist/
 Before making any git commit, run the full quality pipeline and verify it passes:
 
 ```bash
+npm run typecheck     # zero tsc errors
 npm test              # all 607 tests must pass
 npm run lint          # zero oxlint errors
 npm run format        # prettier formatting

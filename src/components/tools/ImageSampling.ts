@@ -46,14 +46,22 @@ export class ImageSampling extends LitElement {
   @state()
   loadedImage = false;
 
+  /** True once a pixel has been sampled — the overlay stays hidden before. */
+  @state()
+  private hasSample = false;
+
+  @state()
+  private loadError = "";
+
+  @state()
+  private lastSampledColor: Color | null = null;
+
   canvasRef: Ref<HTMLCanvasElement> = createRef();
 
   constructor() {
     super();
     this.overlayColor = this.initialOverlayColor;
   }
-
-  private lastSampledColor: Color = new Color();
 
   private samplePixel(e: MouseEvent) {
     const canvas = this.canvasRef.value!;
@@ -70,6 +78,7 @@ export class ImageSampling extends LitElement {
         b: imageData.data[2],
       });
       this.lastSampledColor = color;
+      this.hasSample = true;
       this.dispatchEvent(new ColorPickerSetColorEvent(color));
       this.dispatchEvent(
         new ColorPickerSetCoordinatesEvent({
@@ -86,18 +95,27 @@ export class ImageSampling extends LitElement {
     onDragStart: (e: MouseEvent) => this.samplePixel(e),
     onDrag: (e: MouseEvent) => this.samplePixel(e),
     onDragEnd: () => {
-      this.dispatchEvent(
-        new ColorPickerCommitColorEvent(this.lastSampledColor),
-      );
+      if (this.lastSampledColor) {
+        this.dispatchEvent(
+          new ColorPickerCommitColorEvent(this.lastSampledColor),
+        );
+      }
     },
   });
 
   loadImage(e: Event) {
     const file = (e.currentTarget as HTMLInputElement).files?.item(0);
     if (file) {
+      this.loadError = "";
       const reader = new FileReader();
+      reader.onerror = () => {
+        this.loadError = "Couldn't read this file — choose a PNG or JPEG.";
+      };
       reader.onload = (e) => {
         const img = new Image();
+        img.onerror = () => {
+          this.loadError = "Couldn't load this file — choose a PNG or JPEG.";
+        };
         img.onload = () => {
           const canvas = this.canvasRef.value!;
           const ctx = canvas.getContext("2d");
@@ -125,8 +143,15 @@ export class ImageSampling extends LitElement {
   }
 
   render() {
-    const xPercent = (this.coordinates.x / this.coordinates.width) * 100;
-    const yPercent = (this.coordinates.y / this.coordinates.height) * 100;
+    // Guard against the default {width: 0, height: 0} coordinates (issue #78).
+    const xPercent =
+      this.coordinates.width > 0
+        ? (this.coordinates.x / this.coordinates.width) * 100
+        : 0;
+    const yPercent =
+      this.coordinates.height > 0
+        ? (this.coordinates.y / this.coordinates.height) * 100
+        : 0;
     const overlayStyle = `
       border-color: ${this.overlayColor};
       top: calc(${yPercent}% - var(--circle-diameter) / 2);
@@ -139,8 +164,19 @@ export class ImageSampling extends LitElement {
         <input
           class="block w-full text-xs text-gray-800 bg-white/50 backdrop-blur-md rounded-lg cursor-pointer focus:outline-none file:mr-3 file:py-1.5 file:px-3 file:border-0 file:text-xs file:font-semibold file:bg-white/80 file:text-gray-800 hover:file:bg-white"
           type="file"
+          accept="image/*"
           @change=${this.loadImage}
         />
+        <p class="text-[10px] text-gray-600 mt-1 text-left">
+          Upload an image, then click or drag on it to sample colors.
+        </p>
+        ${
+          this.loadError
+            ? html`<p class="text-[10px] text-red-600 mt-1 text-left">
+                ${this.loadError}
+              </p>`
+            : ""
+        }
       </div>
       <div class="flex gap-2 mb-2">
         <div
@@ -153,6 +189,7 @@ export class ImageSampling extends LitElement {
           <select
             class="w-full text-xs font-medium text-gray-800 bg-transparent outline-none cursor-pointer"
             aria-label="Select Overlay Color"
+            ?disabled=${!this.loadedImage}
             @change=${this.selectOverlayColor}
           >
             <option
@@ -185,6 +222,7 @@ export class ImageSampling extends LitElement {
           <select
             class="w-full text-xs font-medium text-gray-800 bg-transparent outline-none cursor-pointer"
             aria-label="Select Overlay Size"
+            ?disabled=${!this.loadedImage}
             @change=${this.selectOverlaySize}
           >
             <option
@@ -218,10 +256,21 @@ export class ImageSampling extends LitElement {
         ></canvas>
         <div
           class="image-preview-overlay"
-          ?hidden=${!this.loadedImage}
+          ?hidden=${!this.loadedImage || !this.hasSample}
           style=${overlayStyle}
         ></div>
       </div>
+      ${
+        this.hasSample && this.lastSampledColor
+          ? html`<div class="sampled-readout">
+              <span
+                class="sampled-swatch"
+                style="background: #${this.lastSampledColor.getHex()}"
+              ></span>
+              <code>#${this.lastSampledColor.getHex().toUpperCase()}</code>
+            </div>`
+          : ""
+      }
     `;
   }
 }

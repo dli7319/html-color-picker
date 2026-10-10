@@ -129,13 +129,14 @@ export class ImageSampling extends LitElement {
       this.loadError = "";
       const reader = new FileReader();
       reader.onerror = () => {
-        this.loadError = "Couldn't read this file — choose a PNG or JPEG.";
+        this.loadError = "That file couldn't be opened. Try a different image.";
         this.resetImageState();
       };
       reader.onload = (e) => {
         const img = new Image();
         img.onerror = () => {
-          this.loadError = "Couldn't load this file — choose a PNG or JPEG.";
+          this.loadError =
+            "That file couldn't be opened. Try a different image.";
           this.resetImageState();
         };
         img.onload = () => {
@@ -190,7 +191,11 @@ export class ImageSampling extends LitElement {
           @change=${this.loadImage}
         />
         <p class="text-[11px] text-gray-800 mt-1 text-left">
-          Upload an image, then click or drag on it to sample colors.
+          ${
+            this.loadedImage
+              ? "Click or drag on the image to sample colors."
+              : "Choose an image to start sampling — files stay on your device."
+          }
         </p>
         ${
           this.loadError

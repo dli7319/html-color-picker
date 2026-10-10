@@ -205,6 +205,10 @@ export class ColorInterpolation extends LitElement {
         Click a color swatch to set an endpoint, then drag along a gradient to
         pick a color in between.
       </p>
+      <p class="text-[11px] text-gray-800 mb-2">
+        HSL* interpolates hue along the shortest path. LCH is a perceptually
+        uniform Lab-based space.
+      </p>
       <div class="flex justify-center gap-6 my-2">
         <button
           type="button"
@@ -248,7 +252,7 @@ export class ColorInterpolation extends LitElement {
                 }</span
               >
               <div
-                class="gradient flex-1 rounded relative overflow-visible cursor-crosshair h-6 shadow-inner drag-surface"
+                class="gradient flex-1 rounded relative overflow-visible cursor-crosshair h-6 shadow-inner drag-surface drag-surface-pan-y"
                 style="background: ${this.colorGradient.getBackgroundImageStyle(
                   lerpMode,
                 )}"

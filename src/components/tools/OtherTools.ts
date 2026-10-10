@@ -9,7 +9,7 @@ export class OtherTools extends LitElement {
 
   render() {
     return html`
-      <h5 class="text-lg font-semibold text-gray-800 mb-2">Other Tools</h5>
+      <h5 class="text-lg font-semibold text-gray-800 mb-2">Resources</h5>
       <ul class="list-none text-left space-y-2 text-sm">
         ${[...this.children].map((child) => {
           if (child instanceof HTMLAnchorElement) {

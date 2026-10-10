@@ -88,7 +88,7 @@ export class ColorSelectionHslBar extends ColorSelectionBase {
     const backgroundStyle = backgroundStyleArray.join("\n");
     return html`
       <div
-        class="color-bar drag-surface"
+        class="color-bar drag-surface drag-surface-pan-y"
         @pointerdown=${this.drag.handlePointerDown}
         @keydown=${this.handleKeydown}
         id="color-bar"

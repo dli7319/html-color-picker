@@ -147,12 +147,14 @@ describe("ColorHistory", () => {
   // ---------------------------------------------------------------
   // 3. Empty-state text
   // ---------------------------------------------------------------
-  it('shows "No colors yet" when history is empty', async () => {
+  it("shows a guiding empty state when history is empty", async () => {
     const { el } = setupInPicker();
     await el.updateComplete;
     const emptyMsg = el.shadowRoot!.querySelector(".history-empty");
     expect(emptyMsg).not.toBeNull();
-    expect(emptyMsg!.textContent).toBe("No colors yet");
+    expect(emptyMsg!.textContent).toContain(
+      "Colors you pick or sample collect here",
+    );
   });
 
   // ---------------------------------------------------------------

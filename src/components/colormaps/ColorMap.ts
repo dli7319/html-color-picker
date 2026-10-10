@@ -139,7 +139,7 @@ export class ColorMap extends ColorSelectionBase {
         >
         <div
           style="background: ${this.toCss()}"
-          class="w-full h-8 rounded relative cursor-crosshair drag-surface"
+          class="w-full h-8 rounded relative cursor-crosshair drag-surface drag-surface-pan-y"
           @pointerdown=${this.drag.handlePointerDown}
           @keydown=${this.handleKeydown}
           id="colormap-div"

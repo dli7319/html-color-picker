@@ -23,6 +23,14 @@ export enum InputType {
   HSL = "HSL",
 }
 
+const inputTypeToHint = {
+  [InputType.HEX]: "Enter hex like #FF8800",
+  [InputType.RGB255]: "Enter RGB like 255, 128, 0",
+  [InputType.RGB01]: "Enter values 0-1 like 0.5, 0.2, 0.1",
+  [InputType.HSV]: "Enter HSV like 210, 80, 70",
+  [InputType.HSL]: "Enter HSL like 210, 50, 40",
+};
+
 const inputTypeToLabel = {
   [InputType.HEX]: "Hex",
   [InputType.RGB255]: "RGB (0-255)",
@@ -163,15 +171,15 @@ export class ColorConverterInput extends LitElement {
       colorToString[this.type](this.color);
     const copyLabel = `Copy ${inputTypeToLabel[this.type]}`;
     const inputClass = this._invalid
-      ? "w-full text-xs font-mono text-gray-800 outline-none bg-transparent rounded border border-red-500"
-      : "w-full text-xs font-mono text-gray-800 outline-none bg-transparent";
+      ? "w-full text-[13px] font-mono text-gray-800 outline-none bg-transparent rounded border-2 border-red-600"
+      : "w-full text-[13px] font-mono text-gray-800 outline-none bg-transparent";
     return html`
       <div
         class="flex items-stretch rounded-lg bg-white/50 backdrop-blur-md overflow-hidden text-left"
       >
         <div class="flex-1 px-2 py-1">
           <label
-            class="block text-[10px] font-semibold text-gray-700 uppercase tracking-wider"
+            class="block text-[11px] font-semibold text-gray-700 uppercase tracking-wider"
             for="color-input-${this.type}"
             >${inputTypeToLabel[this.type]}</label
           >
@@ -191,11 +199,7 @@ export class ColorConverterInput extends LitElement {
             class="text-[11px] text-red-800 font-medium mt-0.5 min-h-[14px]"
             aria-live="polite"
           >
-            ${
-              this._invalid
-                ? `Not a valid ${inputTypeToLabel[this.type]} value`
-                : ""
-            }
+            ${this._invalid ? inputTypeToHint[this.type] : ""}
           </p>
         </div>
         <div class="flex items-center px-2 bg-white/30">

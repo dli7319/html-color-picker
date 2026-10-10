@@ -111,6 +111,18 @@
   box-shadow: 0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.1);
 }
 
+@media (pointer: coarse) {
+  .palette-contrast-btn {
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+    font-size: 0.75rem;
+  }
+  .palette-action-btn {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+}
+
 @keyframes palette-swatch-in {
   from {
     opacity: 0;

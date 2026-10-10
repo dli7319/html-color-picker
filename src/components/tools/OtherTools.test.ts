@@ -32,7 +32,7 @@ describe("OtherTools", () => {
 
       const heading = el.shadowRoot!.querySelector("h5");
       expect(heading).not.toBeNull();
-      expect(heading!.textContent).toBe("Other Tools");
+      expect(heading!.textContent).toBe("Resources");
 
       document.body.removeChild(el);
     });

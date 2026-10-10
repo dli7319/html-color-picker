@@ -104,11 +104,29 @@ export class ColorPalette extends LitElement {
   }
 
   private handleSpacebar = (e: KeyboardEvent) => {
-    const tag = (e.target as HTMLElement).tagName;
-    if (e.code === "Space" && tag !== "INPUT" && tag !== "TEXTAREA") {
-      e.preventDefault();
-      this.regenerate();
+    if (e.code !== "Space" || e.repeat || e.ctrlKey || e.metaKey || e.altKey) {
+      return;
     }
+    // composedPath()[0] is the real target — e.target is retargeted to the
+    // host for events from shadow DOM (issue #73).
+    const first = e.composedPath()[0];
+    const el = first instanceof HTMLElement ? first : null;
+    if (
+      el &&
+      (el.tagName === "INPUT" ||
+        el.tagName === "TEXTAREA" ||
+        el.tagName === "SELECT" ||
+        el.tagName === "BUTTON" ||
+        el.getAttribute("role") === "button" ||
+        el.isContentEditable)
+    ) {
+      return;
+    }
+    // The shortcut only fires for gestures inside this panel — Space must
+    // keep scrolling the page everywhere else (issue #73).
+    if (!e.composedPath().includes(this)) return;
+    e.preventDefault();
+    this.regenerate();
   };
 
   private regenerate() {

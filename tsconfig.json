@@ -29,8 +29,10 @@
   "include": [
     "rolldown.config.ts",
     "rolldown.sw.config.ts",
+    "playwright.config.ts",
     "scripts/**/*.ts",
-    "src/**/*"
+    "src/**/*",
+    "tests/e2e/**/*"
   ],
   "exclude": ["node_modules", "build"] // *** The files to not type check ***
 }

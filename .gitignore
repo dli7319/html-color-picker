@@ -105,3 +105,6 @@ dist
 
 !dist/index.html
 .rollup.cache
+# Playwright
+test-results/
+playwright-report/

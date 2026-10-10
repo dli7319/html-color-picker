@@ -10,8 +10,9 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit",
+    "test:e2e": "playwright test",
     "lint": "oxlint",
-    "format": "prettier --write \"src/**/*.ts\" \"*.ts\" \"scripts/**/*.ts\"",
+    "format": "prettier --write \"src/**/*.ts\" \"*.ts\" \"scripts/**/*.ts\" \"tests/**/*.ts\"",
     "dev": "node scripts/copy-static.ts && rolldown -c rolldown.config.ts --watch --environment NODE_ENV:development"
   },
   "repository": {
@@ -30,6 +31,7 @@
     "lit": "^3.3.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.0",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^26.6.4",
     "@vitest/coverage-v8": "^5.0.3",

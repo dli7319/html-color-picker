@@ -282,17 +282,16 @@ describe("ColorMap", () => {
       document.body.removeChild(el);
     });
 
-    it("does not show <color-bar-pointer> when color is far from all data points", async () => {
+    it("dims <color-bar-pointer> when color is far from all data points (round-2: marker always visible)", async () => {
       const el = document.createElement("color-map") as ColorMap;
-      // data is black -> white gradient; pure red has distance ~208 from closest point
       el.data = gradient256;
-      el.color = rgb(255, 0, 0);
+      el.color = rgb(128, 0, 128); // far from the gradient's extremes
       document.body.appendChild(el);
       await el.updateComplete;
 
       const pointer = el.shadowRoot!.querySelector("color-bar-pointer");
-      expect(pointer).toBeNull();
-
+      expect(pointer).not.toBeNull();
+      expect(pointer!.getAttribute("style")).toContain("opacity: 0.45");
       document.body.removeChild(el);
     });
   });

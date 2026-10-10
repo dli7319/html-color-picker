@@ -98,6 +98,7 @@ export class ColorSelectionHslBar extends ColorSelectionBase {
         aria-valuemin="0"
         aria-valuemax="100"
         aria-valuenow=${Math.round(lightness)}
+        aria-valuetext="Lightness ${Math.round(lightness)} percent"
         style=${backgroundStyle}
       >
         <color-bar-pointer

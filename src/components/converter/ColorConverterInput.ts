@@ -106,12 +106,20 @@ export class ColorConverterInput extends LitElement {
     }
   }
 
+  private previewTimer: ReturnType<typeof setTimeout> | null = null;
+
   onValueChange(event: Event) {
     const value = (event.target as HTMLInputElement).value;
     // Live preview while typing; invalid text is simply not applied yet.
     if (parseColorString(this.type, value) == null) return;
     this._invalid = false;
-    this.dispatchEvent(new ColorConverterInputEvent(this.type, value));
+    // Debounce the preview so intermediate parses don't swing the whole app
+    // on every keystroke (round-2 review).
+    if (this.previewTimer) clearTimeout(this.previewTimer);
+    this.previewTimer = setTimeout(() => {
+      this.previewTimer = null;
+      this.dispatchEvent(new ColorConverterInputEvent(this.type, value));
+    }, 200);
   }
 
   /** Runs when a value settles (blur or Enter): commit valid, flag invalid. */
@@ -195,7 +203,12 @@ export class ColorConverterInput extends LitElement {
             class="p-1.5 rounded-md hover:bg-white/50 transition-colors cursor-pointer border-none bg-transparent"
             ?disabled=${this._invalid}
             @click=${() =>
-              this._copyValue(colorToString[this.type](this.color))}
+              this._copyValue(
+                // Copy what the user sees when it parses (round-2 review).
+                parseColorString(this.type, value) != null
+                  ? value
+                  : colorToString[this.type](this.color),
+              )}
             title=${copyLabel}
             aria-label=${copyLabel}
           >

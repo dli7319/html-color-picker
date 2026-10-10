@@ -107,6 +107,24 @@ export class ColorInterpolation extends LitElement {
     }
   };
 
+  /** Arrow keys sample along a focused ramp (round-2 review). */
+  private handleRampKeydown = (e: KeyboardEvent, lerpMode: never) => {
+    const step = e.shiftKey ? 0.001 : 0.01;
+    switch (e.key) {
+      case "ArrowLeft":
+        this.activeRatio = Math.max(0, this.activeRatio - step);
+        break;
+      case "ArrowRight":
+        this.activeRatio = Math.min(1, this.activeRatio + step);
+        break;
+      default:
+        return;
+    }
+    e.preventDefault();
+    this.setColor(this.colorGradient.getColorAt(this.activeRatio, lerpMode));
+    this.commitColor();
+  };
+
   private drag = new DragController(this, {
     onDragStart: (e: MouseEvent) => {
       this.selectedGradientDiv = e.currentTarget as HTMLDivElement;
@@ -184,22 +202,31 @@ export class ColorInterpolation extends LitElement {
         Color Interpolation
       </h5>
       <p class="text-[11px] text-gray-800 mb-2">
-        Click an endpoint swatch to bind the picker to it; drag a gradient bar
-        to sample an interpolated color.
+        Click a color swatch to set an endpoint, then drag along a gradient to
+        pick a color in between.
       </p>
       <div class="flex justify-center gap-6 my-2">
-        <div
+        <button
+          type="button"
           class="color-selection cursor-pointer ${this.activeColor === ActiveColorSide.LEFT ? "active ring-2 ring-blue-600" : ""}"
           @click=${this.setActiveColorLeft}
           title="Set left endpoint color"
+          aria-label="Set left endpoint color"
+          aria-pressed=${
+            this.activeColor === ActiveColorSide.LEFT ? "true" : "false"
+          }
           style="background: #${this.leftColor.getHex()}"
-        ></div>
+        ></button>
         <div
           class="color-selection cursor-pointer ${this.activeColor === ActiveColorSide.RIGHT ? "active ring-2 ring-blue-600" : ""}"
           @click=${this.setActiveColorRight}
           title="Set right endpoint color"
+          aria-label="Set right endpoint color"
+          aria-pressed=${
+            this.activeColor === ActiveColorSide.RIGHT ? "true" : "false"
+          }
           style="background: #${this.rightColor.getHex()}"
-        ></div>
+        ></button>
       </div>
       <div class="flex flex-col gap-2 mt-3">
         ${this.gradients.map((gradient) => {
@@ -227,6 +254,14 @@ export class ColorInterpolation extends LitElement {
                 )}"
                 data-mode=${lerpMode}
                 title="Drag to pick an interpolated color"
+                tabindex="0"
+                role="slider"
+                aria-label="Gradient bar, arrows pick an interpolated color"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-valuenow=${Math.round(this.activeRatio * 100)}
+                @keydown=${(e: KeyboardEvent) =>
+                  this.handleRampKeydown(e, lerpMode as never)}
                 @pointerdown=${this.drag.handlePointerDown}
               >
                 ${

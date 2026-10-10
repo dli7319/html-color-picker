@@ -97,6 +97,8 @@ export class ColorConverter extends LitElement {
       Math.round(this.coordinates.x),
       Math.round(this.coordinates.y),
     ];
+    const floatPair = `(${floatCoordinatesRounded[0]}, ${floatCoordinatesRounded[1]})`;
+    const intPair = `(${intCoordinates[0]}, ${intCoordinates[1]})`;
     return html`
       <h5 class="text-lg font-semibold text-gray-800 mb-2">Color Converter</h5>
       <div
@@ -107,8 +109,14 @@ export class ColorConverter extends LitElement {
           id="coordinates-container"
           class="text-right text-gray-700 font-mono text-xs"
         >
-          (${floatCoordinatesRounded[0]}, ${floatCoordinatesRounded[1]})<br />
-          (${intCoordinates[0]}, ${intCoordinates[1]})
+          ${
+            this.coordinates.x === 0 &&
+            this.coordinates.y === 0 &&
+            this.coordinates.width <= 1
+              ? html`<span class="text-gray-500">—</span>`
+              : html`${floatPair} <span class="text-gray-500">norm</span><br />
+                  ${intPair} <span class="text-gray-500">px</span>`
+          }
         </div>
       </div>
       <slot class="flex flex-col gap-2 inputs-container"></slot>

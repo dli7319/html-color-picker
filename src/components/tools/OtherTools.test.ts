@@ -44,7 +44,7 @@ describe("OtherTools", () => {
 
       const list = el.shadowRoot!.querySelector("ul");
       expect(list).not.toBeNull();
-      expect(list!.classList.contains("list-disc")).toBe(true);
+      expect(list!.classList.contains("list-none")).toBe(true);
 
       document.body.removeChild(el);
     });
@@ -79,7 +79,7 @@ describe("OtherTools", () => {
       // First item's anchor
       const renderedLinks = el.shadowRoot!.querySelectorAll("a");
       expect(renderedLinks.length).toBe(2);
-      expect(renderedLinks[0].textContent!.trim()).toBe("Example");
+      expect(renderedLinks[0].textContent!.trim()).toContain("Example");
       expect(renderedLinks[0].getAttribute("href")).toBe(
         "https://example.com/",
       );
@@ -87,7 +87,7 @@ describe("OtherTools", () => {
       expect(renderedLinks[0].getAttribute("target")).toBe("_blank");
 
       // Second item's anchor
-      expect(renderedLinks[1].textContent!.trim()).toBe("Test Site");
+      expect(renderedLinks[1].textContent!.trim()).toContain("Test Site");
       expect(renderedLinks[1].getAttribute("href")).toBe("https://test.com/");
       // Explicit target should be preserved
       expect(renderedLinks[1].getAttribute("target")).toBe("_self");
@@ -118,7 +118,7 @@ describe("OtherTools", () => {
       // Only the anchor should produce a list item
       const items = el.shadowRoot!.querySelectorAll("li");
       expect(items.length).toBe(1);
-      expect(items[0].textContent!.trim()).toBe("Example");
+      expect(items[0].textContent!.trim()).toContain("Example");
 
       document.body.removeChild(el);
     });

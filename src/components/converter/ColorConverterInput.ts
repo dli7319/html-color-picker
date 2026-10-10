@@ -3,6 +3,7 @@ import { customElement, property, state } from "lit/decorators.js";
 
 import { tailwindStyles } from "../../styles/Tailwind";
 import { Color } from "../../lib/Color";
+import { parseColorString } from "../../lib/ColorStringParsing";
 import { ColorConverterInputEvent } from "../../events/ColorConverterInputEvent";
 
 export interface InputValues {
@@ -63,7 +64,13 @@ export class ColorConverterInput extends LitElement {
   @state()
   private _copied = false;
 
+  @state()
+  private _invalid = false;
+
   private _copyTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  /** Last settled value — guards against duplicate commits (issue #72). */
+  private _lastSettled: string | null = null;
 
   private async _copyValue(value: string) {
     try {
@@ -74,23 +81,59 @@ export class ColorConverterInput extends LitElement {
         this._copied = false;
       }, 1000);
     } catch {
-      // Clipboard write failed — silently ignore
+      // Clipboard write failed (e.g. non-secure context) — select the text
+      // so the user can copy manually instead of failing silently (issue #83).
+      this.shadowRoot?.querySelector("input")?.select();
     }
   }
 
   onValueChange(event: Event) {
-    this.dispatchEvent(
-      new ColorConverterInputEvent(
-        this.type,
-        (event.target as HTMLInputElement).value,
-      ),
-    );
+    const value = (event.target as HTMLInputElement).value;
+    // Live preview while typing; invalid text is simply not applied yet.
+    if (parseColorString(this.type, value) == null) return;
+    this._invalid = false;
+    this.dispatchEvent(new ColorConverterInputEvent(this.type, value));
+  }
+
+  /** Runs when a value settles (blur or Enter): commit valid, flag invalid. */
+  private settle() {
+    const input = this.shadowRoot?.querySelector("input");
+    if (!input) return;
+    const value = input.value;
+    if (value === this._lastSettled) return;
+    if (parseColorString(this.type, value) != null) {
+      this._lastSettled = value;
+      this._invalid = false;
+      this.dispatchEvent(new ColorConverterInputEvent(this.type, value, true));
+    } else {
+      this._invalid = true;
+    }
+  }
+
+  /** Esc: revert to the canonical value of the current color. */
+  private revert() {
+    const canonical = colorToString[this.type](this.color);
+    this._lastSettled = canonical;
+    this._invalid = false;
+    this.dispatchEvent(new ColorConverterInputEvent(this.type, canonical));
+  }
+
+  private onKeydown(event: KeyboardEvent) {
+    if (event.key === "Enter") {
+      this.settle();
+    } else if (event.key === "Escape") {
+      this.revert();
+    }
   }
 
   render() {
     const value =
       this.inputValues[inputTypeToInputValueKey[this.type]] ??
       colorToString[this.type](this.color);
+    const copyLabel = `Copy ${inputTypeToLabel[this.type]}`;
+    const inputClass = this._invalid
+      ? "w-full text-xs font-mono text-gray-800 outline-none bg-transparent rounded border border-red-500"
+      : "w-full text-xs font-mono text-gray-800 outline-none bg-transparent";
     return html`
       <div
         class="flex items-stretch rounded-lg bg-white/50 backdrop-blur-md overflow-hidden text-left"
@@ -102,18 +145,32 @@ export class ColorConverterInput extends LitElement {
           >
           <input
             type="text"
-            class="w-full text-xs font-mono text-gray-800 outline-none bg-transparent"
+            class=${inputClass}
             .value=${value}
+            aria-invalid=${this._invalid ? "true" : "false"}
             @input=${this.onValueChange}
+            @change=${this.settle}
+            @keydown=${this.onKeydown}
           />
+          ${
+            this._invalid
+              ? html`<p class="text-[10px] text-red-600 mt-0.5">
+                  Not a valid ${inputTypeToLabel[this.type]} value
+                </p>`
+              : ""
+          }
         </div>
         <div class="flex items-center px-2 bg-white/30">
           <button
             class="p-1.5 rounded-md hover:bg-white/50 transition-colors cursor-pointer border-none bg-transparent"
-            @click=${() => this._copyValue(value)}
-            title="Copy to clipboard"
-            aria-label="Copy to clipboard"
+            @click=${() =>
+              this._copyValue(colorToString[this.type](this.color))}
+            title=${copyLabel}
+            aria-label=${copyLabel}
           >
+            <span class="sr-only" aria-live="polite"
+              >${this._copied ? "Copied" : ""}</span
+            >
             ${
               this._copied
                 ? html`<svg

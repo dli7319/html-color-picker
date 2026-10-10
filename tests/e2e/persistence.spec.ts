@@ -8,6 +8,8 @@ test("color and history survive a reload", async ({ page }) => {
 
   // Commit a color through the converter (parse -> SetColor + CommitColor).
   await hexInput.fill(TYPED_HEX);
+  // Enter settles the value so it commits (issue #72).
+  await hexInput.press("Enter");
   await expect(
     page.locator('color-history .history-swatch[title="#3366CC"]'),
   ).toBeVisible();

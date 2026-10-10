@@ -4,9 +4,44 @@ const hexRegex = /^#?([0-9a-fA-F]{3}(?:[0-9a-fA-F]{3})?)$/;
 const rgb255Regex = /^(\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})$/;
 const floatTripletRegex =
   /^([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+\s*([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),+\s*([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)$/;
+const functionWrapperRegex = /^(?:rgba?|hsla?|hsva?)\((.*)\)$/i;
+
+export type ColorInputKind = "HEX" | "RGB255" | "RGB01" | "HSV" | "HSL";
+
+/**
+ * Strips CSS color-function syntax so real-world pastes parse:
+ * "rgb(51, 102, 204)" -> "51, 102, 204", "hsl(340, 45%, 31%)" -> "340, 45, 31".
+ */
+function normalizeColorInput(value: string): string {
+  let v = value.trim();
+  const match = functionWrapperRegex.exec(v);
+  if (match) v = match[1];
+  return v.replace(/%/g, "").trim();
+}
+
+/** Parses a color string for the given converter input kind, or null. */
+export function parseColorString(
+  inputType: ColorInputKind,
+  value: string,
+): Color | null {
+  switch (inputType) {
+    case "HEX":
+      return parseHexColor(value);
+    case "RGB255":
+      return parseRGB255Color(value);
+    case "RGB01":
+      return parseRGB01Color(value);
+    case "HSV":
+      return parseHSVColor(value);
+    case "HSL":
+      return parseHSLColor(value);
+    default:
+      return null;
+  }
+}
 
 export function parseHexColor(value: string) {
-  const match = hexRegex.exec(value);
+  const match = hexRegex.exec(normalizeColorInput(value));
   if (match && match.length === 2) {
     return new Color({
       type: ColorInputType.HEX,
@@ -17,7 +52,7 @@ export function parseHexColor(value: string) {
 }
 
 export function parseRGB255Color(value: string) {
-  const match = rgb255Regex.exec(value);
+  const match = rgb255Regex.exec(normalizeColorInput(value));
   if (match && match.length === 4) {
     const r = parseInt(match[1]);
     const g = parseInt(match[2]);
@@ -35,7 +70,7 @@ export function parseRGB255Color(value: string) {
 }
 
 export function parseRGB01Color(value: string) {
-  const match = floatTripletRegex.exec(value);
+  const match = floatTripletRegex.exec(normalizeColorInput(value));
   if (match && match.length === 4) {
     const r = parseFloat(match[1]);
     const g = parseFloat(match[2]);
@@ -53,7 +88,7 @@ export function parseRGB01Color(value: string) {
 }
 
 export function parseHSVColor(value: string) {
-  const match = floatTripletRegex.exec(value);
+  const match = floatTripletRegex.exec(normalizeColorInput(value));
   if (match && match.length === 4) {
     const h = parseFloat(match[1]);
     const s = parseFloat(match[2]);
@@ -71,7 +106,7 @@ export function parseHSVColor(value: string) {
 }
 
 export function parseHSLColor(value: string) {
-  const match = floatTripletRegex.exec(value);
+  const match = floatTripletRegex.exec(normalizeColorInput(value));
   if (match && match.length === 4) {
     const h = parseFloat(match[1]);
     const s = parseFloat(match[2]);

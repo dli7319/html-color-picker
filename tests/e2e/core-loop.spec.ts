@@ -21,6 +21,8 @@ test("typing a color syncs converter inputs, body background, and history", asyn
   await expect(page.locator("body")).toHaveCSS("background-color", DEFAULT_RGB);
 
   await hexInput(page).fill(TYPED_HEX);
+  // Enter settles the value so it commits to history (issue #72).
+  await hexInput(page).press("Enter");
 
   // All converter views agree on the typed color.
   await expect(
@@ -53,6 +55,7 @@ test("dragging the HSV surface drives the whole app state", async ({
 }) => {
   await page.goto("/");
   await hexInput(page).fill(TYPED_HEX);
+  await hexInput(page).press("Enter");
   await expect(page.locator("body")).toHaveCSS(
     "background-color",
     TYPED_RGB_CSS,

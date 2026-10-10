@@ -4,6 +4,7 @@ import { customElement, property, state } from "lit/decorators.js";
 import { Color } from "../../lib/Color";
 import { ColorGradient } from "../../lib/ColorGradient";
 import { styles } from "../../styles/ColorInterpolation.css";
+import { dragSurfaceStyles } from "../../styles/DragSurface";
 import { tailwindStyles } from "../../styles/Tailwind";
 import { ColorPickerSetColorEvent } from "../../events/ColorPickerSetColorEvent";
 import { ColorPickerCommitColorEvent } from "../../events/ColorPickerCommitColorEvent";
@@ -29,7 +30,7 @@ const STORAGE_KEY = "color-interpolation-ui-store";
 
 @customElement("color-interpolation")
 export class ColorInterpolation extends LitElement {
-  static styles = [tailwindStyles, styles];
+  static styles = [tailwindStyles, styles, dragSurfaceStyles];
 
   @property()
   activeColor: ActiveColorSide = ActiveColorSide.NONE;
@@ -204,12 +205,12 @@ export class ColorInterpolation extends LitElement {
                 >${gradient.typeName || gradient.type}</span
               >
               <div
-                class="gradient flex-1 rounded relative overflow-visible cursor-crosshair h-6 shadow-inner"
+                class="gradient flex-1 rounded relative overflow-visible cursor-crosshair h-6 shadow-inner drag-surface"
                 style="background: ${this.colorGradient.getBackgroundImageStyle(
                   lerpMode,
                 )}"
                 data-mode=${lerpMode}
-                @mousedown=${this.drag.handleMouseDown}
+                @pointerdown=${this.drag.handlePointerDown}
               >
                 ${
                   isActive

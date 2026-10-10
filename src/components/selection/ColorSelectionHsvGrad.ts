@@ -4,6 +4,7 @@ import { customElement, query } from "lit/decorators.js";
 import { clamp } from "../../lib/utils/math";
 import { Color, ColorInputType } from "../../lib/Color";
 import { styles } from "../../styles/ColorSelectionTypeA.css";
+import { dragSurfaceStyles } from "../../styles/DragSurface";
 import { ColorSelectionBase } from "./ColorSelectionBase";
 import { DragController } from "../../controllers/DragController";
 import "./ColorSelectionHsvBar";
@@ -12,6 +13,7 @@ import "./ColorSelectionHsvBar";
 export class ColorSelectionHsvGrad extends ColorSelectionBase {
   static styles = [
     styles,
+    dragSurfaceStyles,
     css`
       :host {
         display: flex;
@@ -42,6 +44,33 @@ export class ColorSelectionHsvGrad extends ColorSelectionBase {
     );
   };
 
+  /** Arrow keys nudge saturation/value; Shift = fine steps (issue #75). */
+  private handleKeydown = (e: KeyboardEvent) => {
+    const [hue, saturation, value] = this.color.getHSV();
+    const step = e.shiftKey ? 0.1 : 1;
+    let s = saturation;
+    let v = value;
+    switch (e.key) {
+      case "ArrowLeft":
+        s = clamp(s - step, 0, 100);
+        break;
+      case "ArrowRight":
+        s = clamp(s + step, 0, 100);
+        break;
+      case "ArrowUp":
+        v = clamp(v + step, 0, 100);
+        break;
+      case "ArrowDown":
+        v = clamp(v - step, 0, 100);
+        break;
+      default:
+        return;
+    }
+    e.preventDefault();
+    this.setColor(new Color({ type: ColorInputType.HSV, h: hue, s, v }));
+    this.commitColorSoon();
+  };
+
   private drag = new DragController(this, {
     onDragStart: this.handlePointer,
     onDrag: this.handlePointer,
@@ -68,14 +97,21 @@ export class ColorSelectionHsvGrad extends ColorSelectionBase {
       border-color: ${value < 50 ? "white" : "black"};
     `;
     return html`
-      <div class="color-grad-container" id="color-grad-container">
+      <div
+        class="color-grad-container drag-surface"
+        id="color-grad-container"
+        tabindex="0"
+        role="application"
+        aria-label="Saturation and value area, arrow keys adjust"
+        @keydown=${this.handleKeydown}
+      >
         <div
           class="color-grad color-grad-1"
           style="background: ${colorGradStyleBackground};"
         ></div>
         <div
           class="color-grad color-grad-2"
-          @mousedown=${this.drag.handleMouseDown}
+          @pointerdown=${this.drag.handlePointerDown}
         ></div>
         <div class="color-grad-circle" style=${colorCircleStyle}></div>
       </div>

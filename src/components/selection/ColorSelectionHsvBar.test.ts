@@ -45,7 +45,7 @@ describe("ColorSelectionHsvBar", () => {
       el.parentNode.removeChild(el);
     }
     // Clean up any in-progress drag listeners between tests
-    document.dispatchEvent(new MouseEvent("mouseup"));
+    document.dispatchEvent(new MouseEvent("pointerup"));
   });
 
   // ---- Test 1: Registration ----
@@ -147,12 +147,12 @@ describe("ColorSelectionHsvBar", () => {
 
     // Start drag
     bar.dispatchEvent(
-      new MouseEvent("mousedown", { bubbles: true, composed: true }),
+      new MouseEvent("pointerdown", { bubbles: true, composed: true }),
     );
     // Move to x=100 → x-ratio = 0.5 → newHue = 180
-    document.dispatchEvent(new MouseEvent("mousemove", { clientX: 100 }));
+    document.dispatchEvent(new MouseEvent("pointermove", { clientX: 100 }));
     // End drag
-    document.dispatchEvent(new MouseEvent("mouseup"));
+    document.dispatchEvent(new MouseEvent("pointerup"));
 
     // mousedown (clientX=0) + mousemove (clientX=100) both update the color.
     expect(setColorSpy).toHaveBeenCalledTimes(2);
@@ -181,13 +181,13 @@ describe("ColorSelectionHsvBar", () => {
 
     // Click at x=100 → x-ratio = 0.5 → newHue = 180, with NO mousemove.
     bar.dispatchEvent(
-      new MouseEvent("mousedown", {
+      new MouseEvent("pointerdown", {
         bubbles: true,
         composed: true,
         clientX: 100,
       }),
     );
-    document.dispatchEvent(new MouseEvent("mouseup"));
+    document.dispatchEvent(new MouseEvent("pointerup"));
 
     expect(setColorSpy).toHaveBeenCalledTimes(1);
 

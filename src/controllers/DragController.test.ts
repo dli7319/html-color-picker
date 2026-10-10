@@ -2,10 +2,25 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import type { ReactiveControllerHost } from "lit";
 import { DragController } from "./DragController";
 
+/** jsdom lacks PointerEvent — build one from MouseEvent (issue #75). */
+function pointerEvent(type: string, clientX = 0, clientY = 0): PointerEvent {
+  const e = new MouseEvent(type, {
+    clientX,
+    clientY,
+    bubbles: true,
+    cancelable: true,
+  });
+  Object.defineProperty(e, "pointerId", { value: 1 });
+  return e as unknown as PointerEvent;
+}
+
+const nextFrame = () =>
+  new Promise((resolve) => requestAnimationFrame(() => resolve(null)));
+
 describe("DragController", () => {
   let mockHost: ReactiveControllerHost;
-  let onDragStart: ReturnType<typeof vi.fn<(e: MouseEvent) => void>>;
-  let onDrag: ReturnType<typeof vi.fn<(e: MouseEvent) => void>>;
+  let onDragStart: ReturnType<typeof vi.fn<(e: PointerEvent) => void>>;
+  let onDrag: ReturnType<typeof vi.fn<(e: PointerEvent) => void>>;
   let onDragEnd: ReturnType<typeof vi.fn<() => void>>;
   let controller: DragController;
 
@@ -16,8 +31,8 @@ describe("DragController", () => {
       requestUpdate: vi.fn(),
       updateComplete: Promise.resolve(true),
     } as unknown as ReactiveControllerHost;
-    onDragStart = vi.fn<(e: MouseEvent) => void>();
-    onDrag = vi.fn<(e: MouseEvent) => void>();
+    onDragStart = vi.fn<(e: PointerEvent) => void>();
+    onDrag = vi.fn<(e: PointerEvent) => void>();
     onDragEnd = vi.fn<() => void>();
     controller = new DragController(mockHost, {
       onDragStart,
@@ -28,197 +43,158 @@ describe("DragController", () => {
 
   afterEach(() => {
     // End any in-progress drag to prevent listener leaks between tests
-    document.dispatchEvent(new MouseEvent("mouseup"));
+    document.dispatchEvent(pointerEvent("pointerup"));
     vi.restoreAllMocks();
   });
 
-  // ---- Test 1 ----
   it("calls host.addController with the controller instance on construction", () => {
     expect(mockHost.addController).toHaveBeenCalledTimes(1);
     expect(mockHost.addController).toHaveBeenCalledWith(controller);
   });
 
-  // ---- Test 2 ----
-  describe("handleMouseDown", () => {
+  describe("handlePointerDown", () => {
     it("calls onDragStart with the event and adds document-level listeners", () => {
       const addSpy = vi.spyOn(document, "addEventListener");
-      const event = new MouseEvent("mousedown", { clientX: 100, clientY: 200 });
+      const event = pointerEvent("pointerdown", 100, 200);
 
-      controller.handleMouseDown(event);
+      controller.handlePointerDown(event);
 
       expect(onDragStart).toHaveBeenCalledTimes(1);
       expect(onDragStart).toHaveBeenCalledWith(event);
 
-      expect(addSpy).toHaveBeenCalledTimes(2);
-      expect(addSpy).toHaveBeenCalledWith("mousemove", expect.any(Function));
-      expect(addSpy).toHaveBeenCalledWith("mouseup", expect.any(Function));
+      expect(addSpy).toHaveBeenCalledTimes(3);
+      expect(addSpy).toHaveBeenCalledWith("pointermove", expect.any(Function));
+      expect(addSpy).toHaveBeenCalledWith("pointerup", expect.any(Function));
+      expect(addSpy).toHaveBeenCalledWith(
+        "pointercancel",
+        expect.any(Function),
+      );
+    });
+
+    it("ignores a second pointerdown while a drag is active", () => {
+      controller.handlePointerDown(pointerEvent("pointerdown", 0, 0));
+      controller.handlePointerDown(pointerEvent("pointerdown", 5, 5));
+      expect(onDragStart).toHaveBeenCalledTimes(1);
     });
   });
 
-  // ---- Tests 3 & 4 ----
   describe("drag lifecycle", () => {
-    it("calls onDrag on each mousemove after mousedown", () => {
-      controller.handleMouseDown(new MouseEvent("mousedown"));
+    it("coalesces multiple pointermove events into one onDrag per frame", async () => {
+      controller.handlePointerDown(pointerEvent("pointerdown"));
 
-      const moveEvent = new MouseEvent("mousemove", {
-        clientX: 150,
-        clientY: 250,
-      });
-      document.dispatchEvent(moveEvent);
+      document.dispatchEvent(pointerEvent("pointermove", 150, 250));
+      document.dispatchEvent(pointerEvent("pointermove", 160, 260));
+      expect(onDrag).not.toHaveBeenCalled();
 
+      await nextFrame();
       expect(onDrag).toHaveBeenCalledTimes(1);
-      expect(onDrag).toHaveBeenCalledWith(moveEvent);
-
-      // A second mousemove should also call onDrag
-      const moveEvent2 = new MouseEvent("mousemove", {
-        clientX: 160,
-        clientY: 260,
-      });
-      document.dispatchEvent(moveEvent2);
-
-      expect(onDrag).toHaveBeenCalledTimes(2);
-      expect(onDrag).toHaveBeenCalledWith(moveEvent2);
+      expect(onDrag).toHaveBeenCalledWith(
+        expect.objectContaining({ clientX: 160, clientY: 260 }),
+      );
     });
 
-    it("removes listeners and calls onDragEnd on mouseup", () => {
-      const removeSpy = vi.spyOn(document, "removeEventListener");
+    it("delivers the final position before onDragEnd on pointerup", async () => {
+      controller.handlePointerDown(pointerEvent("pointerdown"));
 
-      controller.handleMouseDown(new MouseEvent("mousedown"));
+      document.dispatchEvent(pointerEvent("pointermove", 300, 400));
+      document.dispatchEvent(pointerEvent("pointerup"));
 
-      document.dispatchEvent(new MouseEvent("mouseup"));
+      // Flushed synchronously: the moved-to position and the commit order.
+      expect(onDrag).toHaveBeenCalledTimes(1);
+      expect(onDrag).toHaveBeenCalledWith(
+        expect.objectContaining({ clientX: 300, clientY: 400 }),
+      );
+      expect(onDragEnd).toHaveBeenCalledTimes(1);
+      expect(onDrag.mock.invocationCallOrder[0]).toBeLessThan(
+        onDragEnd.mock.invocationCallOrder[0],
+      );
+    });
 
+    it("removes listeners and stops drag callbacks after pointerup", () => {
+      controller.handlePointerDown(pointerEvent("pointerdown"));
+      document.dispatchEvent(pointerEvent("pointerup"));
       expect(onDragEnd).toHaveBeenCalledTimes(1);
 
-      expect(removeSpy).toHaveBeenCalledWith("mousemove", expect.any(Function));
-      expect(removeSpy).toHaveBeenCalledWith("mouseup", expect.any(Function));
-
-      // After mouseup, subsequent mousemove must NOT trigger onDrag
       onDrag.mockClear();
-      document.dispatchEvent(new MouseEvent("mousemove", { clientX: 999 }));
+      document.dispatchEvent(pointerEvent("pointermove", 999, 999));
+      expect(onDrag).not.toHaveBeenCalled();
+    });
+
+    it("ends the drag on pointercancel", () => {
+      controller.handlePointerDown(pointerEvent("pointerdown"));
+      document.dispatchEvent(pointerEvent("pointercancel"));
+      expect(onDragEnd).toHaveBeenCalledTimes(1);
+
+      onDrag.mockClear();
+      document.dispatchEvent(pointerEvent("pointermove", 10, 10));
       expect(onDrag).not.toHaveBeenCalled();
     });
   });
 
-  // ---- Test 5 ----
   it("does not throw when onDragStart is undefined", () => {
     const c = new DragController(mockHost, { onDrag, onDragEnd });
-    expect(() => c.handleMouseDown(new MouseEvent("mousedown"))).not.toThrow();
-    // Clean up listeners
-    document.dispatchEvent(new MouseEvent("mouseup"));
-  });
-
-  // ---- Test 6 ----
-  it("does not throw when onDragEnd is undefined", () => {
-    const c = new DragController(mockHost, { onDragStart, onDrag });
-    c.handleMouseDown(new MouseEvent("mousedown"));
     expect(() =>
-      document.dispatchEvent(new MouseEvent("mouseup")),
+      c.handlePointerDown(pointerEvent("pointerdown")),
     ).not.toThrow();
   });
 
-  // ---- Test 7 ----
+  it("does not throw when onDragEnd is undefined", () => {
+    const c = new DragController(mockHost, { onDragStart, onDrag });
+    c.handlePointerDown(pointerEvent("pointerdown"));
+    expect(() =>
+      document.dispatchEvent(pointerEvent("pointerup")),
+    ).not.toThrow();
+  });
+
   describe("hostDisconnected", () => {
     it("removes document event listeners and stops drag callbacks", () => {
       const removeSpy = vi.spyOn(document, "removeEventListener");
 
-      controller.handleMouseDown(new MouseEvent("mousedown"));
-      // Clear the calls that happened during handleMouseDown setup
+      controller.handlePointerDown(pointerEvent("pointerdown"));
       removeSpy.mockClear();
 
       controller.hostDisconnected();
 
-      expect(removeSpy).toHaveBeenCalledTimes(2);
-      expect(removeSpy).toHaveBeenCalledWith("mousemove", expect.any(Function));
-      expect(removeSpy).toHaveBeenCalledWith("mouseup", expect.any(Function));
+      expect(removeSpy).toHaveBeenCalledTimes(3);
+      expect(removeSpy).toHaveBeenCalledWith(
+        "pointermove",
+        expect.any(Function),
+      );
+      expect(removeSpy).toHaveBeenCalledWith("pointerup", expect.any(Function));
+      expect(removeSpy).toHaveBeenCalledWith(
+        "pointercancel",
+        expect.any(Function),
+      );
 
-      // After hostDisconnected, no further callbacks should fire
-      document.dispatchEvent(new MouseEvent("mousemove", { clientX: 50 }));
+      document.dispatchEvent(pointerEvent("pointermove", 50, 50));
       expect(onDrag).not.toHaveBeenCalled();
-
-      document.dispatchEvent(new MouseEvent("mouseup"));
+      document.dispatchEvent(pointerEvent("pointerup"));
       expect(onDragEnd).not.toHaveBeenCalled();
     });
 
-    it("is safe to call even when no drag is active (no listeners registered)", () => {
-      // hostDisconnected called without a preceding mousedown
+    it("is safe to call even when no drag is active", () => {
       expect(() => controller.hostDisconnected()).not.toThrow();
     });
   });
 
-  // ---- Test 8 ----
-  it("supports multiple mousedown-mouseup cycles", () => {
-    const addSpy = vi.spyOn(document, "addEventListener");
-    const removeSpy = vi.spyOn(document, "removeEventListener");
-
-    // ---- Cycle 1 ----
-    controller.handleMouseDown(new MouseEvent("mousedown"));
-    expect(addSpy).toHaveBeenCalledTimes(2);
-
-    document.dispatchEvent(new MouseEvent("mousemove", { clientX: 10 }));
-    expect(onDrag).toHaveBeenCalledTimes(1);
-    expect(onDrag).toHaveBeenCalledWith(
-      expect.objectContaining({ clientX: 10 }),
-    );
-
-    document.dispatchEvent(new MouseEvent("mouseup"));
+  it("supports multiple pointerdown-pointerup cycles", async () => {
+    controller.handlePointerDown(pointerEvent("pointerdown"));
+    document.dispatchEvent(pointerEvent("pointermove", 10, 10));
+    await nextFrame();
+    document.dispatchEvent(pointerEvent("pointerup"));
     expect(onDragEnd).toHaveBeenCalledTimes(1);
-    expect(removeSpy).toHaveBeenCalledTimes(2);
 
-    addSpy.mockClear();
-    removeSpy.mockClear();
     onDrag.mockClear();
     onDragEnd.mockClear();
 
-    // ---- Cycle 2 ----
-    controller.handleMouseDown(new MouseEvent("mousedown"));
-    expect(addSpy).toHaveBeenCalledTimes(2);
-
-    document.dispatchEvent(new MouseEvent("mousemove", { clientX: 20 }));
+    controller.handlePointerDown(pointerEvent("pointerdown"));
+    document.dispatchEvent(pointerEvent("pointermove", 20, 20));
+    await nextFrame();
+    document.dispatchEvent(pointerEvent("pointerup"));
     expect(onDrag).toHaveBeenCalledTimes(1);
     expect(onDrag).toHaveBeenCalledWith(
-      expect.objectContaining({ clientX: 20 }),
+      expect.objectContaining({ clientX: 20, clientY: 20 }),
     );
-
-    document.dispatchEvent(new MouseEvent("mouseup"));
     expect(onDragEnd).toHaveBeenCalledTimes(1);
-    expect(removeSpy).toHaveBeenCalledTimes(2);
-  });
-
-  // ---- Test 9 ----
-  describe("document listener management", () => {
-    it("uses the exact same handler references for addEventListener and removeEventListener", () => {
-      const addSpy = vi.spyOn(document, "addEventListener");
-
-      controller.handleMouseDown(new MouseEvent("mousedown"));
-
-      expect(addSpy).toHaveBeenCalledTimes(2);
-      expect(addSpy).toHaveBeenNthCalledWith(
-        1,
-        "mousemove",
-        expect.any(Function),
-      );
-      expect(addSpy).toHaveBeenNthCalledWith(
-        2,
-        "mouseup",
-        expect.any(Function),
-      );
-
-      // Capture the exact handler references that were registered
-      const mousemoveHandler = addSpy.mock.calls[0][1];
-      const mouseupHandler = addSpy.mock.calls[1][1];
-
-      const removeSpy = vi.spyOn(document, "removeEventListener");
-
-      document.dispatchEvent(new MouseEvent("mouseup"));
-
-      // The same references must be used for removal
-      expect(removeSpy).toHaveBeenCalledTimes(2);
-      expect(removeSpy).toHaveBeenNthCalledWith(
-        1,
-        "mousemove",
-        mousemoveHandler,
-      );
-      expect(removeSpy).toHaveBeenNthCalledWith(2, "mouseup", mouseupHandler);
-    });
   });
 });

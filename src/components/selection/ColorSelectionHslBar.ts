@@ -5,19 +5,23 @@ import { Color, ColorInputType } from "../../lib/Color";
 import { clamp } from "../../lib/utils/math";
 import { ColorSelectionBase } from "./ColorSelectionBase";
 import { DragController } from "../../controllers/DragController";
+import { dragSurfaceStyles } from "../../styles/DragSurface";
 import "./ColorBarPointer";
 
 @customElement("color-selection-hsl-bar")
 export class ColorSelectionHslBar extends ColorSelectionBase {
-  static styles = css`
-    .color-bar {
-      position: relative;
-      width: 100%;
-      height: 1.5rem;
-      margin-top: 0.5rem;
-      border-radius: 0.25rem;
-    }
-  `;
+  static styles = [
+    css`
+      .color-bar {
+        position: relative;
+        width: 100%;
+        height: 1.5rem;
+        margin-top: 0.5rem;
+        border-radius: 0.25rem;
+      }
+    `,
+    dragSurfaceStyles,
+  ];
 
   @query("#color-bar")
   colorBar!: HTMLDivElement;
@@ -35,6 +39,30 @@ export class ColorSelectionHslBar extends ColorSelectionBase {
         l: newLightness,
       }),
     );
+  };
+
+  /** Arrow keys nudge lightness; Shift = fine steps (issue #75). */
+  private handleKeydown = (e: KeyboardEvent) => {
+    const [hue, saturation, lightness] = this.color.getHSL();
+    const step = e.shiftKey ? 0.1 : 1;
+    let l = lightness;
+    switch (e.key) {
+      case "ArrowLeft":
+      case "ArrowDown":
+        l = clamp(lightness - step, 0, 100);
+        break;
+      case "ArrowRight":
+      case "ArrowUp":
+        l = clamp(lightness + step, 0, 100);
+        break;
+      default:
+        return;
+    }
+    e.preventDefault();
+    this.setColor(
+      new Color({ type: ColorInputType.HSL, h: hue, s: saturation, l }),
+    );
+    this.commitColorSoon();
   };
 
   private drag = new DragController(this, {
@@ -58,9 +86,16 @@ export class ColorSelectionHslBar extends ColorSelectionBase {
     const backgroundStyle = backgroundStyleArray.join("\n");
     return html`
       <div
-        class="color-bar"
-        @mousedown=${this.drag.handleMouseDown}
+        class="color-bar drag-surface"
+        @pointerdown=${this.drag.handlePointerDown}
+        @keydown=${this.handleKeydown}
         id="color-bar"
+        tabindex="0"
+        role="slider"
+        aria-label="Lightness"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow=${Math.round(lightness)}
         style=${backgroundStyle}
       >
         <color-bar-pointer

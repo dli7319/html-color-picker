@@ -189,14 +189,14 @@ describe("ColorSelectionHsvGrad", () => {
         { once: true },
       );
       grad.dispatchEvent(
-        new MouseEvent("mousedown", {
+        new MouseEvent("pointerdown", {
           bubbles: true,
           clientX: 150,
           clientY: 50,
         }),
       );
       document.dispatchEvent(
-        new MouseEvent("mousemove", {
+        new MouseEvent("pointermove", {
           bubbles: true,
           clientX: 150,
           clientY: 50,
@@ -209,7 +209,7 @@ describe("ColorSelectionHsvGrad", () => {
     expect(sat).toBeCloseTo(75);
     expect(val).toBeCloseTo(75);
 
-    document.dispatchEvent(new MouseEvent("mouseup"));
+    document.dispatchEvent(new MouseEvent("pointerup"));
     bcrSpy.mockRestore();
   });
 
@@ -245,13 +245,13 @@ describe("ColorSelectionHsvGrad", () => {
       // Click at (150, 50) — x-ratio 0.75 → sat 75, y-ratio 0.25 → val 75.
       // NO mousemove.
       grad.dispatchEvent(
-        new MouseEvent("mousedown", {
+        new MouseEvent("pointerdown", {
           bubbles: true,
           clientX: 150,
           clientY: 50,
         }),
       );
-      document.dispatchEvent(new MouseEvent("mouseup"));
+      document.dispatchEvent(new MouseEvent("pointerup"));
     });
 
     const [hue, sat, val] = setEvent.color.getHSV();
@@ -275,13 +275,13 @@ describe("ColorSelectionHsvGrad", () => {
     const commitEvent = await new Promise<Event>((resolve) => {
       el.addEventListener("commit-color", resolve, { once: true });
       grad.dispatchEvent(
-        new MouseEvent("mousedown", {
+        new MouseEvent("pointerdown", {
           bubbles: true,
           clientX: 100,
           clientY: 100,
         }),
       );
-      document.dispatchEvent(new MouseEvent("mouseup"));
+      document.dispatchEvent(new MouseEvent("pointerup"));
     });
 
     expect(commitEvent).toBeInstanceOf(ColorPickerCommitColorEvent);

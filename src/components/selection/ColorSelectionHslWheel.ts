@@ -68,19 +68,24 @@ export class ColorSelectionHslWheel extends ColorSelectionBase {
     );
   };
 
-  /** Arrow keys rotate hue; Shift = fine steps (issue #75). */
+  /** Left/Right rotate hue, Up/Down adjust saturation; Shift = fine steps. */
   private handleKeydown = (e: KeyboardEvent) => {
     const [hue, saturation, lightness] = this.color.getHSL();
     const step = e.shiftKey ? 0.1 : 1;
     let h = hue;
+    let s = saturation;
     switch (e.key) {
       case "ArrowLeft":
-      case "ArrowDown":
         h = (hue - step + 360) % 360;
         break;
       case "ArrowRight":
-      case "ArrowUp":
         h = (hue + step) % 360;
+        break;
+      case "ArrowUp":
+        s = Math.min(100, saturation + step);
+        break;
+      case "ArrowDown":
+        s = Math.max(0, saturation - step);
         break;
       default:
         return;
@@ -90,7 +95,7 @@ export class ColorSelectionHslWheel extends ColorSelectionBase {
       new Color({
         type: ColorInputType.HSL,
         h,
-        s: saturation,
+        s,
         l: lightness,
       }),
     );
@@ -143,7 +148,7 @@ export class ColorSelectionHslWheel extends ColorSelectionBase {
         id="color-grad"
         tabindex="0"
         role="application"
-        aria-label="Hue and saturation wheel, arrow keys rotate hue"
+        aria-label="Hue and saturation wheel: left/right rotate hue, up/down adjust saturation"
         @keydown=${this.handleKeydown}
         style=${colorGradStyle}
         @pointerdown=${this.drag.handlePointerDown}

@@ -86,6 +86,7 @@ export class ColorSelectionHsvBar extends ColorSelectionBase {
         aria-valuemin="0"
         aria-valuemax="360"
         aria-valuenow=${Math.round(hue)}
+        aria-valuetext="${Math.round(hue)} degrees"
       >
         <color-bar-pointer
           .position=${(hue / 360) * 100}

@@ -81,9 +81,12 @@ export class ColorHistory extends LitElement {
   };
 
   private selectSwatch(index: number, color: Color) {
-    this.activeIndex = index;
+    // Re-promote the picked entry instead of leaving it buried (round-2).
+    this.history = [color, ...this.history.filter((_, i) => i !== index)];
+    this.activeIndex = 0;
     this.dispatchEvent(new ColorPickerSetColorEvent(color));
     this.saveLastColor(color);
+    this.saveToStorage();
   }
 
   private clearHistory() {

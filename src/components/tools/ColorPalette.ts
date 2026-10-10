@@ -185,8 +185,8 @@ export class ColorPalette extends LitElement {
 
   private selectSwatch(index: number) {
     if (this.activeIndex === index) {
-      this.activeIndex = -1;
-      this.dispatchEvent(new ColorPickerSetPaletteActiveEvent(-1));
+      // Re-clicking the active swatch is a no-op: deselecting while leaving
+      // the color applied was confusing (round-2 review).
       return;
     }
     this.activeIndex = index;

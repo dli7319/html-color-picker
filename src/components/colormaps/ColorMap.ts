@@ -93,6 +93,26 @@ export class ColorMap extends ColorSelectionBase {
     };
   }
 
+  /** Keyboard sampling position along the strip (round-2 review). */
+  private kbRatio = 0.5;
+
+  private handleKeydown = (e: KeyboardEvent) => {
+    const step = e.shiftKey ? 0.001 : 0.01;
+    switch (e.key) {
+      case "ArrowLeft":
+        this.kbRatio = Math.max(0, this.kbRatio - step);
+        break;
+      case "ArrowRight":
+        this.kbRatio = Math.min(1, this.kbRatio + step);
+        break;
+      default:
+        return;
+    }
+    e.preventDefault();
+    this.setColor(this.getColorAt(this.kbRatio));
+    this.commitColorSoon();
+  };
+
   private processColorAt = (e: MouseEvent) => {
     const rect = this.colorMapDiv.getBoundingClientRect();
     const x = clamp((e.clientX - rect.left) / rect.width, 0, 1);
@@ -121,17 +141,25 @@ export class ColorMap extends ColorSelectionBase {
           style="background: ${this.toCss()}"
           class="w-full h-8 rounded relative cursor-crosshair drag-surface"
           @pointerdown=${this.drag.handlePointerDown}
+          @keydown=${this.handleKeydown}
           id="colormap-div"
+          tabindex="0"
+          role="slider"
+          aria-label="${this.name} color map, arrows sample along the gradient"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow=${Math.round(this.kbRatio * 100)}
         >
-          ${
-            isVeryClose
-              ? html`<color-bar-pointer
-                  .position=${match.ratio * 100}
-                  .color=${"#" + this.color.getHex()}
-                ></color-bar-pointer>`
-              : ""
-          }
+          <color-bar-pointer
+            .position=${match.ratio * 100}
+            .color=${"#" + this.color.getHex()}
+            style=${isVeryClose ? "" : "opacity: 0.45"}
+          ></color-bar-pointer>
         </div>
+        <p class="text-[11px] text-gray-800 mt-1">
+          closest: ${Math.round(match.ratio * 100)}% —
+          ${Math.round(match.distance)} away
+        </p>
       </div>
     `;
   }

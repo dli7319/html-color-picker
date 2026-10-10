@@ -36,6 +36,7 @@
 }
 
 .color-grad-circle {
+  transition: var(--handle-transition, none);
   z-index: 2;
   position: absolute;
   width: 1rem;

@@ -5,6 +5,7 @@ import { customElement, property } from "lit/decorators.js";
 export class ColorBarPointer extends LitElement {
   static styles = css`
     :host {
+      transition: left var(--handle-transition, none);
       display: block;
       position: absolute;
       top: 0;

@@ -1,4 +1,5 @@
 import { html, LitElement } from "lit";
+import { repeat } from "lit/directives/repeat.js";
 import { customElement, state } from "lit/decorators.js";
 
 import { Color, ColorInputType } from "../../lib/Color";
@@ -137,7 +138,9 @@ export class ColorHistory extends LitElement {
             ? html`<p class="history-empty">No colors yet</p>`
             : html`
                 <div class="history-swatches">
-                  ${this.history.map(
+                  ${repeat(
+                    this.history,
+                    (color) => color,
                     (color, i) => html`
                       <button
                         type="button"

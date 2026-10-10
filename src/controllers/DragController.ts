@@ -46,6 +46,9 @@ export class DragController implements ReactiveController {
   handlePointerDown = (e: PointerEvent) => {
     if (this.dragging) return;
     this.dragging = true;
+    // Suppress animated transitions while dragging (handles and the body
+    // background must track the pointer 1:1).
+    document.body.classList.add("dragging");
     // Keep the browser from starting text selection or touch scrolling
     // during the drag (the surface also sets touch-action: none).
     e.preventDefault();
@@ -93,6 +96,7 @@ export class DragController implements ReactiveController {
 
   private teardown() {
     this.dragging = false;
+    document.body.classList.remove("dragging");
     document.removeEventListener("pointermove", this.handlePointerMove);
     document.removeEventListener("pointerup", this.handlePointerUp);
     document.removeEventListener("pointercancel", this.handlePointerUp);

@@ -4,6 +4,7 @@ import { customElement, property, state } from "lit/decorators.js";
 
 import { Color, ColorInputType } from "../../lib/Color";
 import { generatePalette, PaletteMode } from "../../lib/PaletteGenerator";
+import { parseHexColor } from "../../lib/ColorStringParsing";
 import { ColorPickerSetColorEvent } from "../../events/ColorPickerSetColorEvent";
 import { ColorPickerCommitColorEvent } from "../../events/ColorPickerCommitColorEvent";
 import { ColorPickerSetPaletteActiveEvent } from "../../events/ColorPickerSetPaletteActiveEvent";
@@ -194,20 +195,33 @@ export class ColorPalette extends LitElement {
     this.regenerate();
   }
 
+  /** Swatches hidden by a count reduction — restored intact on regrow. */
+  private trimmedColors: Color[] = [];
+  private trimmedLocked: boolean[] = [];
+
   private setCount(count: number) {
     if (count === this.paletteCount) return;
     this.paletteCount = count;
-    if (count > this.colors.length) {
-      const extra = generatePalette({
-        count: count - this.colors.length,
+    const n = this.colors.length;
+    if (count > n) {
+      // Restore previously trimmed swatches (with their lock state) before
+      // generating fresh ones — shrinking must never destroy work, and
+      // count changes must not re-roll existing colors (round-2 review).
+      const restoredColors = this.trimmedColors.splice(0, count - n);
+      const restoredLocked = this.trimmedLocked.splice(0, count - n);
+      const fresh = generatePalette({
+        count: count - n - restoredColors.length,
         mode: this.paletteMode,
       });
-      this.colors = [...this.colors, ...extra];
+      this.colors = [...this.colors, ...restoredColors, ...fresh];
       this.locked = [
         ...this.locked,
-        ...Array(count - this.locked.length).fill(false),
+        ...restoredLocked,
+        ...Array(fresh.length).fill(false),
       ];
     } else {
+      this.trimmedColors = [...this.colors.slice(count), ...this.trimmedColors];
+      this.trimmedLocked = [...this.locked.slice(count), ...this.trimmedLocked];
       this.colors = this.colors.slice(0, count);
       this.locked = this.locked.slice(0, count);
       if (this.activeIndex >= count) {
@@ -218,7 +232,6 @@ export class ColorPalette extends LitElement {
     this.colors = [...this.colors];
     this.locked = [...this.locked];
     this.saveToStorage();
-    this.regenerate();
   }
 
   private toggleLock(index: number, e: Event) {
@@ -284,13 +297,26 @@ export class ColorPalette extends LitElement {
     count: number;
   } | null {
     const data = storageGet<StoredPalette | null>(STORAGE_KEY, null);
-    if (!data || !data.colors || !data.colors.length) return null;
-    const count = data.count ?? data.colors.length;
+    if (!data || !Array.isArray(data.colors) || !data.colors.length) {
+      return null;
+    }
+    // Stored data is untrusted: one corrupt entry used to crash the panel
+    // at startup (round-2 review).
+    const colors = data.colors
+      .filter(
+        (c) =>
+          c != null &&
+          typeof c.hex === "string" &&
+          parseHexColor(c.hex) != null,
+      )
+      .map((c) => new Color({ type: ColorInputType.HEX, hex: c.hex }));
+    if (!colors.length) return null;
+    const count = Math.max(2, Math.min(7, data.count ?? colors.length));
     return {
-      colors: data.colors.map(
-        (c) => new Color({ type: ColorInputType.HEX, hex: c.hex }),
-      ),
-      locked: data.locked ?? Array(count).fill(false),
+      colors,
+      locked: Array.isArray(data.locked)
+        ? data.locked.slice(0, colors.length)
+        : Array(colors.length).fill(false),
       mode: (data.mode as PaletteMode) ?? PaletteMode.ANY,
       count,
     };

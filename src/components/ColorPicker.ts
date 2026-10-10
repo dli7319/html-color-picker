@@ -24,6 +24,7 @@ import "./tools/OtherTools";
 import { ColorPickerSetPaletteActiveEvent } from "../events/ColorPickerSetPaletteActiveEvent";
 import { forEachMatchingChild } from "../lib/utils/dom";
 import { storageGet, storageSet } from "../lib/utils/storage";
+import { parseHexColor } from "../lib/ColorStringParsing";
 
 const INTERPOLATION_STORAGE_KEY = "color-interpolation-store";
 
@@ -108,7 +109,8 @@ export class ColorPicker extends LitElement {
 
   private loadLastColor() {
     const hex = storageGet<string | null>("last-active-color", null);
-    if (hex) {
+    // Stored data is untrusted (round-2 review).
+    if (hex && parseHexColor(hex) != null) {
       this.color = new Color({ type: ColorInputType.HEX, hex });
     }
   }

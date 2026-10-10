@@ -9,27 +9,12 @@ import { ColorPickerSetColorEvent } from "../../events/ColorPickerSetColorEvent"
 import { ColorPickerCommitColorEvent } from "../../events/ColorPickerCommitColorEvent";
 import {
   ColorConverterInput,
-  InputType,
   inputTypeToInputValueKey,
   InputValues,
 } from "./ColorConverterInput";
 import { ColorConverterInputEvent } from "../../events/ColorConverterInputEvent";
-import {
-  parseHexColor,
-  parseHSLColor,
-  parseHSVColor,
-  parseRGB01Color,
-  parseRGB255Color,
-} from "../../lib/ColorStringParsing";
+import { parseColorString } from "../../lib/ColorStringParsing";
 import { forEachMatchingChild } from "../../lib/utils/dom";
-
-const typeToParseFunction = {
-  [InputType.HEX]: parseHexColor,
-  [InputType.RGB255]: parseRGB255Color,
-  [InputType.RGB01]: parseRGB01Color,
-  [InputType.HSV]: parseHSVColor,
-  [InputType.HSL]: parseHSLColor,
-};
 
 @customElement("color-converter")
 export class ColorConverter extends LitElement {
@@ -50,12 +35,17 @@ export class ColorConverter extends LitElement {
     super();
     this.addEventListener(ColorConverterInputEvent.eventName, (event) => {
       if (event instanceof ColorConverterInputEvent) {
-        const { inputType, value } = event;
-        const parsedColor = typeToParseFunction[inputType](value);
+        const { inputType, value, commit } = event;
+        const parsedColor = parseColorString(inputType, value);
         if (parsedColor != null) {
           this.echoedHex = parsedColor.getHex();
           this.setColor(parsedColor);
-          this.dispatchEvent(new ColorPickerCommitColorEvent(parsedColor));
+          // Commit only when the value settled (blur/Enter) — committing on
+          // every valid keystroke polluted history with partial parses like
+          // "#336" or "51,102,2" (issue #72).
+          if (commit) {
+            this.dispatchEvent(new ColorPickerCommitColorEvent(parsedColor));
+          }
           this.inputValues = {
             [inputTypeToInputValueKey[inputType]]: value,
           };

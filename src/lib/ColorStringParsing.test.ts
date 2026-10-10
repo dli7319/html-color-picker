@@ -7,6 +7,7 @@ import {
   parseRGB01Color,
   parseHSVColor,
   parseHSLColor,
+  parseColorString,
 } from "./ColorStringParsing";
 
 // ---------------------------------------------------------------------------
@@ -147,12 +148,12 @@ describe("parseHexColor", () => {
     expect(parseHexColor("#ab cd")).toBeNull();
   });
 
-  it("returns null for hex with leading whitespace", () => {
-    expect(parseHexColor(" #abc")).toBeNull();
+  it("trims hex with leading whitespace", () => {
+    expect(parseHexColor(" #abc")).toBeInstanceOf(Color);
   });
 
-  it("returns null for hex with trailing whitespace", () => {
-    expect(parseHexColor("#abc ")).toBeNull();
+  it("trims hex with trailing whitespace", () => {
+    expect(parseHexColor("#abc ")).toBeInstanceOf(Color);
   });
 });
 
@@ -274,12 +275,12 @@ describe("parseRGB255Color", () => {
     expect(parseRGB255Color("#ff0000")).toBeNull();
   });
 
-  it("returns null for leading whitespace", () => {
-    expect(parseRGB255Color(" 0, 0, 0")).toBeNull();
+  it("trims leading whitespace", () => {
+    expect(parseRGB255Color(" 0, 0, 0")).toBeInstanceOf(Color);
   });
 
-  it("returns null for trailing whitespace", () => {
-    expect(parseRGB255Color("0, 0, 0 ")).toBeNull();
+  it("trims trailing whitespace", () => {
+    expect(parseRGB255Color("0, 0, 0 ")).toBeInstanceOf(Color);
   });
 
   it("returns null for special characters", () => {
@@ -442,12 +443,12 @@ describe("parseRGB01Color", () => {
     expect(parseRGB01Color("abc, 0, 0")).toBeNull();
   });
 
-  it("returns null for leading whitespace", () => {
-    expect(parseRGB01Color(" 0.5, 0.5, 0.5")).toBeNull();
+  it("trims leading whitespace", () => {
+    expect(parseRGB01Color(" 0.5, 0.5, 0.5")).toBeInstanceOf(Color);
   });
 
-  it("returns null for trailing whitespace", () => {
-    expect(parseRGB01Color("0.5, 0.5, 0.5 ")).toBeNull();
+  it("trims trailing whitespace", () => {
+    expect(parseRGB01Color("0.5, 0.5, 0.5 ")).toBeInstanceOf(Color);
   });
 });
 
@@ -596,12 +597,12 @@ describe("parseHSVColor", () => {
     expect(parseHSVColor("abc, 0, 0")).toBeNull();
   });
 
-  it("returns null for leading whitespace", () => {
-    expect(parseHSVColor(" 180, 50, 50")).toBeNull();
+  it("trims leading whitespace", () => {
+    expect(parseHSVColor(" 180, 50, 50")).toBeInstanceOf(Color);
   });
 
-  it("returns null for trailing whitespace", () => {
-    expect(parseHSVColor("180, 50, 50 ")).toBeNull();
+  it("trims trailing whitespace", () => {
+    expect(parseHSVColor("180, 50, 50 ")).toBeInstanceOf(Color);
   });
 });
 
@@ -750,11 +751,59 @@ describe("parseHSLColor", () => {
     expect(parseHSLColor("abc, 0, 0")).toBeNull();
   });
 
-  it("returns null for leading whitespace", () => {
-    expect(parseHSLColor(" 180, 50, 50")).toBeNull();
+  it("trims leading whitespace", () => {
+    expect(parseHSLColor(" 180, 50, 50")).toBeInstanceOf(Color);
   });
 
-  it("returns null for trailing whitespace", () => {
-    expect(parseHSLColor("180, 50, 50 ")).toBeNull();
+  it("trims trailing whitespace", () => {
+    expect(parseHSLColor("180, 50, 50 ")).toBeInstanceOf(Color);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// CSS color function syntax (issue #74)
+// ---------------------------------------------------------------------------
+describe("CSS color function syntax", () => {
+  it("parseRGB255Color accepts rgb(...) syntax", () => {
+    const color = parseRGB255Color("rgb(51, 102, 204)");
+    expect(color).toBeInstanceOf(Color);
+    expect(color!.getRGB255()).toEqual([51, 102, 204]);
+  });
+
+  it("parseHSLColor accepts hsl(...) with % suffixes", () => {
+    const color = parseHSLColor("hsl(340, 45%, 31%)");
+    expect(color).toBeInstanceOf(Color);
+    expect(color!.getHSL(false)).toEqual([340, 45, 31]);
+  });
+
+  it("parseHSVColor accepts hsv(...) with % suffixes", () => {
+    const color = parseHSVColor("hsv(200, 50%, 80%)");
+    expect(color).toBeInstanceOf(Color);
+    expect(color!.getHSV(false)).toEqual([200, 50, 80]);
+  });
+
+  it("parseRGB01Color accepts whitespace-padded triplets", () => {
+    const color = parseRGB01Color(" 0.2, 0.4, 0.8 ");
+    expect(color).toBeInstanceOf(Color);
+    expect(color!.getRGB01()).toEqual([0.2, 0.4, 0.8]);
+  });
+
+  it("still rejects garbage wrapped in function syntax", () => {
+    expect(parseRGB255Color("rgb(a, b, c)")).toBeNull();
+  });
+});
+
+describe("parseColorString", () => {
+  it("routes each kind to its parser", () => {
+    expect(parseColorString("HEX", "#ff0000")).toBeInstanceOf(Color);
+    expect(parseColorString("RGB255", "255, 0, 0")).toBeInstanceOf(Color);
+    expect(parseColorString("RGB01", "1, 0, 0")).toBeInstanceOf(Color);
+    expect(parseColorString("HSV", "0, 100, 100")).toBeInstanceOf(Color);
+    expect(parseColorString("HSL", "0, 100, 50")).toBeInstanceOf(Color);
+  });
+
+  it("returns null for invalid values per kind", () => {
+    expect(parseColorString("HEX", "nope")).toBeNull();
+    expect(parseColorString("RGB255", "300, 0, 0")).toBeNull();
   });
 });

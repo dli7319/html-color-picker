@@ -78,9 +78,9 @@ describe("ColorConverter", () => {
   });
 
   // ---------------------------------------------------------------
-  // 4. Constructor event listener — valid HEX input
+  // 4. Constructor event listener — settled (commit) HEX input
   // ---------------------------------------------------------------
-  it("dispatches SetColor and CommitColor events on valid HEX input", async () => {
+  it("dispatches SetColor and CommitColor events on a settled valid HEX input", async () => {
     const { el } = setup();
 
     const setColorEventPromise = new Promise<ColorPickerSetColorEvent>(
@@ -102,13 +102,34 @@ describe("ColorConverter", () => {
       },
     );
 
-    el.dispatchEvent(new ColorConverterInputEvent(InputType.HEX, "#ff0000"));
+    el.dispatchEvent(
+      new ColorConverterInputEvent(InputType.HEX, "#ff0000", true),
+    );
 
     const setColorEvent = await setColorEventPromise;
     const commitColorEvent = await commitColorEventPromise;
 
     expect(setColorEvent.color.getHex()).toBe("ff0000");
     expect(commitColorEvent.color.getHex()).toBe("ff0000");
+  });
+
+  it("previews but does not commit on a mid-typing input event", async () => {
+    const { el } = setup();
+    let commitFired = false;
+    el.addEventListener(ColorPickerCommitColorEvent.eventName, () => {
+      commitFired = true;
+    });
+    let seenHex = "";
+    el.addEventListener(ColorPickerSetColorEvent.eventName, (e: Event) => {
+      seenHex = (e as ColorPickerSetColorEvent).color.getHex();
+    });
+
+    // Live preview (no commit flag) — like typing "#336" mid-entry.
+    el.dispatchEvent(new ColorConverterInputEvent(InputType.HEX, "#336"));
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(seenHex).toBe("336");
+    expect(commitFired).toBe(false);
   });
 
   // ---------------------------------------------------------------

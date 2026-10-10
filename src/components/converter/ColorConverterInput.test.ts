@@ -241,7 +241,7 @@ describe("ColorConverterInput", () => {
       await el.updateComplete;
       const copyButton = el.shadowRoot!.querySelector("button");
       expect(copyButton).not.toBeNull();
-      expect(copyButton!.getAttribute("aria-label")).toBe("Copy to clipboard");
+      expect(copyButton!.getAttribute("aria-label")).toBe("Copy Hex");
       document.body.removeChild(el);
     });
   });

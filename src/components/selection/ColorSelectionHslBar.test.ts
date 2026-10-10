@@ -101,13 +101,15 @@ describe("ColorSelectionHslBar", () => {
       events.push(e as ColorPickerSetColorEvent),
     );
     colorBar.dispatchEvent(
-      new MouseEvent("mousedown", { bubbles: true, clientX: 100 }),
+      new MouseEvent("pointerdown", { bubbles: true, clientX: 100 }),
     );
     document.dispatchEvent(
-      new MouseEvent("mousemove", { bubbles: true, clientX: 150 }),
+      new MouseEvent("pointermove", { bubbles: true, clientX: 150 }),
     );
+    // Movement callbacks are coalesced to one per animation frame.
+    await new Promise((resolve) => requestAnimationFrame(() => resolve(null)));
 
-    // mousedown (clientX=100 → l=50) and mousemove (clientX=150 → l=75).
+    // pointerdown (clientX=100 → l=50) and pointermove (clientX=150 → l=75).
     expect(events.length).toBe(2);
     const setEvent = events[events.length - 1];
     const [hue, sat, light] = setEvent.color.getHSL();
@@ -115,7 +117,7 @@ describe("ColorSelectionHslBar", () => {
     expect(hue).toBe(180);
     expect(sat).toBe(50);
 
-    document.dispatchEvent(new MouseEvent("mouseup"));
+    document.dispatchEvent(new MouseEvent("pointerup"));
     bcrSpy.mockRestore();
     el.parentNode?.removeChild(el);
   });
@@ -141,9 +143,9 @@ describe("ColorSelectionHslBar", () => {
     );
     // Click at clientX=150 → x-ratio = 0.75 → lightness = 75, NO mousemove.
     colorBar.dispatchEvent(
-      new MouseEvent("mousedown", { bubbles: true, clientX: 150 }),
+      new MouseEvent("pointerdown", { bubbles: true, clientX: 150 }),
     );
-    document.dispatchEvent(new MouseEvent("mouseup"));
+    document.dispatchEvent(new MouseEvent("pointerup"));
 
     expect(events.length).toBe(1);
     const [hue, sat, light] = events[0].color.getHSL();
@@ -164,9 +166,9 @@ describe("ColorSelectionHslBar", () => {
     const commitEvent = await new Promise<Event>((resolve) => {
       el.addEventListener("commit-color", resolve, { once: true });
       colorBar.dispatchEvent(
-        new MouseEvent("mousedown", { bubbles: true, clientX: 50 }),
+        new MouseEvent("pointerdown", { bubbles: true, clientX: 50 }),
       );
-      document.dispatchEvent(new MouseEvent("mouseup"));
+      document.dispatchEvent(new MouseEvent("pointerup"));
     });
 
     expect(commitEvent).toBeInstanceOf(ColorPickerCommitColorEvent);

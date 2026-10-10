@@ -16,6 +16,8 @@ export class ColorSelectionBase extends LitElement {
 
   protected lastCommittedColor: Color = this.color;
 
+  private commitTimer: ReturnType<typeof setTimeout> | null = null;
+
   setColor(color: Color) {
     this.lastCommittedColor = color;
     this.dispatchEvent(new ColorPickerSetColorEvent(color));
@@ -25,5 +27,14 @@ export class ColorSelectionBase extends LitElement {
     this.dispatchEvent(
       new ColorPickerCommitColorEvent(this.lastCommittedColor),
     );
+  }
+
+  /**
+   * Debounced commit for keyboard nudges: one continuous arrow-key gesture
+   * becomes one history entry instead of one per keypress.
+   */
+  protected commitColorSoon(delayMs: number = 500) {
+    if (this.commitTimer) clearTimeout(this.commitTimer);
+    this.commitTimer = setTimeout(() => this.commitColor(), delayMs);
   }
 }

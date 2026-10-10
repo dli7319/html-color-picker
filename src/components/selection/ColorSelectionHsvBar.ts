@@ -4,13 +4,14 @@ import { customElement, query } from "lit/decorators.js";
 import { clamp } from "../../lib/utils/math";
 import { Color, ColorInputType } from "../../lib/Color";
 import { styles } from "../../styles/ColorSelectionTypeA.css";
+import { dragSurfaceStyles } from "../../styles/DragSurface";
 import { ColorSelectionBase } from "./ColorSelectionBase";
 import { DragController } from "../../controllers/DragController";
 import "./ColorBarPointer";
 
 @customElement("color-selection-hsv-bar")
 export class ColorSelectionHsvBar extends ColorSelectionBase {
-  static styles = [styles];
+  static styles = [styles, dragSurfaceStyles];
 
   @query("#color-bar")
   colorBar!: HTMLDivElement;
@@ -28,6 +29,30 @@ export class ColorSelectionHsvBar extends ColorSelectionBase {
         v: value,
       }),
     );
+  };
+
+  /** Arrow keys nudge hue; Shift = fine steps (issue #75). */
+  private handleKeydown = (e: KeyboardEvent) => {
+    const [hue, saturation, value] = this.color.getHSV();
+    const step = e.shiftKey ? 0.1 : 1;
+    let h = hue;
+    switch (e.key) {
+      case "ArrowLeft":
+      case "ArrowDown":
+        h = (hue - step + 360) % 360;
+        break;
+      case "ArrowRight":
+      case "ArrowUp":
+        h = (hue + step) % 360;
+        break;
+      default:
+        return;
+    }
+    e.preventDefault();
+    this.setColor(
+      new Color({ type: ColorInputType.HSV, h, s: saturation, v: value }),
+    );
+    this.commitColorSoon();
   };
 
   private drag = new DragController(this, {
@@ -50,9 +75,16 @@ export class ColorSelectionHsvBar extends ColorSelectionBase {
       }).getHex();
     return html`
       <div
-        class="color-bar"
-        @mousedown=${this.drag.handleMouseDown}
+        class="color-bar drag-surface"
+        @pointerdown=${this.drag.handlePointerDown}
+        @keydown=${this.handleKeydown}
         id="color-bar"
+        tabindex="0"
+        role="slider"
+        aria-label="Hue"
+        aria-valuemin="0"
+        aria-valuemax="360"
+        aria-valuenow=${Math.round(hue)}
       >
         <color-bar-pointer
           .position=${(hue / 360) * 100}

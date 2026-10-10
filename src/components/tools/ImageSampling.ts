@@ -3,6 +3,7 @@ import { customElement, property, state } from "lit/decorators.js";
 import { createRef, ref, Ref } from "lit/directives/ref.js";
 
 import { styles } from "../../styles/ImageSampling.css";
+import { dragSurfaceStyles } from "../../styles/DragSurface";
 import { tailwindStyles } from "../../styles/Tailwind";
 import { Color, ColorInputType } from "../../lib/Color";
 import { Coordinates } from "../../lib/Coordinates";
@@ -31,7 +32,7 @@ const overlaySizeToRem = {
 
 @customElement("image-sampling")
 export class ImageSampling extends LitElement {
-  static styles = [tailwindStyles, styles];
+  static styles = [tailwindStyles, styles, dragSurfaceStyles];
 
   @property({ attribute: false })
   coordinates: Coordinates = { x: 0, y: 0, width: 0, height: 0 };
@@ -209,11 +210,11 @@ export class ImageSampling extends LitElement {
       </div>
       <div class="mt-1 image-preview-canvas-wrapper">
         <canvas
-          class="image-preview-canvas"
+          class="image-preview-canvas drag-surface"
           width="0"
           height="0"
           ${ref(this.canvasRef)}
-          @mousedown=${this.drag.handleMouseDown}
+          @pointerdown=${this.drag.handlePointerDown}
         ></canvas>
         <div
           class="image-preview-overlay"

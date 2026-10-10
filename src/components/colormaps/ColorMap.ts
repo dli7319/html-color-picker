@@ -2,6 +2,7 @@ import { html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 
 import { tailwindStyles } from "../../styles/Tailwind";
+import { dragSurfaceStyles } from "../../styles/DragSurface";
 import { Color, ColorInputType } from "../../lib/Color";
 import { ColorSelectionBase } from "../selection/ColorSelectionBase";
 import { clamp } from "../../lib/utils/math";
@@ -14,7 +15,7 @@ const CLOSE_COLOR_DISTANCE = 30;
 
 @customElement("color-map")
 export class ColorMap extends ColorSelectionBase {
-  static styles = [tailwindStyles];
+  static styles = [tailwindStyles, dragSurfaceStyles];
 
   @property({ attribute: false })
   data: number[][] = [[0, 0, 0]];
@@ -117,8 +118,8 @@ export class ColorMap extends ColorSelectionBase {
         >
         <div
           style="background: ${this.toCss()}"
-          class="w-full h-8 rounded relative cursor-crosshair"
-          @mousedown=${this.drag.handleMouseDown}
+          class="w-full h-8 rounded relative cursor-crosshair drag-surface"
+          @pointerdown=${this.drag.handlePointerDown}
           id="colormap-div"
         >
           ${

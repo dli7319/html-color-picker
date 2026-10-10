@@ -4,6 +4,7 @@ import { customElement, query } from "lit/decorators.js";
 import { Color, ColorInputType } from "../../lib/Color";
 import { ColorSelectionBase } from "./ColorSelectionBase";
 import { DragController } from "../../controllers/DragController";
+import { dragSurfaceStyles } from "../../styles/DragSurface";
 
 // This is an HSL color wheel with a middle-gray center (l=50%).
 @customElement("color-selection-hsl-wheel")
@@ -37,6 +38,7 @@ export class ColorSelectionHslWheel extends ColorSelectionBase {
         border-color: white;
       }
     `,
+    dragSurfaceStyles,
   ];
 
   @query("#color-grad")
@@ -51,14 +53,46 @@ export class ColorSelectionHslWheel extends ColorSelectionBase {
     const angle = Math.atan2(y, x) * (180 / Math.PI) + 90;
     const clampedAngle = (angle + 360) % 360;
 
+    const [, , lightness] = this.color.getHSL();
     this.setColor(
       new Color({
         type: ColorInputType.HSL,
         h: clampedAngle,
         s: 100.0 * clampedRadius,
-        l: 50,
+        // Preserve the incoming lightness instead of hard-locking it to 50
+        // (issue #89) — the wheel only owns hue/saturation.
+        l: lightness,
       }),
     );
+  };
+
+  /** Arrow keys rotate hue; Shift = fine steps (issue #75). */
+  private handleKeydown = (e: KeyboardEvent) => {
+    const [hue, saturation, lightness] = this.color.getHSL();
+    const step = e.shiftKey ? 0.1 : 1;
+    let h = hue;
+    switch (e.key) {
+      case "ArrowLeft":
+      case "ArrowDown":
+        h = (hue - step + 360) % 360;
+        break;
+      case "ArrowRight":
+      case "ArrowUp":
+        h = (hue + step) % 360;
+        break;
+      default:
+        return;
+    }
+    e.preventDefault();
+    this.setColor(
+      new Color({
+        type: ColorInputType.HSL,
+        h,
+        s: saturation,
+        l: lightness,
+      }),
+    );
+    this.commitColorSoon();
   };
 
   private drag = new DragController(this, {
@@ -70,12 +104,12 @@ export class ColorSelectionHslWheel extends ColorSelectionBase {
   });
 
   render() {
-    const [hue, saturation] = this.color.getHSL();
+    const [hue, saturation, lightness] = this.color.getHSL();
     const colorGradStyle = `
           background-image: radial-gradient(
             circle at center,
             hsl(0, 0%, 50%, 1) 0%,
-            hsl(0, 100%, 0%, 0) 70%
+            hsl(0, 100%, 0%, 0) 100%
           ),
           conic-gradient(
             in hsl shorter hue,
@@ -98,15 +132,19 @@ export class ColorSelectionHslWheel extends ColorSelectionBase {
               type: ColorInputType.HSL,
               h: hue,
               s: saturation,
-              l: 50,
+              l: lightness,
             }).getHex()};
         `;
     return html`
       <div
-        class="color-grad"
+        class="color-grad drag-surface"
         id="color-grad"
+        tabindex="0"
+        role="application"
+        aria-label="Hue and saturation wheel, arrow keys rotate hue"
+        @keydown=${this.handleKeydown}
         style=${colorGradStyle}
-        @mousedown=${this.drag.handleMouseDown}
+        @pointerdown=${this.drag.handlePointerDown}
       >
         <div class="color-grad-circle" style=${colorCircleStyle}></div>
       </div>

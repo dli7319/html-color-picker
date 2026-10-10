@@ -350,10 +350,10 @@ describe("ColorMap", () => {
       );
 
       div.dispatchEvent(
-        new MouseEvent("mousedown", { clientX: 128, bubbles: true }),
+        new MouseEvent("pointerdown", { clientX: 128, bubbles: true }),
       );
       document.dispatchEvent(
-        new MouseEvent("mousemove", { clientX: 200, bubbles: true }),
+        new MouseEvent("pointermove", { clientX: 200, bubbles: true }),
       );
 
       expect(setColorEvents.length).toBeGreaterThan(0);
@@ -387,12 +387,12 @@ describe("ColorMap", () => {
       );
 
       div.dispatchEvent(
-        new MouseEvent("mousedown", { clientX: 128, bubbles: true }),
+        new MouseEvent("pointerdown", { clientX: 128, bubbles: true }),
       );
       document.dispatchEvent(
-        new MouseEvent("mousemove", { clientX: 200, bubbles: true }),
+        new MouseEvent("pointermove", { clientX: 200, bubbles: true }),
       );
-      document.dispatchEvent(new MouseEvent("mouseup", { bubbles: true }));
+      document.dispatchEvent(new MouseEvent("pointerup", { bubbles: true }));
 
       expect(commitColorEvents).toHaveLength(1);
 

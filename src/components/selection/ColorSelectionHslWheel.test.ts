@@ -70,7 +70,7 @@ describe("ColorSelectionHslWheel", () => {
 
       // Verify the key gradient stops
       expect(style).toContain("hsl(0, 0%, 50%, 1) 0%");
-      expect(style).toContain("hsl(0, 100%, 0%, 0) 70%");
+      expect(style).toContain("hsl(0, 100%, 0%, 0) 100%");
       expect(style).toContain("hsl(0, 100%, 50%)");
       expect(style).toContain("hsl(360, 100%, 50%)");
 
@@ -362,14 +362,15 @@ describe("ColorSelectionHslWheel", () => {
       document.body.removeChild(el);
     });
 
-    it("uses the hex of color at l=50 regardless of actual color lightness", async () => {
+    it("uses the hex of the color at its actual lightness (issue #89)", async () => {
       const el = document.createElement(
         "color-selection-hsl-wheel",
       ) as ColorSelectionHslWheel;
       document.body.appendChild(el);
       await el.updateComplete;
 
-      // Color with l=20 but the indicator should use l=50 for its background
+      // The indicator keeps the color's actual lightness instead of
+      // snapping to l=50 (issue #89).
       el.color = hsl(200, 80, 20);
       await el.updateComplete;
 
@@ -377,7 +378,7 @@ describe("ColorSelectionHslWheel", () => {
         type: ColorInputType.HSL,
         h: 200,
         s: 80,
-        l: 50,
+        l: 20,
       }).getHex();
 
       const circle = el.shadowRoot!.querySelector(
@@ -458,14 +459,14 @@ describe("ColorSelectionHslWheel", () => {
             { once: true },
           );
           grad.dispatchEvent(
-            new MouseEvent("mousedown", {
+            new MouseEvent("pointerdown", {
               bubbles: true,
               clientX: 200,
               clientY: 100,
             }),
           );
           document.dispatchEvent(
-            new MouseEvent("mousemove", {
+            new MouseEvent("pointermove", {
               bubbles: true,
               clientX: 200,
               clientY: 100,
@@ -477,7 +478,7 @@ describe("ColorSelectionHslWheel", () => {
       const [hue] = setEvent.color.getHSL();
       expect(hue).toBeCloseTo(90);
 
-      document.dispatchEvent(new MouseEvent("mouseup"));
+      document.dispatchEvent(new MouseEvent("pointerup"));
       bcrSpy.mockRestore();
       document.body.removeChild(el);
     });
@@ -503,13 +504,13 @@ describe("ColorSelectionHslWheel", () => {
           );
           // Click at (200, 100) — right edge, horizontal → hue 90. NO mousemove.
           grad.dispatchEvent(
-            new MouseEvent("mousedown", {
+            new MouseEvent("pointerdown", {
               bubbles: true,
               clientX: 200,
               clientY: 100,
             }),
           );
-          document.dispatchEvent(new MouseEvent("mouseup"));
+          document.dispatchEvent(new MouseEvent("pointerup"));
         },
       );
 
@@ -532,13 +533,13 @@ describe("ColorSelectionHslWheel", () => {
       const commitEvent = await new Promise<Event>((resolve) => {
         el.addEventListener("commit-color", resolve, { once: true });
         grad.dispatchEvent(
-          new MouseEvent("mousedown", {
+          new MouseEvent("pointerdown", {
             bubbles: true,
             clientX: 100,
             clientY: 100,
           }),
         );
-        document.dispatchEvent(new MouseEvent("mouseup"));
+        document.dispatchEvent(new MouseEvent("pointerup"));
       });
 
       expect(commitEvent).toBeInstanceOf(ColorPickerCommitColorEvent);

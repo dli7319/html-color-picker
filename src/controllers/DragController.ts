@@ -52,7 +52,11 @@ export class DragController implements ReactiveController {
     // Keep the browser from starting text selection or touch scrolling
     // during the drag (the surface also sets touch-action: none).
     e.preventDefault();
-    const target = e.currentTarget as Element | null;
+    const target = e.currentTarget as HTMLElement | null;
+    // preventDefault above suppresses the browser's default focus action on
+    // pointerdown — focus explicitly so keyboard nudging works right after
+    // clicking (round-2 review).
+    target?.focus({ preventScroll: true });
     try {
       target?.setPointerCapture(e.pointerId);
     } catch {

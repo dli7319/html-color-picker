@@ -70,6 +70,8 @@ export class ImageSampling extends LitElement {
   }
 
   private samplePixel(e: MouseEvent) {
+    // Never sample an empty or stale canvas (round-2 review).
+    if (!this.loadedImage) return;
     const canvas = this.canvasRef.value!;
     const ctx = canvas.getContext("2d");
     if (ctx) {
@@ -109,6 +111,18 @@ export class ImageSampling extends LitElement {
     },
   });
 
+  /** Clears image-derived state so stale pixels can never be sampled. */
+  private resetImageState() {
+    this.loadedImage = false;
+    this.hasSample = false;
+    this.lastSampledColor = null;
+    const canvas = this.canvasRef.value;
+    if (canvas) {
+      canvas.width = 0;
+      canvas.height = 0;
+    }
+  }
+
   loadImage(e: Event) {
     const file = (e.currentTarget as HTMLInputElement).files?.item(0);
     if (file) {
@@ -116,11 +130,13 @@ export class ImageSampling extends LitElement {
       const reader = new FileReader();
       reader.onerror = () => {
         this.loadError = "Couldn't read this file — choose a PNG or JPEG.";
+        this.resetImageState();
       };
       reader.onload = (e) => {
         const img = new Image();
         img.onerror = () => {
           this.loadError = "Couldn't load this file — choose a PNG or JPEG.";
+          this.resetImageState();
         };
         img.onload = () => {
           const canvas = this.canvasRef.value!;

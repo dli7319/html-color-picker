@@ -10,6 +10,26 @@ import { ColorConverterInputEvent } from "../../events/ColorConverterInputEvent"
 // ---------------------------------------------------------------------------
 // ColorConverterInput (<color-converter-input>)
 // ---------------------------------------------------------------------------
+describe("Escape revert (round-2 regression)", () => {
+  it("visibly replaces invalid text with the canonical value", async () => {
+    const el = document.createElement(
+      "color-converter-input",
+    ) as ColorConverterInput;
+    el.type = InputType.HEX;
+    document.body.appendChild(el);
+    await el.updateComplete;
+    const input = el.shadowRoot!.querySelector("input") as HTMLInputElement;
+
+    input.value = "not-a-color";
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    input.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
+
+    expect(input.value).toBe("#000000");
+    expect(input.getAttribute("aria-invalid")).toBe("false");
+    document.body.removeChild(el);
+  });
+});
+
 describe("ColorConverterInput", () => {
   // -----------------------------------------------------------------------
   // 1. Custom element registration

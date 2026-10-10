@@ -6,6 +6,11 @@
 import { css } from "lit";
 
 export const dragSurfaceStyles = css`
+  /* Horizontal-only strips: let vertical swipes scroll the page. */
+  .drag-surface-pan-y {
+    touch-action: pan-y;
+  }
+
   .drag-surface {
     touch-action: none;
     user-select: none;

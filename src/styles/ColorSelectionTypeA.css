@@ -50,6 +50,7 @@
 }
 
 .color-bar {
+  touch-action: pan-y;
   position: relative;
   width: 100%;
   height: 1.5rem;

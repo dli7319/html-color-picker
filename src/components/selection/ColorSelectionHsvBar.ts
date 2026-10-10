@@ -76,7 +76,7 @@ export class ColorSelectionHsvBar extends ColorSelectionBase {
       }).getHex();
     return html`
       <div
-        class="color-bar drag-surface"
+        class="color-bar drag-surface drag-surface-pan-y"
         @pointerdown=${this.drag.handlePointerDown}
         @keydown=${this.handleKeydown}
         id="color-bar"

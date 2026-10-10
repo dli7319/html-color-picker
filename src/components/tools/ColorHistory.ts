@@ -189,7 +189,10 @@ export class ColorHistory extends LitElement {
         </div>
         ${
           this.history.length === 0 && !this.clearedSnapshot
-            ? html`<p class="history-empty">No colors yet</p>`
+            ? html`<p class="history-empty">
+                Colors you pick or sample collect here — click one to restore
+                it.
+              </p>`
             : html`
                 <div
                   class="history-swatches ${this.restoring ? "restoring" : ""}"

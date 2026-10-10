@@ -38,12 +38,25 @@
       *::after {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
+        animation-delay: 0.01ms !important;
         transition-duration: 0.01ms !important;
+        transition-delay: 0.01ms !important;
         scroll-behavior: auto !important;
+      }
+      :root {
+        /* Zero the handle-travel token too — components consume it. */
+        --handle-transition: none;
       }
       body {
         transition: none !important;
       }
+    }
+    *:focus-visible {
+      outline: none;
+      box-shadow:
+        0 0 0 2px #fff,
+        0 0 0 4px rgb(30, 41, 59);
+      border-radius: 0.25rem;
     }
     html,
     body {

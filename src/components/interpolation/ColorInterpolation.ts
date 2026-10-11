@@ -221,7 +221,8 @@ export class ColorInterpolation extends LitElement {
           }
           style="background: #${this.leftColor.getHex()}"
         ></button>
-        <div
+        <button
+          type="button"
           class="color-selection cursor-pointer ${this.activeColor === ActiveColorSide.RIGHT ? "active ring-2 ring-blue-600" : ""}"
           @click=${this.setActiveColorRight}
           title="Set right endpoint color"

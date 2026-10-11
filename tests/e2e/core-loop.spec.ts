@@ -99,3 +99,19 @@ test("dragging the HSV surface drives the whole app state", async ({
     ),
   ).toBeVisible();
 });
+
+test("interpolation ramps render at real width (template-nesting regression)", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const ramps = page.locator("color-interpolation [role='slider']");
+  const count = await ramps.count();
+  expect(count).toBe(4);
+  for (let i = 0; i < count; i++) {
+    const box = await ramps.nth(i).boundingBox();
+    // The nesting regression collapsed every ramp to 0px width; real layout
+    // is what jsdom cannot verify.
+    expect(box!.width).toBeGreaterThan(150);
+    expect(box!.height).toBeGreaterThan(15);
+  }
+});

@@ -151,6 +151,12 @@ npm run format        # prettier formatting
 
 **Always run all three before committing.** Commits must not introduce lint errors, formatting regressions, or test failures.
 
+For UI changes, visually verify **every panel the change touches** in a real
+browser (screenshot + inspect), not only the panel a report names — a
+template tag mismatch in one panel (ramps collapsing to 0px width) once
+survived a full green gate because only the two reported panels were checked
+visually.
+
 ## CI/CD
 
 - GitHub Actions workflow at `.github/workflows/ci.yml` (formerly `webpack.yml` from the pre-Rolldown era) — deploys to GitHub Pages on push to `master`.

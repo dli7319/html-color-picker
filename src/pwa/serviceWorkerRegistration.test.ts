@@ -29,6 +29,7 @@ class FakeWorker implements ServiceWorkerLike {
 
 class FakeRegistration implements RegistrationLike {
   installing: FakeWorker | null = null;
+  waiting: FakeWorker | null = null;
   updateCalls = 0;
   private listeners = new Map<string, (() => void)[]>();
 
@@ -260,5 +261,53 @@ describe("registerServiceWorker", () => {
     expect(reload).toHaveBeenCalledTimes(1);
 
     document.body.innerHTML = "";
+  });
+});
+
+describe("update surfacing (stale waiting workers and silent swaps)", () => {
+  it("shows the banner when a worker is already waiting at registration time", async () => {
+    const container = new FakeContainer();
+    container.controller = {};
+    const waiting = new FakeWorker();
+    waiting.state = "installed";
+    container.registration.waiting = waiting;
+    const { banner, shown } = fakeBanner();
+    registerServiceWorker({ container, reload: vi.fn(), banner });
+    await flush();
+    expect(shown).toHaveLength(1);
+    shown[0].apply();
+    expect(waiting.messages).toContainEqual({ type: "SKIP_WAITING" });
+  });
+
+  it("does not surface a waiting worker on a first visit", async () => {
+    const container = new FakeContainer();
+    container.registration.waiting = new FakeWorker();
+    const { banner, shown } = fakeBanner();
+    registerServiceWorker({ container, reload: vi.fn(), banner });
+    await flush();
+    expect(shown).toHaveLength(0);
+  });
+
+  it("surfaces a silent controller swap without reloading behind the user", async () => {
+    const container = new FakeContainer();
+    container.controller = {};
+    const reload = vi.fn();
+    const { banner, shown } = fakeBanner();
+    registerServiceWorker({ container, reload, banner });
+    await flush();
+    container.fire("controllerchange");
+    expect(shown).toHaveLength(1);
+    expect(reload).not.toHaveBeenCalled();
+    shown[0].apply();
+    expect(reload).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not banner when the very first worker claims the page", async () => {
+    const container = new FakeContainer();
+    const { banner, shown } = fakeBanner();
+    registerServiceWorker({ container, reload: vi.fn(), banner });
+    await flush();
+    container.fire("controllerchange");
+    expect(shown).toHaveLength(0);
   });
 });

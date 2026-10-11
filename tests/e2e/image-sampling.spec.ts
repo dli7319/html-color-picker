@@ -45,14 +45,24 @@ test("sample from screen captures one frame into the sampling canvas", async ({
     Object.defineProperty(navigator, "mediaDevices", {
       configurable: true,
       value: {
-        getDisplayMedia: () => Promise.resolve(stream),
-        // silence any other probing
+        getDisplayMedia: (opts: unknown) => {
+          (window as unknown as { __capOpts?: unknown }).__capOpts = opts;
+          return Promise.resolve(stream);
+        },
       },
     });
   });
   await page.goto("/");
 
   await page.getByRole("button", { name: "Sample from screen" }).click();
+
+  // the capture request must target other apps/windows, not the current tab
+  const capOpts = await page.evaluate(
+    () =>
+      (window as unknown as { __capOpts?: Record<string, unknown> }).__capOpts,
+  );
+  expect(capOpts?.selfBrowserSurface).toBe("exclude");
+  expect(capOpts?.preferCurrentTab).toBeFalsy();
 
   const canvas = page.locator("image-sampling canvas");
   await expect(canvas).toHaveJSProperty("width", 64);

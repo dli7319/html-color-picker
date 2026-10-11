@@ -142,9 +142,17 @@ export class ImageSampling extends LitElement {
     }
     let stream: MediaStream | null = null;
     try {
+      // Target OTHER applications: exclude the current tab from the picker
+      // entirely and preselect "Window" so sharing any app's window is the
+      // default path (the whole point is sampling something that is not
+      // this page).
       const options: DisplayMediaStreamOptions & {
-        preferCurrentTab?: boolean;
-      } = { video: true, preferCurrentTab: true };
+        video: MediaTrackConstraints;
+        selfBrowserSurface?: "include" | "exclude";
+      } = {
+        video: { displaySurface: "window" },
+        selfBrowserSurface: "exclude",
+      };
       stream = await media.getDisplayMedia(options);
       const video = document.createElement("video");
       video.srcObject = stream;
@@ -263,7 +271,7 @@ export class ImageSampling extends LitElement {
             type="button"
             class="px-3 py-1.5 rounded-lg bg-white/70 border border-gray-300 text-xs font-semibold text-gray-800 cursor-pointer hover:bg-white"
             @click=${() => void this.captureScreen()}
-            title="Share a tab or window for a second to capture it"
+            title="Share any window or screen (including other apps) for a second"
           >
             Sample from screen
           </button>

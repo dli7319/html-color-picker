@@ -167,7 +167,8 @@ table > * {
           aria-pressed=${this.activeColor===`left`?`true`:`false`}
           style="background: #${this.leftColor.getHex()}"
         ></button>
-        <div
+        <button
+          type="button"
           class="color-selection cursor-pointer ${this.activeColor===`right`?`active ring-2 ring-blue-600`:``}"
           @click=${this.setActiveColorRight}
           title="Set right endpoint color"

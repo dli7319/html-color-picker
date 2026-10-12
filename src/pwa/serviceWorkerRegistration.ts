@@ -20,6 +20,8 @@ export interface ServiceWorkerLike {
 export interface RegistrationLike {
   update(): Promise<unknown>;
   installing: ServiceWorkerLike | null;
+  /** An update installed in an earlier session and not yet applied. */
+  waiting?: ServiceWorkerLike | null;
   addEventListener(type: string, listener: () => void): void;
 }
 
@@ -82,6 +84,11 @@ export function registerServiceWorker(
   let reloaded = false;
   let pendingApply: (() => void) | null = null;
   let pendingDismiss: (() => void) | null = null;
+  // Did this page start out controlled? Distinguishes a silent update swap
+  // (or a sibling tab applying one) from the very first worker claiming the
+  // page — where "a new version is ready" would be a lie.
+  const startedControlled = container.controller !== null;
+  let silentSwapShown = false;
 
   // Reload ONLY on a user-requested refresh — controllerchange also fires
   // when the very first worker claims the page, and reloading there would
@@ -90,6 +97,29 @@ export function registerServiceWorker(
     if (refreshRequested && !reloaded) {
       reloaded = true;
       reload();
+      return;
+    }
+    if (
+      !refreshRequested &&
+      startedControlled &&
+      !silentSwapShown &&
+      pendingApply === null // never clobber a pending update's apply
+    ) {
+      // The new worker took over (another tab applied it, or the browser
+      // swapped after the last tab closed) without this page reloading.
+      // Still never reload behind the user — but say so, and let Refresh
+      // just reload: the new worker already controls the page.
+      silentSwapShown = true;
+      const silentApply = (): void => {
+        if (reloaded) return;
+        reloaded = true;
+        pendingApply = null;
+        pendingDismiss = null;
+        reload();
+      };
+      pendingApply = silentApply;
+      pendingDismiss = dismiss;
+      banner.show(silentApply, dismiss);
     }
   });
 
@@ -114,6 +144,16 @@ export function registerServiceWorker(
   container
     .register(swUrl)
     .then((registration) => {
+      // A worker may ALREADY be waiting from an earlier session — its
+      // updatefound fired while this page was closed, so the banner must be
+      // surfaced now or the update stays invisible until the next deploy.
+      const waiting = registration.waiting;
+      if (waiting && container.controller !== null) {
+        currentInstallingWorker = waiting;
+        pendingApply = apply;
+        pendingDismiss = dismiss;
+        banner.show(apply, dismiss);
+      }
       void registration.update().catch(() => undefined);
 
       registration.addEventListener("updatefound", () => {

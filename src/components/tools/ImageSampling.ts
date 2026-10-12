@@ -7,6 +7,7 @@ import { dragSurfaceStyles } from "../../styles/DragSurface";
 import { reducedMotionStyles } from "../../styles/Motion";
 import { tailwindStyles } from "../../styles/Tailwind";
 import { Color, ColorInputType } from "../../lib/Color";
+import { parseHexColor } from "../../lib/ColorStringParsing";
 import { Coordinates } from "../../lib/Coordinates";
 import { ColorPickerSetColorEvent } from "../../events/ColorPickerSetColorEvent";
 import { ColorPickerCommitColorEvent } from "../../events/ColorPickerCommitColorEvent";
@@ -55,6 +56,11 @@ export class ImageSampling extends LitElement {
   /** True once a pixel has been sampled — the overlay stays hidden before. */
   @state()
   private hasSample = false;
+
+  /** The EyeDropper quick-pick is Chromium-only (round-2 follow-up). */
+  @state()
+  private canEyeDrop =
+    "EyeDropper" in (window as unknown as Record<string, unknown>);
 
   @state()
   private loadError = "";
@@ -120,6 +126,76 @@ export class ImageSampling extends LitElement {
     if (canvas) {
       canvas.width = 0;
       canvas.height = 0;
+    }
+  }
+
+  /**
+   * Capture one frame from a shared screen/tab/window into the sampling
+   * canvas. The share lasts only long enough to grab the frame — every track
+   * is stopped immediately in `finally`, so nothing ever records.
+   */
+  async captureScreen() {
+    const media = navigator.mediaDevices;
+    if (!media?.getDisplayMedia) {
+      this.loadError = "Screen capture isn't supported in this browser.";
+      return;
+    }
+    let stream: MediaStream | null = null;
+    try {
+      // Target OTHER applications: exclude the current tab from the picker
+      // entirely and preselect "Window" so sharing any app's window is the
+      // default path (the whole point is sampling something that is not
+      // this page).
+      const options: DisplayMediaStreamOptions & {
+        video: MediaTrackConstraints;
+        selfBrowserSurface?: "include" | "exclude";
+      } = {
+        video: { displaySurface: "window" },
+        selfBrowserSurface: "exclude",
+      };
+      stream = await media.getDisplayMedia(options);
+      const video = document.createElement("video");
+      video.srcObject = stream;
+      await video.play();
+      await new Promise<void>((resolve) => {
+        if (video.videoWidth > 0) resolve();
+        else video.onloadeddata = () => resolve();
+      });
+      const canvas = this.canvasRef.value!;
+      const ctx = canvas.getContext("2d");
+      if (ctx && video.videoWidth > 0) {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        ctx.drawImage(video, 0, 0);
+        this.loadedImage = true;
+        this.loadError = "";
+        this.hasSample = false;
+        this.lastSampledColor = null;
+      }
+    } catch {
+      this.loadError = "Screen capture was cancelled or unavailable.";
+    } finally {
+      stream?.getTracks().forEach((track) => track.stop());
+    }
+  }
+
+  /** Quick one-pixel pick from anywhere on screen (Chromium's EyeDropper). */
+  async pickPixel() {
+    const ctor = (
+      window as unknown as {
+        EyeDropper?: new () => { open(): Promise<{ sRGBHex: string }> };
+      }
+    ).EyeDropper;
+    if (!ctor) return;
+    try {
+      const result = await new ctor().open();
+      const color = parseHexColor(result.sRGBHex);
+      if (color) {
+        this.dispatchEvent(new ColorPickerSetColorEvent(color));
+        this.dispatchEvent(new ColorPickerCommitColorEvent(color));
+      }
+    } catch {
+      // User cancelled the eyedropper — nothing to do.
     }
   }
 
@@ -190,11 +266,33 @@ export class ImageSampling extends LitElement {
           accept="image/*"
           @change=${this.loadImage}
         />
+        <div class="flex gap-2 mt-2">
+          <button
+            type="button"
+            class="px-3 py-1.5 rounded-lg bg-white/70 border border-gray-300 text-xs font-semibold text-gray-800 cursor-pointer hover:bg-white"
+            @click=${() => void this.captureScreen()}
+            title="Share any window or screen (including other apps) for a second"
+          >
+            Sample from screen
+          </button>
+          ${
+            this.canEyeDrop
+              ? html`<button
+                  type="button"
+                  class="px-3 py-1.5 rounded-lg bg-white/70 border border-gray-300 text-xs font-semibold text-gray-800 cursor-pointer hover:bg-white"
+                  @click=${() => void this.pickPixel()}
+                  title="Pick a single pixel from anywhere on screen"
+                >
+                  Pick a pixel
+                </button>`
+              : ""
+          }
+        </div>
         <p class="text-[11px] text-gray-800 mt-1 text-left">
           ${
             this.loadedImage
               ? "Click or drag on the image to sample colors."
-              : "Choose an image to start sampling — files stay on your device."
+              : "Choose an image or capture your screen, then click to sample colors — everything stays on your device."
           }
         </p>
         ${
